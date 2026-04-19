@@ -1,0 +1,136 @@
+<div class="master-layout">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+
+    <div class="master-top-left">
+      <lucide-icon name="box"></lucide-icon>
+      <div>
+        <div class="master-title-text">UNIT MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newUnitCreate()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD UNIT
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="refreshUnits()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <div class="total-badge saas">
+      TOTAL UNITS : {{ units.length }}
+    </div>
+
+  </div>
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>CREATE UNIT</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrUpdateUnit()"
+          [disabled]="duplicateError"
+        >
+          {{ unit.unitID ? 'UPDATE' : 'SAVE' }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="resetUnit()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+   
+    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+
+
+      <div class="form-grid">
+
+        <!-- Unit Name -->
+        <div class="form-column">
+          <label>Unit Name</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="unit.unitName"
+            name="unitName"
+            required
+            appInputRestrict="text"
+            (ngModelChange)="checkDuplicate()"
+            appFocusOnKey
+          />
+          <div class="text-warning small mt-1" *ngIf="duplicateError">
+            This unit already exists!
+          </div>
+        </div>
+
+        <!-- Unit Code -->
+        <div class="form-column">
+          <label>Unit Code</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="unit.unitCode"
+            name="unitCode"
+            appInputRestrict="text"
+            appFocusOnKey
+          />
+        </div>
+
+        <!-- Status -->
+        <div class="form-column">
+          <label>Status</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              [(ngModel)]="unit.isActive"
+              name="isActive"
+              appFocusOnKey
+            />
+            <span class="slider"></span>
+            <span class="switch-text">
+              {{ unit.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="units"
+      [columns]="unitColumns"
+      title="ALL UNITS"
+      companyName="SmartBillPro"
+      (edit)="editUnit($event)"
+      (delete)="deleteUnit($event)"
+    >
+    </app-master-table-view>
+
+  </div>
+
+</div>

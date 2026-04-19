@@ -1,0 +1,431 @@
+/* =====================================================
+   HOST — fills router outlet exactly
+===================================================== */
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: #eef0f7;
+  padding: 8px;
+  gap: 8px;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* =====================================================
+   ROOT
+===================================================== */
+.exp-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 8px;
+  overflow: hidden;
+}
+
+/* =====================================================
+   TOPBAR
+===================================================== */
+.exp-topbar {
+  background: #1d1160;
+  border-radius: 6px;
+  padding: 10px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 52px;
+}
+.exp-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.exp-topbar-icon {
+  width: 32px;
+  height: 32px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+.exp-title {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+.exp-sub {
+  color: rgba(255,255,255,0.55);
+  font-size: 10px;
+}
+.exp-topbar-right {
+  display: flex;
+  gap: 8px;
+}
+.exp-btn-save {
+  background: #fff;
+  color: #1d1160;
+  border: none;
+  padding: 6px 20px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+.exp-btn-save:disabled { opacity: .5; cursor: not-allowed; }
+.exp-btn-reset {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+.exp-btn-reset:disabled { opacity: .5; cursor: not-allowed; }
+
+/* =====================================================
+   BODY
+===================================================== */
+.exp-body {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* =====================================================
+   LEFT PANEL — scrolls internally
+===================================================== */
+.exp-left {
+  width: 296px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 2px;
+  /* custom scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #d0d0e8 transparent;
+}
+.exp-left::-webkit-scrollbar { width: 4px; }
+.exp-left::-webkit-scrollbar-thumb { background: #d0d0e8; border-radius: 4px; }
+
+/* =====================================================
+   CARDS
+===================================================== */
+.exp-card {
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #dde0ef;
+  padding: 12px 14px;
+  flex-shrink: 0;
+}
+.exp-card-title {
+  font-size: 10px;
+  font-weight: 600;
+  color: #1d1160;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 10px;
+  padding-bottom: 7px;
+  border-bottom: 2px solid #1d1160;
+}
+
+/* =====================================================
+   FIELDS
+===================================================== */
+.exp-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-bottom: 8px;
+}
+.exp-field:last-child { margin-bottom: 0; }
+.exp-field label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #6b6f8a;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.exp-req { color: #f4a261; }
+.exp-input {
+  width: 100%;
+  border: 1px solid #dde0ef;
+  border-radius: 4px;
+  padding: 0 8px;
+  font-size: 11px;
+  color: #1d1160;
+  background: #fff;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  height: 30px;
+  box-sizing: border-box;
+}
+.exp-input:focus {
+  border-color: #1d1160;
+  box-shadow: 0 0 0 2px rgba(29,17,96,0.08);
+}
+.exp-input:disabled {
+  background: #f4f4f8;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+.exp-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* =====================================================
+   SUMMARY CARD
+===================================================== */
+.exp-summary {
+  background: linear-gradient(135deg, #1d1160, #2d1f8a);
+  border-radius: 6px;
+  padding: 12px 14px;
+  flex-shrink: 0;
+}
+.exp-summary-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  margin-bottom: 8px;
+}
+.exp-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.exp-summary-key {
+  color: rgba(255,255,255,0.65);
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+.exp-summary-val {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+}
+.exp-summary-val.orange { color: #f4a261; }
+.exp-summary-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.2);
+}
+.exp-summary-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.exp-status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4caf50;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.exp-status-text {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =====================================================
+   RIGHT PANEL
+===================================================== */
+.exp-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* =====================================================
+   GRID CARD
+===================================================== */
+.exp-grid-card {
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #dde0ef;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.exp-grid-header {
+  background: #1d1160;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 6px 6px 0 0;
+}
+.exp-grid-title {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+.exp-btn-add {
+  background: #f4a261;
+  color: #fff;
+  border: none;
+  padding: 5px 14px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* =====================================================
+   TABLE WRAP — scrolls inside card
+===================================================== */
+.exp-grid-wrap {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #d0d0e8 transparent;
+}
+.exp-grid-wrap::-webkit-scrollbar { height: 4px; width: 4px; }
+.exp-grid-wrap::-webkit-scrollbar-thumb { background: #d0d0e8; border-radius: 4px; }
+
+/* =====================================================
+   TABLE
+===================================================== */
+.exp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-family: 'Poppins', sans-serif;
+}
+.exp-table thead tr {
+  background: #f4f3fb;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.exp-table thead th {
+  padding: 8px 10px;
+  text-align: left;
+  color: #1d1160;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  border-bottom: 2px solid #dde0ef;
+  white-space: nowrap;
+}
+.exp-table tbody tr { border-bottom: 1px solid #f0f0f5; }
+.exp-table tbody tr:nth-child(even) { background: #fafafe; }
+.exp-table tbody tr:nth-child(odd)  { background: #fff; }
+.exp-table tbody tr:hover           { background: #f4f3fb; }
+.exp-table tbody td {
+  padding: 4px 6px;
+  color: #1d1160;
+  vertical-align: middle;
+}
+.exp-row-num {
+  text-align: center;
+  color: #6b6f8a;
+  font-weight: 600;
+  font-size: 10px;
+}
+
+/* =====================================================
+   CELL INPUTS
+===================================================== */
+.exp-cell-select,
+.exp-cell-input {
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 11px;
+  color: #1d1160;
+  background: transparent;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  height: 28px;
+}
+.exp-cell-select:focus,
+.exp-cell-input:focus {
+  border-color: #1d1160;
+  background: #fff;
+  box-shadow: 0 0 0 2px rgba(29,17,96,0.07);
+}
+.exp-cell-select:disabled { color: #9ca3af; cursor: not-allowed; }
+.exp-cell-input.center { text-align: center; }
+.exp-cell-input.right  { text-align: right; }
+.exp-cell-input.readonly {
+  background: #f8f8fc;
+  color: #9ca3af;
+  cursor: default;
+}
+
+/* =====================================================
+   DELETE BUTTON
+===================================================== */
+.exp-del-btn {
+  width: 24px;
+  height: 24px;
+  background: #fff0f0;
+  border: 1px solid #ffcdd2;
+  border-radius: 4px;
+  color: #e53935;
+  font-size: 11px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Poppins', sans-serif;
+  padding: 0;
+}
+
+/* =====================================================
+   TOTAL BAR
+===================================================== */
+.exp-total-bar {
+  background: #1d1160;
+  border-radius: 6px;
+  padding: 8px 18px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
+  min-height: 44px;
+}
+.exp-total-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.exp-total-key    { color: rgba(255,255,255,0.65); font-size: 11px; }
+.exp-total-count  { color: #fff; font-size: 15px; font-weight: 600; }
+.exp-total-amount { color: #f4a261; font-size: 20px; font-weight: 700; letter-spacing: .5px; }
+.exp-total-divider { width: 1px; height: 22px; background: rgba(255,255,255,0.2); }

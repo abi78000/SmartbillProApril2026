@@ -1,0 +1,83 @@
+<!-- Page Title -->
+<div class="text-center mb-5">
+  <h2 class="fw-bold text-primary">Role & Permission</h2>
+</div>
+
+<div class="row justify-content-center">
+  <!-- User Selection -->
+  <div class="col-md-6 mb-4">
+    <div class="form-floating">
+      <select
+        class="form-select"
+        id="userSelect"
+        [(ngModel)]="selectedUserId"
+        (change)="onUserChange()"
+      >
+        <option [ngValue]="undefined" selected>-- Select User --</option>
+        <option *ngFor="let user of users" [value]="user.userID">
+          {{ user.userName }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Modules Card -->
+  <div class="col-md-8">
+    <div class="card shadow-sm border-0 mb-3">
+      <div class="card-header bg-primary text-white">
+        <span class="fw-semibold">Available Modules</span>
+        <div class="header-buttons">
+          <button
+            class="btn btn-outline-light btn-sm"
+            (click)="clearAllSelections()"
+          >
+            Clear
+          </button>
+          <button
+            class="btn btn-light btn-sm"
+            (click)="saveAllSelectedModules()"
+          >
+            <i class="bi bi-save me-1"></i> Save
+          </button>
+        </div>
+      </div>
+      <div class="form-check form-switch ms-3 mt-2">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="selectAllModules"
+          [(ngModel)]="selectAll"
+          (change)="toggleSelectAll()"
+        />
+        <label class="form-check-label fw-semibold" for="selectAllModules">
+          Select All Modules
+        </label>
+      </div>
+      <!-- Card Body with Module List -->
+      <div class="card-body p-0">
+        <ul class="list-group list-group-flush module-list">
+          <li
+            *ngFor="let module of modules; let i = index"
+            class="list-group-item d-flex justify-content-between align-items-center"
+          >
+            <!-- Custom Switch -->
+            <div class="form-check form-switch d-flex align-items-center gap-2">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="moduleSwitch{{ module.moduleID }}"
+                [(ngModel)]="selectedModulesMap[module.moduleID]"
+              />
+              <label
+                class="form-check-label fw-medium"
+                for="moduleSwitch{{ module.moduleID }}"
+              >
+                {{ i + 1 }}. {{ module.label }}
+              </label>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

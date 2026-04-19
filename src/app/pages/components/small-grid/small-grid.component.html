@@ -1,0 +1,47 @@
+<div class="small-grid-container">
+
+  <input
+    type="text"
+    #searchInput
+    class="search-box"
+    placeholder="Search..."
+    [(ngModel)]="searchText"
+    (input)="filterData()"
+    (keydown)="handleKey($event)"
+  />
+
+  <div class="small-grid-scroll" #scrollContainer>
+    <table class="small-grid">
+
+      <!-- ================= HEADER ================= -->
+      <thead>
+        <tr>
+          <th
+            *ngFor="let col of columns"
+            [hidden]="!col.visible"
+          >
+            {{ col.header }}
+          </th>
+        </tr>
+      </thead>
+
+      <!-- ================= BODY ================= -->
+      <tbody>
+        <tr
+          #rowItem
+          *ngFor="let row of filteredData; let i = index"
+          [class.active]="highlightedIndex === i"
+          (click)="onRowClick(row)"
+        >
+          <td
+            *ngFor="let col of columns"
+            [hidden]="!col.visible"
+          >
+            {{ row[col.field] }}
+          </td>
+        </tr>
+      </tbody>
+
+    </table>
+  </div>
+</div>

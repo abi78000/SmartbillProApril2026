@@ -1,0 +1,153 @@
+<div class="master-layout">
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+    <div class="master-top-left">
+      <!-- FIXED ICON -->
+      <lucide-icon name="building-2"></lucide-icon>
+      <div>
+        <div class="master-title-text">BRANCH MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newBranch()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD BRANCH
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="Refresh()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <div class="total-badge saas">TOTAL BRANCHES : {{ totalBranches }}</div>
+  </div>
+
+
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+    <div class="master-header">
+      <div class="master-title">
+        <!-- FIXED ICON -->
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>CREATE BRANCH</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrDeleteBranch()"
+        >
+          {{ isEditMode ? "UPDATE" : "SAVE" }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="resetBranch()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+        <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+        <div class="form-grid">
+      <!-- Company -->
+      <div class="form-column">
+        <label>Company</label>
+        <select
+          class="input-common"
+          [(ngModel)]="branch.companyID"
+          name="companyID"
+          appFocusOnKey
+          [autoFocus]="true"
+          [autoSelectNext]="true"
+          required
+        >
+          <option value="">Select Company</option>
+          <option *ngFor="let c of companies" [value]="c.companyID">
+            {{ c.companyName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Branch Name -->
+      <div class="form-column">
+        <label>Branch Name</label>
+        <input
+          type="text"
+          class="input-common"
+          [(ngModel)]="branch.branchName"
+          name="branchName"
+          appFocusOnKey
+          [autoSelectNext]="true"
+          required
+        />
+      </div>
+
+      <!-- Branch Code 
+      <div class="form-column">
+        <label>Branch Code</label>
+        <input
+          type="text"
+          class="input-common"
+          [(ngModel)]="branch.branchCode"
+          name="branchCode"
+          appFocusOnKey
+          [autoSelectNext]="true"
+        />
+      </div>-->
+
+      <!-- Address (full row) -->
+      <div class="form-column full-width">
+        <label>Address</label>
+        <textarea
+          rows="3"
+          class="input-common"
+          [(ngModel)]="branch.address"
+          name="address"
+          appFocusOnKey
+          [autoSelectNext]="true"
+        ></textarea>
+      </div>
+
+      <div class="form-column">
+        <label>Status</label>
+
+        <label class="switch">
+          <input
+            type="checkbox"
+            [(ngModel)]="branch.isActive"
+            name="isActive"
+            appFocusOnKey
+          />
+          <span class="slider"></span>
+          <span class="switch-text">
+            {{ branch.isActive ? "Active" : "Inactive" }}
+          </span>
+        </label>
+      </div>
+    </div>
+    </fieldset>
+
+  
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+    <app-master-table-view
+      [data]="branches"
+      [columns]="branchColumns"
+      title="ALL BRANCHES"
+      companyName="SmartBillPro"
+      (edit)="editBranch($event)"
+      (delete)="deleteBranch($event)"
+    >
+    </app-master-table-view>
+  </div>
+</div>

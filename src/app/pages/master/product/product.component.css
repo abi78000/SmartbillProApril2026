@@ -1,0 +1,270 @@
+/* =====================================
+   MASTER TOP HEADER
+===================================== */
+.master-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+}
+
+.master-top-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.master-top-left lucide-icon {
+  width: 26px;
+  height: 26px;
+  color: #1d1160;
+}
+
+.master-title-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1d1160;
+}
+
+.master-subtitle-text {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.master-top-right {
+  display: flex;
+  align-items: center;
+}
+
+/* =====================================
+   ACTION BUTTON TOOLBAR
+===================================== */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* =====================================
+   BUTTON SYSTEM (Optimized)
+===================================== */
+.btn,
+.master-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  line-height: 1;
+}
+
+.action-buttons lucide-icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Elevated */
+.btn-elevated {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+/* ===== Button Variants ===== */
+
+.btn-primary,
+.master-btn-primary {
+  background: linear-gradient(135deg, #312e81, #1e1b4b);
+  color: #ffffff;
+  border-color: #1e1b4b;
+}
+
+.btn-info {
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  color: #ffffff;
+  border-color: #0ea5e9;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: #ffffff;
+  border-color: #6b7280;
+}
+
+.btn-success {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #ffffff;
+  border-color: #16a34a;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+/* ===== Hover & Active ===== */
+
+.btn:hover,
+.master-btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+  filter: brightness(1.06);
+}
+
+.btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+}
+
+/* ===== Outline Buttons (Optional) ===== */
+
+.btn-outline {
+  background: transparent;
+  color: #1e1b4b;
+  border-color: #c7c9f3;
+}
+
+.btn-outline:hover {
+  background: #f3f4ff;
+}
+
+/* =====================================
+   PRODUCT MANAGEMENT LAYOUT
+===================================== */
+.product-management {
+  display: flex;
+  flex-direction: column;
+  padding: 14px;
+  background-color: #f4f6fb;
+  height: 100%;
+  border-radius: 10px;
+}
+
+/* =====================================
+   DATA GRID SECTION
+===================================== */
+.data-grid-section {
+  flex-grow: 1;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  overflow: auto;
+}
+
+/* =====================================
+   UPLOAD SPINNER
+===================================== */
+.upload-spinner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #475569;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #cbd5e1;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================
+   SHORTCUT BAR (POS STYLE)
+===================================== */
+.shortcut-bar {
+  margin-top: 10px;
+}
+
+.pos-shortcuts {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #fafafa;
+  border-radius: 10px;
+  border: 1px solid #e6e6f3;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.pos-shortcuts::-webkit-scrollbar {
+  display: none;
+}
+
+.pos-shortcuts .skey {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  flex-shrink: 0;
+}
+
+.pos-shortcuts .skey span {
+  background: #1a1445;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 42px;
+  text-align: center;
+}
+
+.pos-shortcuts .sep {
+  color: #b5b5b5;
+  font-size: 14px;
+  font-weight: 700;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+/* =====================================
+   RESPONSIVE
+===================================== */
+@media (max-width: 900px) {
+  .master-top-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .action-buttons {
+    width: 100%;
+  }
+
+  .action-buttons span {
+    display: none;
+  }
+
+  .btn,
+  .master-btn-primary {
+    padding: 9px;
+  }
+}

@@ -1,0 +1,214 @@
+<div class="master-layout">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+
+    <!-- LEFT -->
+    <div class="master-top-left">
+      <lucide-icon name="briefcase"></lucide-icon>
+      <div>
+        <div class="master-title-text">SERVICE MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newServiceCreate()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD SERVICE
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="refreshServices()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="total-badge saas">
+      TOTAL SERVICES : {{ services.length }}
+    </div>
+
+  </div>
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>CREATE SERVICE</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrUpdateService()"
+          [disabled]="duplicateError"
+        >
+          {{ service.serviceID ? "UPDATE" : "SAVE" }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="resetService()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+   <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+
+      <div class="form-grid">
+
+        <!-- Code -->
+        <div class="form-column">
+          <label>Code</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="service.serviceCode"
+            name="serviceCode"
+            readonly
+            appFocusOnKey
+          />
+        </div>
+
+        <!-- Name -->
+        <div class="form-column">
+          <label>Service Name</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="service.serviceName"
+            name="serviceName"
+            required
+            appInputRestrict="letter"
+            appFocusOnKey
+            (ngModelChange)="checkDuplicate()"
+          />
+          <div class="text-warning small mt-1" *ngIf="duplicateError">
+            Service name already exists!
+          </div>
+        </div>
+
+        <!-- Charge -->
+        <div class="form-column">
+          <label>Charge</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="service.serviceCharge"
+            name="serviceCharge"
+            appInputRestrict="number"
+            appFocusOnKey
+          />
+        </div>
+
+        <!-- Category -->
+        <div class="form-column">
+          <label>Category</label>
+          <select
+            class="input-common"
+            [(ngModel)]="service.categoryID"
+            name="categoryID"
+            appFocusOnKey
+          >
+            <option [ngValue]="0">Select Category</option>
+            <option *ngFor="let c of categories" [ngValue]="c.categoryID">
+              {{ c.categoryName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- HSN -->
+        <div class="form-column">
+          <label>HSN</label>
+          <select
+            class="input-common"
+            [(ngModel)]="service.hsnid"
+            name="hsnid"
+            appFocusOnKey
+          >
+            <option [ngValue]="0">Select HSN</option>
+            <option *ngFor="let h of hsnCodes" [ngValue]="h.hsnid">
+              {{ h.hsnCode }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Tax -->
+        <div class="form-column">
+          <label>Tax</label>
+          <select
+            class="input-common"
+            [(ngModel)]="service.taxID"
+            name="taxID"
+            appFocusOnKey
+          >
+            <option [ngValue]="0">Select Tax</option>
+            <option *ngFor="let t of taxes" [ngValue]="t.taxID">
+              {{ t.taxName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Cess -->
+        <div class="form-column">
+          <label>Cess</label>
+          <select
+            class="input-common"
+            [(ngModel)]="service.cessID"
+            name="cessID"
+            appFocusOnKey
+          >
+            <option [ngValue]="0">Select Cess</option>
+            <option *ngFor="let c of cesses" [ngValue]="c.cessID">
+              {{ c.cessName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Status -->
+        <div class="form-column">
+          <label>Status</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              [(ngModel)]="service.isActive"
+              name="isActive"
+              appFocusOnKey
+            />
+            <span class="slider"></span>
+            <span class="switch-text">
+              {{ service.isActive ? "Active" : "Inactive" }}
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="services"
+      [columns]="serviceColumns"
+      title="ALL SERVICES"
+      companyName="SmartBillPro"
+      (edit)="editService($event)"
+      (delete)="deleteService($event)"
+    >
+    </app-master-table-view>
+
+  </div>
+
+</div>

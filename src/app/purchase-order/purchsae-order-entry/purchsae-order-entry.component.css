@@ -1,0 +1,34 @@
+.grid-container {
+  position: relative;
+  min-height: 450px; /* space for popup inside big grid */
+}
+
+/* WINFORM STYLE POPUP */
+.popup-grid {
+  position: absolute;
+  top: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32%;
+  background: white;
+  border: 1px solid #999;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 1000;
+  padding: 0;
+}
+
+/* Force small grid to fit 100% */
+.popup-grid app-small-grid {
+  width: 100%;
+}
+
+/* Optional Close Button */
+.popup-close-btn {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
+  cursor: pointer;
+}

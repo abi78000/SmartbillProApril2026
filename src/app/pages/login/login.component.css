@@ -1,0 +1,331 @@
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  overflow-y: scroll;
+}
+
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family: "Poppins", sans-serif;
+  background: #f7f8fc;
+}
+
+/* =================================================
+   MAIN WRAPPER
+================================================= */
+.login-wrapper {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* =================================================
+   BRAND PANEL (LEFT)
+================================================= */
+.login-brand-panel {
+  flex: 1;
+  background: linear-gradient(180deg, #1d1160, #140c44);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: #ffffff;
+}
+
+.brand-content {
+  text-align: center;
+  max-width: 360px;
+}
+
+.brand-logo {
+  width: 80px;
+  height: 80px;
+  background: #f4a261;
+  color: #1d1160;
+  font-size: 32px;
+  font-weight: 800;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 24px;
+}
+
+.brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 38px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.brand-text {
+  color: #ffffff;
+}
+
+.brand-pro {
+  color: #f4a261;
+  margin-left: 4px;
+}
+
+.brand-tagline {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+/* =================================================
+   FORM PANEL (RIGHT)
+================================================= */
+.login-form-panel {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+/* =================================================
+   CARD (LOCKED SIZE – NO SHAKE)
+================================================= */
+.login-card {
+  width: 100%;
+  max-width: 460px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 40px;
+  border: 1px solid #eef0f4;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  flex-shrink: 0; /* 🔥 prevents resize */
+}
+
+/* =================================================
+   FORM SWITCH CONTAINER (HEIGHT LOCK)
+================================================= */
+.form-switch-container {
+  min-height: 420px; /* 🔥 SAME HEIGHT FOR LOGIN & REGISTER */
+}
+
+/* =================================================
+   TABS
+================================================= */
+.tabs {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 10px;
+  margin-bottom: 32px;
+}
+
+.tabs button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #6b7280;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.tabs button.active {
+  background: #1d1160;
+  color: #ffffff;
+  border-radius: 10px;
+}
+
+/* =================================================
+   TITLES
+================================================= */
+.login-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 800;
+  color: #1d1160;
+  margin-bottom: 8px;
+}
+
+.login-subtitle {
+  text-align: center;
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+/* =================================================
+   FORM FIELDS
+================================================= */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d1160;
+  margin-bottom: 6px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #1d1160;
+  box-shadow: 0 0 0 3px rgba(29, 17, 96, 0.12);
+}
+
+/* =================================================
+   BUTTON
+================================================= */
+.login-btn {
+  width: 100%;
+  padding: 16px;
+  background: #1d1160;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.25s ease;
+}
+
+.login-btn:hover {
+  background: #140c44;
+}
+
+.login-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* =================================================
+   FORM ANIMATION (NO TRANSLATE → NO SHAKE)
+================================================= */
+.login-card form {
+  animation: fadeOnly 0.2s ease;
+}
+
+@keyframes fadeOnly {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* =================================================
+   MOBILE (≤ 768px)
+================================================= */
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column;
+  }
+
+  .login-brand-panel {
+    padding: 32px 20px;
+  }
+
+  .brand {
+    font-size: 30px;
+  }
+
+  .login-form-panel {
+    padding: 20px;
+  }
+
+  .login-card {
+    padding: 28px 22px;
+    max-width: 100%;
+  }
+
+  .login-title {
+    font-size: 24px;
+  }
+
+  .form-switch-container {
+    min-height: 380px;
+  }
+}
+
+/* =================================================
+   SMALL MOBILE (≤ 480px)
+================================================= */
+@media (max-width: 480px) {
+  .brand-logo {
+    width: 64px;
+    height: 64px;
+    font-size: 26px;
+  }
+
+  .brand {
+    font-size: 26px;
+  }
+
+  .login-card {
+    padding: 24px 18px;
+  }
+
+  .login-title {
+    font-size: 22px;
+  }
+
+  .login-btn {
+    padding: 14px;
+    font-size: 14px;
+  }
+}
+
+/* =================================================
+   LARGE SCREENS (≥ 1440px)
+================================================= */
+@media (min-width: 1440px) {
+  .login-card {
+    max-width: 520px;
+  }
+
+  .brand {
+    font-size: 42px;
+  }
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 45px;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.toggle-password:hover {
+  color: #1d1160;
+}

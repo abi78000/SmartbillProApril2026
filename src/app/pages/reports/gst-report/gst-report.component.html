@@ -1,0 +1,154 @@
+<div class="ui-page">
+
+  <!-- ================= HEADER ================= -->
+  <div class="ui-header">
+    <div class="ui-title d-flex align-items-center gap-2">
+      <lucide-icon name="file-text"></lucide-icon>
+      GST Reports
+    </div>
+    <div class="ui-subtitle">
+      GSTR-1 filing summary based on selected filters
+    </div>
+  </div>
+
+  <!-- ================= FILTER BAR ================= -->
+  <div class="ui-filter">
+    <div class="ui-filter-grid">
+
+      <div class="ui-field">
+        <label>From Date</label>
+        <input
+          type="date"
+          [(ngModel)]="filters.fromDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="ui-field">
+        <label>To Date</label>
+        <input
+          type="date"
+          [(ngModel)]="filters.toDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="ui-field">
+        <label>Company</label>
+        <select
+          [(ngModel)]="filters.companyId"
+          (change)="onCompanyChange()"
+        >
+          <option *ngFor="let c of companies" [ngValue]="c.companyID">
+            {{ c.companyName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="ui-field">
+        <label>Branch</label>
+        <select
+          [(ngModel)]="filters.branchId"
+          (change)="onFilterChange()"
+        >
+          <option [ngValue]="null">All Branches</option>
+          <option *ngFor="let b of branches" [ngValue]="b.branchID">
+            {{ b.branchName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="ui-field">
+        <label>GST Type</label>
+        <select
+          [(ngModel)]="filters.gstFileType"
+          (change)="onFilterChange()"
+        >
+          <option value="B2B">B2B</option>
+          <option value="B2C">B2C</option>
+          <option value="HSN">HSN</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= KPI CARDS ================= -->
+  <div class="ui-kpi-grid">
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-primary">
+        <lucide-icon name="indian-rupee"></lucide-icon>
+        Total Invoice Value
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalInvoiceValue | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-info">
+        <lucide-icon name="calculator"></lucide-icon>
+        Taxable Value
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalTaxableValue | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-warning">
+        <lucide-icon name="percent"></lucide-icon>
+        CGST
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalCGST | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-warning">
+        <lucide-icon name="percent"></lucide-icon>
+        SGST
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalSGST | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-success">
+        <lucide-icon name="percent"></lucide-icon>
+        IGST
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalIGST | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-danger">
+        <lucide-icon name="receipt"></lucide-icon>
+        Total GST
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalGST | number:'1.2-2' }}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="ui-table">
+    <div class="ui-table-body">
+      <app-view-datatable
+        [data]="gstData"
+        [columns]="columns"
+        title="GST HSN Summary"
+        companyName="SMARTBILLPRO"
+      >
+      </app-view-datatable>
+    </div>
+  </div>
+
+</div>

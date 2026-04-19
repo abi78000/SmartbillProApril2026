@@ -1,0 +1,282 @@
+<header class="pos-header">
+  <div class="header-left">
+    <button class="back-btn" type="button" (click)="goBack()">
+      <lucide-icon name="arrow-left"></lucide-icon>
+      Back
+    </button>
+  </div>
+
+  <div class="header-center">
+    <div class="brand">
+      <span class="brand-text">SmartBill</span>
+      <span class="brand-pro">Est</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="mode-switch">
+      <button class="mode-btn" [class.active]="billMode === 'POS'" (click)="billMode = 'POS'">
+        POS MODE
+      </button>
+      <button class="mode-btn" [class.active]="billMode === 'HOTKEY'" (click)="billMode = 'HOTKEY'">
+        HOTKEY MODE
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="pos-wrapper">
+
+  <!-- ═══ LEFT PANEL ═══ -->
+  <div class="pos-left">
+
+    <!-- TOP FORM -->
+    <div class="bill-horizontal-box">
+      <div class="h-item">
+        <label>Company</label>
+        <select [(ngModel)]="selectedCompanyId" (ngModelChange)="onCompanyChange($event)">
+          <option *ngFor="let c of companies" [ngValue]="c.companyID">{{ c.companyName }}</option>
+        </select>
+      </div>
+
+      <div class="h-item">
+        <label>Branch</label>
+        <select [(ngModel)]="selectedBranchId">
+          <option [ngValue]="null">-- Select Branch --</option>
+          <option *ngFor="let b of branches" [ngValue]="b.branchID">{{ b.branchName }}</option>
+        </select>
+      </div>
+
+      <div class="h-item">
+        <label>Billing Type</label>
+        <div class="toggle-pill small">
+          <button
+            class="pill-btn"
+            *ngFor="let bt of businessTypes"
+            [class.active]="selectedBusinessType?.businessTypeID === bt.businessTypeID"
+            (click)="selectBusinessType(bt.businessTypeID)"
+          >{{ bt.businessTypeName }}</button>
+        </div>
+      </div>
+
+      <div class="h-item">
+        <label>GST Type</label>
+        <div class="toggle-pill small">
+          <button
+            class="pill-btn"
+            *ngFor="let gst of gstTypesList"
+            [class.active]="selectedGstType?.gstTransactionTypeID === gst.gstTransactionTypeID"
+            (click)="selectGstType(gst.gstTransactionTypeID)"
+          >{{ gst.transactionTypeName }}</button>
+        </div>
+      </div>
+
+      <div class="h-item">
+        <label>AC Year</label>
+        <span class="value-chip">{{ accountingYear }}</span>
+      </div>
+    </div>
+
+    <!-- GRID CARD -->
+    <div class="big-grid-card">
+
+      <!-- POS MODE -->
+      <div *ngIf="billMode === 'POS'" class="pos-mode-view">
+        <div class="pos-search">
+          <input
+            type="text"
+            placeholder="Search Products by Name or Code..."
+            [(ngModel)]="posSearchText"
+            (input)="applyPosSearch()"
+          />
+        </div>
+
+        <div class="category-row">
+          <button class="cat-btn" [class.active]="selectedCategoryId === null" (click)="filterByCategory(null)">All</button>
+          <button
+            class="cat-btn"
+            *ngFor="let c of categories"
+            [class.active]="selectedCategoryId === c.categoryID"
+            (click)="filterByCategory(c.categoryID)"
+          >{{ c.categoryName }}</button>
+        </div>
+
+        <div class="product-grid">
+          <div class="product-card" *ngFor="let p of filteredProducts" (click)="addProductToBill(p)">
+            <div class="qty-badge" *ngIf="getProductQty(p) > 0">{{ getProductQty(p) }}</div>
+            <lucide-icon name="package" class="pos-product-icon"></lucide-icon>
+            <div class="p-name">{{ p.productName }}</div>
+            <div class="p-price">₹{{ selectedBusinessType?.businessTypeID === 2 ? p.wholesalePrice : p.retailPrice }}</div>
+            <div class="qty-controls" (click)="$event.stopPropagation()">
+              <button class="qty-btn minus" *ngIf="getProductQty(p) > 0" (click)="decreaseQty(p, $event)">−</button>
+              <span class="qty-value" *ngIf="getProductQty(p) > 0">{{ getProductQty(p) }}</span>
+              <button class="qty-btn plus" (click)="increaseQty(p, $event)">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- HOTKEY MODE -->
+      <div *ngIf="billMode === 'HOTKEY'" class="hotkey-mode-view">
+        <div class="product-table">
+          <div class="popup-grid" *ngIf="smallGridVisible">
+            <app-small-grid
+              [columns]="productGridColumns"
+              [data]="smallGridData"
+              (rowSelected)="onProductSelected($event)"
+            ></app-small-grid>
+          </div>
+          <div class="big-grid">
+            <app-input-data-grid
+              [columns]="visibleColumns"
+              [data]="estimationItems"
+              (numberChanged)="onGridNumberChanged($event)"
+              (rowAdded)="onGridRowAdded($event)"
+              [parent]="{
+                branches: branches,
+                companies: companies,
+                categories: categories,
+                subCategories: subCategories,
+                brands: brands,
+                units: units,
+                hsnCodes: hsnCodes,
+                taxes: taxes,
+                cesses: cesses,
+                suppliers: suppliers,
+                statuses: statuses,
+                showSmallGrid: showSmallGrid.bind(this)
+              }"
+              selectionMode="FullRowSelect"
+              [allowUserToAddRows]="true"
+              [allowUserToDeleteRows]="true"
+              [allowUserToResizeColumns]="true"
+            ></app-input-data-grid>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHORTCUT BAR -->
+      <div class="shortcut-bar pos-shortcuts">
+        <div class="skey"><span>Shift+N</span> New Row</div>
+        <div class="sep">|</div>
+        <div class="skey"><span>Shift+S</span> Save</div>
+        <div class="sep">|</div>
+        <div class="skey"><span>ESC</span> Popup</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ RIGHT PANEL ═══ -->
+  <div class="pos-right">
+
+    <!-- TABS -->
+    <div class="bill-tabs">
+      <div
+        class="bill-tab"
+        *ngFor="let tab of estimationTabs; let i = index"
+        [class.active]="activeTabIndex === i"
+        (click)="switchTab(i)"
+      >
+        {{ tab.name }}
+        <span class="close-btn" (click)="removeTab(i, $event)">✕</span>
+      </div>
+      <button class="add-bill-btn" (click)="nextTab()">+</button>
+    </div>
+
+    <!-- ── BILL INFO CARD ── -->
+    <div class="billing-card">
+      <div class="billing-grid">
+
+        <div class="b-item">
+          <label>Est No.</label>
+          <div class="est-no-chip">
+            <lucide-icon name="file-text" class="est-icon"></lucide-icon>
+            {{ estimationNumber || '—' }}
+          </div>
+        </div>
+
+        <div class="b-item">
+          <label>Date</label>
+          <input class="b-input" type="date" [(ngModel)]="selectedEstimationDate" />
+        </div>
+
+        <div class="b-item">
+          <label>Customer</label>
+          <select class="b-input" [(ngModel)]="selectedCustomerId" (change)="onCustomerChange()">
+            <option [ngValue]="null">Walk-in Customer</option>
+            <option *ngFor="let c of customers" [ngValue]="c.customerID">{{ c.customerName }}</option>
+          </select>
+        </div>
+
+        <div class="b-item">
+          <label>Customer GSTIN</label>
+          <input class="b-input" type="text" [(ngModel)]="customerGSTIN" placeholder="Optional" maxlength="15" />
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── SUMMARY BOX ── -->
+    <div class="summary-box">
+      <div class="summary-title">
+        <lucide-icon name="receipt" class="summary-icon"></lucide-icon>
+        Estimation Summary
+      </div>
+
+      <div class="total-grid">
+        <div class="total-row">
+          <label>Gross Amount</label>
+          <input [value]="totalGrossAmount | number:'1.2-2'" readonly />
+        </div>
+        <div class="total-row">
+          <label>Discount Amount</label>
+          <input [value]="totalDiscAmount | number:'1.2-2'" readonly />
+        </div>
+        <div class="total-row">
+          <label>Taxable Amount</label>
+          <input [value]="totalTaxableAmount | number:'1.2-2'" readonly />
+        </div>
+        <div class="total-row">
+          <label>GST Amount</label>
+          <input [value]="totalGstAmount | number:'1.2-2'" readonly />
+        </div>
+        <div class="total-row">
+          <label>CESS Amount</label>
+          <input [value]="totalCessAmount | number:'1.2-2'" readonly />
+        </div>
+        <div class="total-row highlight">
+          <label>Net Amount</label>
+          <input [value]="totalNetAmount | number:'1.2-2'" readonly />
+        </div>
+        <div class="total-row">
+          <label>Round Off</label>
+          <input [value]="totalRoundOff | number:'1.2-2'" readonly />
+        </div>
+        <div class="total-row grand">
+          <label>Total Invoice</label>
+          <input [value]="totalInvoiceAmount | number:'1.2-2'" readonly />
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SAVE BAR ── -->
+    <div class="save-bar">
+      <div class="invoice-chip">
+        <lucide-icon name="file-text" class="chip-icon"></lucide-icon>
+        <span>{{ estimationNumber || 'EST-XXXX' }}</span>
+      </div>
+
+      <div class="total-chip">
+        <span class="chip-label">TOTAL</span>
+        <span class="chip-value">₹{{ totalInvoiceAmount | number:'1.2-2' }}</span>
+      </div>
+
+      <button class="save-btn" (click)="saveEstimation()">
+        <lucide-icon name="save" class="btn-icon"></lucide-icon>
+        SAVE ESTIMATION
+      </button>
+    </div>
+
+  </div>
+</div>

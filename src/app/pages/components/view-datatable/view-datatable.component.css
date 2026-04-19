@@ -1,0 +1,245 @@
+/* =====================================================
+   VIEW DATATABLE – FULL CSS
+===================================================== */
+
+/* =============================
+   TOOLBAR
+============================= */
+.datatable-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 12.5px;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Export Buttons */
+.export-btn {
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* Search Input */
+.search-input {
+  height: 36px;
+  width: 240px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  font-family: 'Poppins', sans-serif;
+
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  outline: none;
+
+  transition: all 0.2s ease;
+}
+
+.search-input:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.12);
+}
+
+.search-input::placeholder {
+  color: #9ca3af;
+}
+
+/* =============================
+   TABLE WRAPPER + SCROLL
+============================= */
+.table-wrapper {
+  width: 100%;
+  overflow: auto;                 /* 🔥 single scroll */
+  border-radius: 12px;
+}
+
+/* Optional scrollbar */
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: #c7c7ff;
+  border-radius: 6px;
+}
+
+/* =============================
+   TABLE
+============================= */
+.smart-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;             /* 🔥 zoom-safe */
+}
+
+/* =============================
+   HEADER
+============================= */
+.smart-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 15;
+  background: #f8fafc;
+
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 10px 12px;
+
+  border-bottom: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+/* Header sortable */
+.header-cell {
+  cursor: pointer;
+  user-select: none;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sort-icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.4;
+}
+
+/* =============================
+   BODY
+============================= */
+.smart-table tbody td {
+  font-size: 12.5px;
+  font-weight: 400;
+  padding: 9px 12px;              /* compact rows */
+
+  border-bottom: 1px solid #eef2f7;
+  white-space: nowrap;
+  background: #ffffff;
+}
+
+/* Row Hover */
+.smart-table tbody tr:hover td {
+  background: #f5f8fc;
+}
+
+/* =============================
+   STICKY FIRST COLUMN
+============================= */
+.smart-table th:first-child,
+.smart-table td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 20;
+  background: #ffffff;
+  box-shadow: 2px 0 4px rgba(0,0,0,0.04);
+}
+
+/* =============================
+   STATUS BADGES
+============================= */
+.status-badge {
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-pending,
+.badge-unqualified {
+  background: #fde8e8;
+  color: #dc2626;
+}
+
+.badge-negotiation {
+  background: #fff1e6;
+  color: #d97706;
+}
+
+.badge-qualified,
+.badge-approved {
+  background: #e7f8ee;
+  color: #16a34a;
+}
+
+.badge-new {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+/* =============================
+   PAGINATION
+============================= */
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 0;
+}
+
+.page-btn,
+.page-number {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12.5px;
+}
+
+.page-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+}
+
+.page-number.active {
+  background: #0f172a;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* =============================
+   LOADER
+============================= */
+.loader-container {
+  text-align: center;
+  padding: 24px;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 4px solid #e5e7eb;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

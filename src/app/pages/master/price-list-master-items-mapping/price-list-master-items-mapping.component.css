@@ -1,0 +1,153 @@
+
+
+/* ================= HEADER ================= */
+.master-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+.master-title-text {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.master-subtitle-text {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.total-badge {
+  font-size: 12px;
+  color: #2563eb;
+  font-weight: 600;
+}
+
+/* ================= BUTTON ================= */
+.master-btn-primary {
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.master-btn-primary:hover {
+  background: #1d4ed8;
+}
+
+/* ================= LAYOUT ================= */
+.mapping-container {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+}
+
+/* ================= PANEL ================= */
+.master-panel {
+  background: #fff;
+  border-radius: 10px;
+  padding: 16px;
+  border: 1px solid #e5e7eb;
+}
+
+/* ================= FORM ================= */
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-column label {
+  font-size: 12px;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+/* ================= INPUT ================= */
+.input-common {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 13px;
+}
+
+/* ================= DROPDOWN ================= */
+.dropdown-fix {
+  appearance: none;
+  text-align: left;
+  background-color: #fff;
+}
+
+.dropdown-fix option {
+  padding: 8px;
+}
+
+/* ================= EMPTY ================= */
+.empty-state {
+  text-align: center;
+  padding: 50px;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ================= TABLE ================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table thead {
+  background: #f9fafb;
+}
+
+.table th {
+  padding: 10px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.table td {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* ================= ROW ================= */
+.existing-row {
+  background: #ecfdf5;
+}
+
+/* ================= BUTTONS ================= */
+.btn-primary {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .mapping-container {
+    grid-template-columns: 1fr;
+  }
+}

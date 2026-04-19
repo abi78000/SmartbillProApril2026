@@ -1,0 +1,151 @@
+<div class="master-layout">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+
+    <div class="master-top-left">
+      <lucide-icon name="layers"></lucide-icon>
+      <div>
+        <div class="master-title-text">SUBCATEGORY MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newSubCategoryCreate()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD SUBCATEGORY
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="refreshSubCategories()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <div class="total-badge saas">
+      TOTAL SUBCATEGORIES : {{ subCategories.length }}
+    </div>
+
+  </div>
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>CREATE SUBCATEGORY</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrUpdateSubCategory()"
+          [disabled]="duplicateError"
+        >
+          {{ subCategory.subCategoryID ? 'UPDATE' : 'SAVE' }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="resetSubCategory()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+
+      <div class="form-grid">
+
+        <!-- Category -->
+        <div class="form-column">
+          <label>Category</label>
+          <select
+            class="input-common"
+            [(ngModel)]="subCategory.categoryID"
+            name="categoryID"
+            required
+            (change)="filterByCategory($event)"
+            appFocusOnKey
+          >
+            <option value="">Select Category</option>
+            <option *ngFor="let cat of categories" [value]="cat.categoryID">
+              {{ cat.categoryName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- SubCategory Name -->
+        <div class="form-column">
+          <label>SubCategory Name</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="subCategory.subCategoryName"
+            name="subCategoryName"
+            required
+            (ngModelChange)="checkDuplicate()"
+            [ngClass]="{ 'is-warning': duplicateError }"
+            appFocusOnKey
+          />
+          <div class="text-warning small mt-1" *ngIf="duplicateError">
+            This subcategory already exists!
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-column full-width">
+          <label>Description</label>
+          <textarea
+            class="input-common"
+            rows="3"
+            [(ngModel)]="subCategory.description"
+            name="description"
+            appFocusOnKey
+          ></textarea>
+        </div>
+
+        <!-- Status -->
+        <div class="form-column">
+          <label>Status</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              [(ngModel)]="subCategory.isActive"
+              name="isActive"
+              appFocusOnKey
+            />
+            <span class="slider"></span>
+            <span class="switch-text">
+              {{ subCategory.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="subCategories"
+      [columns]="subCategoryColumns"
+      title="ALL SUBCATEGORIES"
+      companyName="SmartBillPro"
+      (edit)="editSubCategory($event)"
+      (delete)="deleteSubCategory($event)"
+    >
+    </app-master-table-view>
+
+  </div>
+
+</div>

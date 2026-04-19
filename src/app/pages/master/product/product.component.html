@@ -1,0 +1,83 @@
+<div class="master-top-header">
+  <!-- LEFT -->
+  <div class="master-top-left">
+    <lucide-icon name="building-2"></lucide-icon>
+    <div>
+      <div class="master-title-text">PRODUCT MASTER</div>
+      <div class="master-subtitle-text">Enterprise Resource Planning</div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="master-top-right">
+    <div class="action-buttons">
+      <button class="master-btn-primary" (click)="addNewProduct()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD PRODUCT
+      </button>
+
+      <button class="btn btn-primary btn-elevated" (click)="downloadTemplate()">
+        <lucide-icon name="download"></lucide-icon>
+        <span>DOWNLOAD TEMPLATE</span>
+      </button>
+
+      <input
+        type="file"
+        id="fileInput"
+        (change)="onFileUpload($event)"
+        hidden
+      />
+
+      <label for="fileInput" class="btn btn-info btn-elevated">
+        <lucide-icon name="upload-cloud"></lucide-icon>
+        <span>UPLOAD PRODUCTS</span>
+      </label>
+
+      <div class="upload-spinner" *ngIf="isUploading">
+        <div class="spinner"></div>
+        <p>Uploading and processing Excel...</p>
+      </div>
+
+      <button
+        class="btn btn-secondary btn-elevated"
+        (click)="saveAllProducts()"
+      >
+        <lucide-icon name="save"></lucide-icon>
+        <span>Save</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="product-management">
+  <div class="data-grid-section">
+    <app-input-data-grid
+      [columns]="visibleColumns"
+      [data]="products"
+      [parent]="{
+        companies: companies,
+        categories: categories,
+        subCategories: subCategories,
+        brands: brands,
+        units: units,
+        hsnCodes: hsnCodes,
+        taxes: taxes,
+        cesses: cesses
+      }"
+      selectionMode="FullRowSelect"
+      [allowUserToAddRows]="true"
+      [allowUserToDeleteRows]="true"
+      [allowUserToResizeColumns]="true"
+    ></app-input-data-grid>
+  </div>
+
+  <!-- Shortcut bar INSIDE product-management -->
+  <div class="shortcut-bar">
+    <div class="pos-shortcuts-inner">
+      <div class="skey"><span>Shift+N</span> ADD NEW PRODUCT</div>
+      <div class="sep">|</div>
+
+      <div class="skey"><span>Shift+S</span> SAVE PRODUCT</div>
+    </div>
+  </div>
+</div>

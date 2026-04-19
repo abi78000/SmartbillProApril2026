@@ -1,0 +1,523 @@
+<header class="pos-header">
+  <div class="header-left">
+    <button class="back-btn" type="button" (click)="goBack()">
+      <lucide-icon name="arrow-left"></lucide-icon>
+      Back
+    </button>
+  </div>
+
+  <!-- CENTER SEARCH BAR -->
+  <div class="header-center">
+    <div class="brand">
+      <span class="brand-text">SmartBill</span>
+      <span class="brand-pro">Pro</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="mode-switch">
+      <button
+        class="mode-btn"
+        [class.active]="billMode === 'POS'"
+        (click)="billMode = 'POS'"
+      >
+        POS MODE
+      </button>
+
+      <button
+        class="mode-btn"
+        [class.active]="billMode === 'HOTKEY'"
+        (click)="billMode = 'HOTKEY'"
+      >
+        HOTKEY MODE
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="pos-wrapper">
+  <div class="pos-left">
+    <div class="bill-horizontal-box">
+      <div class="h-item">
+        <label>Company</label>
+        <select
+          [(ngModel)]="selectedCompanyId"
+          (ngModelChange)="onCompanyChange($event)"
+          appFocusOnKey
+          targetId="companyName"
+          [autoFocus]="true"
+        >
+          <option *ngFor="let c of companies" [ngValue]="c.companyID">
+            {{ c.companyName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- BRANCH -->
+      <div class="h-item">
+        <label>Branch</label>
+        <select
+          [(ngModel)]="selectedBranchId"
+          appFocusOnKey
+          targetId="branchName"
+        >
+          <option [ngValue]="null">-- Select Branch --</option>
+          <option *ngFor="let b of branches" [ngValue]="b.branchID">
+            {{ b.branchName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- BILLING TYPE -->
+      <div class="h-item">
+        <label>Billing Type</label>
+        <div class="toggle-pill small">
+          <button
+            class="pill-btn"
+            *ngFor="let bt of businessTypes"
+            [class.active]="
+              selectedBusinessType?.businessTypeID === bt.businessTypeID
+            "
+            (click)="selectBusinessType(bt.businessTypeID)"
+          >
+            {{ bt.businessTypeName }}
+          </button>
+        </div>
+      </div>
+
+      <!-- GST TYPE
+      <button type="button" (click)="saveSalesEntry()">Save</button>
+       
+      -->
+      <div class="h-item">
+        <label>GST Type</label>
+        <div class="toggle-pill small">
+          <button
+            class="pill-btn"
+            *ngFor="let gst of gstTypesList"
+            [class.active]="
+              selectedGstType?.gstTransactionTypeID === gst.gstTransactionTypeID
+            "
+            (click)="selectGstType(gst.gstTransactionTypeID)"
+          >
+            {{ gst.transactionTypeName }}
+          </button>
+        </div>
+      </div>
+      <div class="h-item">
+        <label>AC Year</label>
+        <span class="value">{{ accountingYear }}</span>
+      </div>
+    </div>
+
+    <div class="big-grid-card">
+      <!-- POS MODE -->
+      <div *ngIf="billMode === 'POS'" class="pos-mode-view">
+        <!-- SEARCH -->
+        <div class="pos-search">
+          <input
+            type="text"
+            placeholder="Search Products by Name or Code..."
+            [(ngModel)]="posSearchText"
+            (input)="applyPosSearch()"
+          />
+        </div>
+
+        <!-- CATEGORY FILTER -->
+        <div class="category-row">
+          <button
+            class="cat-btn"
+            [class.active]="selectedCategoryId === null"
+            (click)="filterByCategory(null)"
+          >
+            All
+          </button>
+
+          <button
+            class="cat-btn"
+            *ngFor="let c of categories"
+            [class.active]="selectedCategoryId === c.categoryID"
+            (click)="filterByCategory(c.categoryID)"
+          >
+            {{ c.categoryName }}
+          </button>
+        </div>
+
+        <!-- PRODUCT GRID -->
+        <!-- PRODUCT GRID -->
+        <div class="product-grid">
+          <div
+            class="product-card"
+            *ngFor="let p of filteredProducts"
+            (click)="addProductToBill(p)"
+          >
+            <!-- QTY BADGE -->
+            <div class="qty-badge" *ngIf="getProductQty(p) > 0">
+              {{ getProductQty(p) }}
+            </div>
+
+            <!-- ICON -->
+            <lucide-icon name="package" class="pos-product-icon"></lucide-icon>
+
+            <!-- NAME -->
+            <div class="p-name">{{ p.productName }}</div>
+
+            <!-- PRICE -->
+            <div class="p-price">
+              ₹{{
+                selectedBusinessType?.businessTypeID === 2
+                  ? p.wholesalePrice
+                  : p.retailPrice
+              }}
+            </div>
+
+            <!-- QTY CONTROLS (ALWAYS PRESENT) -->
+            <div class="qty-controls" (click)="$event.stopPropagation()">
+              <!-- MINUS -->
+              <button
+                class="qty-btn minus"
+                *ngIf="getProductQty(p) > 0"
+                (click)="decreaseQty(p, $event)"
+              >
+                −
+              </button>
+
+              <!-- QTY VALUE -->
+              <span class="qty-value" *ngIf="getProductQty(p) > 0">
+                {{ getProductQty(p) }}
+              </span>
+
+              <!-- PLUS (ALWAYS VISIBLE) -->
+              <button class="qty-btn plus" (click)="increaseQty(p, $event)">
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="billMode === 'HOTKEY'" class="hotkey-mode-view">
+        <div class="product-table">
+          <div class="popup-grid" *ngIf="smallGridVisible">
+            <app-small-grid
+              [columns]="productGridColumns"
+              [data]="smallGridData"
+              (rowSelected)="onProductSelected($event)"
+            ></app-small-grid>
+          </div>
+          <div class="big-grid">
+            <app-input-data-grid
+              [columns]="visibleColumns"
+              [data]="salesEntries"
+              (numberChanged)="onGridNumberChanged($event)"
+              (rowAdded)="onGridRowAdded($event)"
+              [parent]="{
+                branches: branches,
+                companies: companies,
+                categories: categories,
+                subCategories: subCategories,
+                brands: brands,
+                units: units,
+                hsnCodes: hsnCodes,
+                taxes: taxes,
+                cesses: cesses,
+                suppliers: suppliers,
+                statuses: statuses,
+                showSmallGrid: showSmallGrid.bind(this)
+              }"
+              selectionMode="FullRowSelect"
+              [allowUserToAddRows]="true"
+              [allowUserToDeleteRows]="true"
+              [allowUserToResizeColumns]="true"
+            ></app-input-data-grid>
+          </div>
+        </div>
+      </div>
+      <div class="shortcut-bar pos-shortcuts">
+        <div class="skey"><span>F1</span> Add</div>
+        <div class="sep">|</div>
+
+        <div class="skey"><span>F4</span> Payment</div>
+        <div class="sep">|</div>
+
+        <div class="skey"><span>F5</span> Qty</div>
+        <div class="sep">|</div>
+
+        <div class="skey"><span>Shift+N</span> Next</div>
+        <div class="sep">|</div>
+
+        <div class="skey"><span>Shift+S</span> Save</div>
+        <div class="sep">|</div>
+
+        <div class="skey"><span>ESC</span> Popup</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT SIDE -->
+  <div class="pos-right">
+    <div class="bill-tabs">
+      <div
+        class="bill-tab"
+        *ngFor="let tab of billTabs; let i = index"
+        [class.active]="activeBillIndex === i"
+        (click)="switchBill(i)"
+      >
+        {{ tab.name }}
+
+        <!-- CLOSE / DELETE BUTTON -->
+        <span class="close-btn" (click)="removeBill(i, $event)">✕</span>
+      </div>
+
+      <button class="add-bill-btn" (click)="nextBill()">+</button>
+    </div>
+
+    <!-- BILLING OPTIONS CARD -->
+
+    <div class="billing-card">
+      <div class="bill-horizontal-box">
+        <div class="h-item">
+          <label>Bill No.</label>
+          <span class="value">{{ billNumber }}</span>
+        </div>
+        <div class="h-item">
+          <label>Invoice Date</label>
+          <input
+            type="date"
+            [(ngModel)]="selectedInvoiceDate"
+            appFocusOnKey
+            targetId="invoiceDate"
+          />
+        </div>
+        <div class="h-item">
+          <label>Customer</label>
+          <select
+            [(ngModel)]="selectedCustomerId"
+            (change)="onCustomerChange()"
+          >
+            <option [ngValue]="null">Walk-in Customer</option>
+            <option *ngFor="let c of customers" [ngValue]="c.customerID">
+              {{ c.customerName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="h-item">
+          <label>Customer GSTIN</label>
+          <input
+            type="text"
+            [(ngModel)]="customerGSTIN"
+            placeholder="Optional"
+            maxlength="15"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT SECTION - SIDE BY SIDE 
+     
+        <div class="total-row">
+          <label>Total Invoice</label>
+          <input type="text" class="blue" [value]="totalInvoiceAmount | number:'1.2-2'" readonly />
+        </div>
+
+        <div class="total-row">
+          <label>Balance Amount</label>
+          <input type="text" class="red" [value]="totalBalanceAmount | number:'1.2-2'" readonly />
+        </div>
+         <div class="total-row">
+          <label>Paid Amount</label>
+          <input type="text" [value]="getPaidAmount() | number:'1.2-2'" readonly />
+        </div>
+
+    
+
+-->
+    <div class="payment-side-wrapper">
+      <!-- LEFT SUMMARY -->
+      <div class="summary-box">
+        <div class="total-grid">
+          <div class="total-row">
+            <label>Gross Amount</label
+            ><input [value]="totalGrossAmount | number : '1.2-2'" readonly />
+          </div>
+          <div class="total-row">
+            <label>Discount Amount</label
+            ><input [value]="totalDiscAmount | number : '1.2-2'" readonly />
+          </div>
+          <div class="total-row">
+            <label>Taxable Amount</label
+            ><input [value]="totalTaxableAmount | number : '1.2-2'" readonly />
+          </div>
+          <div class="total-row">
+            <label>GST Amount</label
+            ><input [value]="totalGstAmount | number : '1.2-2'" readonly />
+          </div>
+          <div class="total-row">
+            <label>CESS Amount</label
+            ><input [value]="totalCessAmount | number : '1.2-2'" readonly />
+          </div>
+          <div class="total-row">
+            <label>Net Amount</label
+            ><input [value]="totalNetAmount | number : '1.2-2'" readonly />
+          </div>
+          <div class="total-row">
+            <label>Round Off</label
+            ><input [value]="totalRoundOff | number : '1.2-2'" readonly />
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT PAYMENT -->
+      <div class="payment-box-side">
+        <h3 class="payment-title">Payment</h3>
+
+        <div class="payment-modes">
+          <button
+            class="pay-btn"
+            [class.active]="selectedPayment === 'CASH'"
+            (click)="selectedPayment = 'CASH'"
+          >
+            Cash
+          </button>
+          <button
+            class="pay-btn"
+            [class.active]="selectedPayment === 'CARD'"
+            (click)="selectedPayment = 'CARD'"
+          >
+            Card
+          </button>
+          <button
+            class="pay-btn"
+            [class.active]="selectedPayment === 'UPI'"
+            (click)="selectedPayment = 'UPI'"
+          >
+            UPI
+          </button>
+          <button
+            class="pay-btn"
+            [class.active]="selectedPayment === 'MIXED'"
+            (click)="selectedPayment = 'MIXED'"
+          >
+            Mixed
+          </button>
+        </div>
+
+        <!-- CASH -->
+        <div *ngIf="selectedPayment === 'CASH'" class="pay-panel compact">
+          <label>Cash Received</label>
+          <input
+            type="number"
+            [(ngModel)]="cashAmount"
+            (input)="updatePaidAndBalance()"
+            appFocusOnKey
+            targetId="cashAmount"
+          />
+        </div>
+
+        <!-- CARD -->
+        <div *ngIf="selectedPayment === 'CARD'" class="pay-panel compact">
+          <label>Card Amount</label>
+          <input
+            type="number"
+            [(ngModel)]="cardAmount"
+            appFocusOnKey
+            targetId="cardAmount"
+            (input)="updatePaidAndBalance()"
+          />
+        </div>
+
+        <!-- UPI -->
+        <div
+          *ngIf="selectedPayment === 'UPI'"
+          class="pay-panel compact-vertical"
+        >
+          <div class="field">
+            <label>UPI Amount</label
+            ><input
+              type="number"
+              [(ngModel)]="upiAmount"
+              appFocusOnKey
+              targetId="upiAmount"
+              (input)="updatePaidAndBalance()"
+            />
+          </div>
+          <div class="field">
+            <label>UPI Ref No</label
+            ><input
+              type="text"
+              appFocusOnKey
+              targetId="upiRef"
+              [(ngModel)]="upiRef"
+            />
+          </div>
+        </div>
+
+        <!-- MIXED -->
+        <div
+          *ngIf="selectedPayment === 'MIXED'"
+          class="pay-panel compact-vertical"
+        >
+          <div class="field">
+            <label>Cash</label
+            ><input
+              type="number"
+              [(ngModel)]="cashAmount"
+              appFocusOnKey
+              targetId="cashAmount"
+              (input)="updatePaidAndBalance()"
+            />
+          </div>
+          <div class="field">
+            <label>Card</label
+            ><input
+              type="number"
+              [(ngModel)]="cardAmount"
+              appFocusOnKey
+              targetId="cardAmount"
+              (input)="updatePaidAndBalance()"
+            />
+          </div>
+          <div class="field">
+            <label>UPI</label
+            ><input
+              type="number"
+              [(ngModel)]="upiAmount"
+              appFocusOnKey
+              targetId="upiAmount"
+              (input)="updatePaidAndBalance()"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="payment-row">
+      <!-- TOTAL BAR -->
+      <div class="total-horizontal-bar">
+        <div class="item">
+          <label>Paid</label>
+          <span class="value green">
+            ₹{{ getPaidAmount() | number : "1.2-2" }}
+          </span>
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="item">
+          <label>Balance</label>
+          <span class="value red">
+            ₹{{ totalBalanceAmount | number : "1.2-2" }}
+          </span>
+        </div>
+        <div class="separator"></div>
+
+        <div class="item">
+          <button class="complete-btn" (click)="saveSalesEntry()">
+            PAY NOW
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

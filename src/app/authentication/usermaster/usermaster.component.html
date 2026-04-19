@@ -1,0 +1,202 @@
+<div class="master-layout">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+
+    <!-- LEFT -->
+    <div class="master-top-left">
+      <lucide-icon name="users"></lucide-icon>
+
+      <div>
+        <div class="master-title-text">USER MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newUser()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD USER
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="refreshUsers()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="total-badge saas">
+      TOTAL USERS : {{ users.length }}
+    </div>
+
+  </div>
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>CREATE USER</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrUpdateUser()"
+        >
+          {{ user.userID > 0 ? "UPDATE" : "SAVE" }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="resetForm()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+   <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+
+      <div class="form-grid">
+
+        <!-- User Name -->
+        <div class="form-column">
+          <label>User Name</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="user.userName"
+            name="userName"
+            required
+          />
+        </div>
+
+        <!-- Password -->
+        <div class="form-column">
+          <label>Password</label>
+          <input
+            type="password"
+            class="input-common"
+            [(ngModel)]="user.passwordHash"
+            name="passwordHash"
+            [required]="user.userID === 0"
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-column">
+          <label>Email</label>
+          <input
+            type="email"
+            class="input-common"
+            [(ngModel)]="user.email"
+            name="email"
+            required
+          />
+        </div>
+
+        <!-- Company -->
+        <div class="form-column">
+          <label>Company</label>
+          <select
+            class="input-common"
+            [(ngModel)]="user.companyID"
+            name="companyID"
+          >
+            <option [ngValue]="0">Select Company</option>
+            <option *ngFor="let c of companies" [ngValue]="c.companyID">
+              {{ c.companyName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Branch -->
+        <div class="form-column">
+          <label>Branch</label>
+          <select
+            class="input-common"
+            [(ngModel)]="user.branchID"
+            name="branchID"
+          >
+            <option [ngValue]="0">Select Branch</option>
+            <option *ngFor="let b of branches" [ngValue]="b.branchID">
+              {{ b.branchName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Department -->
+        <div class="form-column">
+          <label>Department</label>
+          <select
+            class="input-common"
+            [(ngModel)]="user.departmentID"
+            name="departmentID"
+          >
+            <option [ngValue]="0">Select Department</option>
+            <option *ngFor="let d of departments" [ngValue]="d.departmentID">
+              {{ d.departmentName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Role -->
+        <div class="form-column">
+          <label>Role</label>
+          <select
+            class="input-common"
+            [(ngModel)]="user.roleID"
+            name="roleID"
+          >
+            <option [ngValue]="0">Select Role</option>
+            <option *ngFor="let r of roles" [ngValue]="r.roleID">
+              {{ r.roleName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Status -->
+        <div class="form-column">
+          <label>Status</label>
+
+          <label class="switch">
+            <input
+              type="checkbox"
+              [(ngModel)]="user.isActive"
+              name="isActive"
+            />
+            <span class="slider"></span>
+            <span class="switch-text">
+              {{ user.isActive ? "Active" : "Inactive" }}
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="users"
+      [columns]="userColumns"
+      title="ALL USERS"
+      companyName="SmartBillPro"
+      (edit)="editUser($event)"
+      (delete)="deleteUser($event)"
+    >
+    </app-master-table-view>
+
+  </div>
+
+</div>

@@ -1,0 +1,180 @@
+<div class="login-wrapper">
+  <!-- LEFT BRAND -->
+  <div class="login-brand-panel">
+    <div class="brand-content">
+      <div class="brand-logo">SB</div>
+      <div class="brand">
+        <span class="brand-text">SmartBill</span>
+        <span class="brand-pro">Pro</span>
+      </div>
+      <p class="brand-tagline">Intelligent Billing for Modern Businesses</p>
+    </div>
+  </div>
+
+  <!-- RIGHT FORM -->
+  <div class="login-form-panel">
+    <div class="login-card">
+      <!-- TABS -->
+      <div class="tabs">
+        <button
+          type="button"
+          [class.active]="activeTab === 'login'"
+          (click)="switchTab('login')"
+        >
+          Sign In
+        </button>
+        <button
+          type="button"
+          [class.active]="activeTab === 'register'"
+          (click)="switchTab('register')"
+        >
+          Sign Up
+        </button>
+      </div>
+
+      <!-- ================= LOGIN ================= -->
+      <form
+        *ngIf="activeTab === 'login'"
+        [formGroup]="loginForm"
+        (ngSubmit)="login()"
+        autocomplete="off"
+      >
+        <!-- Hidden fields to block browser autofill -->
+        <input type="text" style="display: none" autocomplete="username" />
+        <input
+          type="password"
+          style="display: none"
+          autocomplete="new-password"
+        />
+
+        <h2 class="login-title">Welcome Back</h2>
+        <p class="login-subtitle">Please sign in to your account</p>
+
+        <div class="form-group">
+          <label>Username</label>
+          <input
+            type="text"
+            formControlName="userName"
+            name="userName"
+            placeholder="Enter username"
+            autocomplete="new-username"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+          />
+        </div>
+
+       <!--   appInputRestrict="uppercase", appInputRestrict="password" --> 
+
+        <div class="form-group">
+          <label>Password</label>
+
+          <div class="password-wrapper">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              name="password"
+              placeholder="Enter password"
+              autocomplete="new-password"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+             
+            />
+
+            <button
+              type="button"
+              class="toggle-password"
+              (click)="togglePassword()"
+            >
+              <lucide-icon
+                [name]="showPassword ? 'eye-off' : 'eye'"
+                size="20"
+              ></lucide-icon>
+            </button>
+          </div>
+        </div>
+
+        <button class="login-btn" [disabled]="loginForm.invalid">
+          Sign In
+        </button>
+      </form>
+
+      <!-- ================= REGISTER =================
+       
+      
+      
+      
+       <div class="form-group">
+          <label>Company Email</label>
+          <input
+            type="email"
+            formControlName="companyEmail"
+            autocomplete="email"
+          />
+        </div>
+      <div class="form-group">
+          <label>User Email</label>
+          <input
+            type="email"
+            formControlName="userEmail"
+            autocomplete="email"
+          />
+        </div>  <div class="form-group">
+          <label>Phone</label>
+          <input
+            type="text"
+            formControlName="phone"
+            autocomplete="tel"
+          />
+        </div>
+      -->
+      <form
+        *ngIf="activeTab === 'register'"
+        [formGroup]="registerForm"
+        (ngSubmit)="register()"
+        autocomplete="on"
+
+      >
+        <h2 class="login-title">Create Account</h2>
+        <p class="login-subtitle">Register company & admin user</p>
+
+        <div class="form-group">
+          <label>Company Name</label>
+          <input
+            type="text"
+            formControlName="companyName"
+            autocomplete="organization"
+            appInputRestrict="uppercase"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Username</label>
+          <input
+            type="text"
+            formControlName="userName"
+            autocomplete="username"
+            appInputRestrict="uppercase"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            formControlName="passwordHash"
+            autocomplete="new-password"
+            appInputRestrict="password"
+            
+          />
+          
+        </div>
+
+        <button class="login-btn" [disabled]="registerForm.invalid">
+          Create Account
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

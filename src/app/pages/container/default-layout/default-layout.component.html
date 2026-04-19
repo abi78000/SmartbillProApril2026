@@ -1,0 +1,7 @@
+<app-default-header *ngIf="!hideHeader"></app-default-header>
+
+<main class="layout-content" [class.fullscreen]="hideHeader">
+  <router-outlet></router-outlet>
+</main>
+
+<app-default-footer *ngIf="!hideHeader"></app-default-footer>

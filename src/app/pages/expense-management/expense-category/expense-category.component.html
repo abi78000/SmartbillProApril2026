@@ -1,0 +1,111 @@
+<div class="master-layout">
+
+  <!-- HEADER -->
+  <div class="master-top-header">
+    <div class="master-top-left">
+      <lucide-icon name="layers"></lucide-icon>
+      <div>
+        <div class="master-title-text">EXPENSE CATEGORY MASTER</div>
+        <div class="master-subtitle-text">ERP Management</div>
+      </div>
+    </div>
+
+    <div class="master-top-right">
+      <button class="master-btn-primary" (click)="newCategory()">ADD</button>
+      <button class="master-btn-primary" (click)="reset()">REFRESH</button>
+    </div>
+
+    <div class="total-badge saas">
+      TOTAL : {{ categories.length }}
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <h2>CREATE CATEGORY</h2>
+
+      <div>
+        <button class="master-btn-outline" (click)="save()">
+          {{ isEditMode ? 'UPDATE' : 'SAVE' }}
+        </button>
+        <button class="master-btn-primary" (click)="reset()">CLEAR</button>
+      </div>
+    </div>
+
+    <fieldset [disabled]="!isFormEnabled">
+
+      <div class="form-grid">
+
+        <!-- COMPANY -->
+        <div class="form-column">
+          <label>Company *</label>
+          <select class="input-common"
+                  [(ngModel)]="category.companyID"
+                  (change)="onCompanyChange(category.companyID)">
+            <option value="">Select Company</option>
+            <option *ngFor="let c of companies" [value]="c.companyID">
+              {{ c.companyName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- BRANCH -->
+        <div class="form-column">
+          <label>Branch</label>
+          <select class="input-common"
+                  [(ngModel)]="category.branchID">
+            <option value="">Select Branch</option>
+            <option *ngFor="let b of branches" [value]="b.branchID">
+              {{ b.branchName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- CODE -->
+        <div class="form-column">
+          <label>Category Code</label>
+          <input class="input-common"
+                 [(ngModel)]="category.categoryCode"
+                 readonly />
+        </div>
+
+        <!-- NAME -->
+        <div class="form-column">
+          <label>Category Name *</label>
+          <input class="input-common"
+                 [(ngModel)]="category.categoryName" />
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-column">
+          <label>Description</label>
+          <input class="input-common"
+                 [(ngModel)]="category.description" />
+        </div>
+
+        <!-- STATUS -->
+        <div class="form-column">
+          <label>Status</label>
+          <input type="checkbox" [(ngModel)]="category.isActive" />
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="master-panel">
+    <app-master-table-view
+      [data]="categories || []"
+      [columns]="columns"
+      title="ALL EXPENSE CATEGORIES"
+      (edit)="edit($event)"
+      (delete)="delete($event)">
+    </app-master-table-view>
+  </div>
+
+</div>

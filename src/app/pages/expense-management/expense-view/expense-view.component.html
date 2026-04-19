@@ -1,0 +1,260 @@
+<div class="ev-root">
+
+  <!-- TOPBAR -->
+  <div class="ev-topbar">
+    <div class="ev-topbar-left">
+      <div class="ev-topbar-icon">
+        <lucide-icon name="receipt"></lucide-icon>
+      </div>
+      <div>
+        <div class="ev-title">EXPENSE VIEW</div>
+        <div class="ev-sub">ERP Management — SmartBill Pro</div>
+      </div>
+    </div>
+    <div class="ev-topbar-right">
+      <select class="ev-company-select"
+              [(ngModel)]="selectedCompanyID"
+              (change)="onCompanyChange()">
+        <option [ngValue]="null">-- Select Company --</option>
+        <option *ngFor="let c of companies" [ngValue]="c.companyID">
+          {{ c.companyName }}
+        </option>
+      </select>
+      <button class="ev-btn-refresh"
+              (click)="loadEntries()"
+              title="Refresh">
+        <lucide-icon name="rotate-cw"></lucide-icon>
+      </button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="ev-body">
+
+    <!-- FILTER BAR -->
+    <div class="ev-filter-bar">
+      <div class="ev-filter-group">
+        <div class="ev-search-wrap">
+          <lucide-icon name="search" class="ev-search-icon"></lucide-icon>
+          <input type="text"
+                 class="ev-search"
+                 placeholder="Search description, payee, category..."
+                 [(ngModel)]="searchText"
+                 (ngModelChange)="applyFilters()" />
+        </div>
+      </div>
+
+      <div class="ev-filter-group">
+        <select class="ev-filter-select"
+                [(ngModel)]="filterStatus"
+                (change)="applyFilters()">
+          <option value="">All Status</option>
+          <option value="Completed">Completed</option>
+          <option value="Pending">Pending</option>
+        </select>
+
+        <select class="ev-filter-select"
+                [(ngModel)]="filterPayment"
+                (change)="applyFilters()">
+          <option value="">All Payment</option>
+          <option value="Cash">Cash</option>
+          <option value="UPI">UPI</option>
+          <option value="Bank">Bank</option>
+        </select>
+
+        <input type="date" class="ev-filter-date"
+               [(ngModel)]="filterDateFrom"
+               (change)="applyFilters()"
+               title="From date" />
+
+        <input type="date" class="ev-filter-date"
+               [(ngModel)]="filterDateTo"
+               (change)="applyFilters()"
+               title="To date" />
+
+        <button class="ev-btn-clear" (click)="clearFilters()">
+          Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- KPI STRIP -->
+    <div class="ev-kpi-strip">
+      <div class="ev-kpi">
+        <div class="ev-kpi-label">Total Records</div>
+        <div class="ev-kpi-val">{{ filtered.length }}</div>
+      </div>
+      <div class="ev-kpi-div"></div>
+      <div class="ev-kpi">
+        <div class="ev-kpi-label">Total Amount</div>
+        <div class="ev-kpi-val orange">₹ {{ totalAmount | number:'1.2-2' }}</div>
+      </div>
+      <div class="ev-kpi-div"></div>
+      <div class="ev-kpi">
+        <div class="ev-kpi-label">Completed</div>
+        <div class="ev-kpi-val green">{{ completedCount }}</div>
+      </div>
+      <div class="ev-kpi-div"></div>
+      <div class="ev-kpi">
+        <div class="ev-kpi-label">Pending</div>
+        <div class="ev-kpi-val amber">{{ pendingCount }}</div>
+      </div>
+    </div>
+
+    <!-- TABLE CARD -->
+    <div class="ev-table-card">
+
+      <!-- LOADING -->
+      <div class="ev-loading" *ngIf="isLoading">
+        <div class="ev-spinner"></div>
+        <span>Loading entries...</span>
+      </div>
+
+      <!-- EMPTY -->
+      <div class="ev-empty"
+           *ngIf="!isLoading && paginatedData.length === 0">
+        <div class="ev-empty-icon">📋</div>
+        <span>
+          {{ !selectedCompanyID
+              ? 'Select a company to load entries'
+              : 'No expense entries found' }}
+        </span>
+      </div>
+
+      <!-- TABLE -->
+      <div class="ev-table-wrap"
+           *ngIf="!isLoading && paginatedData.length > 0">
+        <table class="ev-table">
+          <thead>
+            <tr>
+              <th style="width:40px;">#</th>
+              <th style="width:110px;">Date</th>
+              <th style="width:140px;">Category</th>
+              <th style="width:150px;">Sub Category</th>
+              <th>Description</th>
+              <th style="width:120px;">Paid To</th>
+              <th style="width:90px;">Payment</th>
+              <th style="width:55px;text-align:center;">Qty</th>
+              <th style="width:85px;text-align:right;">Rate</th>
+              <th style="width:100px;text-align:right;">Amount</th>
+              <th style="width:95px;text-align:center;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of paginatedData; let i = index">
+
+              <td class="ev-sno">
+                {{ (currentPage - 1) * pageSize + i + 1 }}
+              </td>
+
+              <td class="ev-date">
+                {{ row.expenseDate | date:'dd-MM-yyyy' }}
+              </td>
+
+              <!-- ✅ Category — resolved from categories[] -->
+              <td>
+                <span class="ev-chip">
+                  {{ resolveCategoryName(row) }}
+                </span>
+              </td>
+
+              <!-- ✅ SubCategory — resolved from subCategories[] -->
+              <td>
+                <span *ngIf="resolveSubCategoryName(row) !== '—'"
+                      class="ev-chip-sub">
+                  {{ resolveSubCategoryName(row) }}
+                </span>
+                <span *ngIf="resolveSubCategoryName(row) === '—'"
+                      style="color:#9ca3af;">—</span>
+              </td>
+
+              <td class="ev-desc">{{ row.description || '—' }}</td>
+
+              <td>{{ row.paidTo || '—' }}</td>
+
+              <td>
+                <span class="ev-payment-badge"
+                      [ngClass]="{
+                        'pay-cash': row.paymentMode === 'Cash',
+                        'pay-upi':  row.paymentMode === 'UPI',
+                        'pay-bank': row.paymentMode === 'Bank'
+                      }">
+                  {{ getPaymentMode(row.paymentMode) }}
+                </span>
+              </td>
+
+              <td style="text-align:center;">{{ row.quantity }}</td>
+
+              <td style="text-align:right;">
+                ₹ {{ row.rate | number:'1.2-2' }}
+              </td>
+
+              <td style="text-align:right;" class="ev-amount">
+                ₹ {{ row.amount | number:'1.2-2' }}
+              </td>
+
+              <td style="text-align:center;">
+                <span class="ev-badge"
+                      [ngClass]="getStatusClass(row.expenseStatus)">
+                  {{ row.expenseStatus }}
+                </span>
+              </td>
+
+            </tr>
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td colspan="9"
+                  style="text-align:right;padding:8px 10px;
+                         font-weight:600;font-size:11px;color:#1d1160;">
+                Page Total
+              </td>
+              <td style="text-align:right;padding:8px 10px;
+                         font-weight:700;font-size:13px;color:#1d1160;">
+                ₹ {{ pageTotal | number:'1.2-2' }}
+              </td>
+              <td></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- PAGINATION -->
+      <div class="ev-pagination"
+           *ngIf="!isLoading && filtered.length > pageSize">
+        <div class="ev-page-info">
+          Showing {{ showingFrom }}–{{ showingTo }} of {{ filtered.length }}
+        </div>
+        <div class="ev-page-btns">
+          <button class="ev-page-btn"
+                  (click)="goToPage(1)"
+                  [disabled]="currentPage === 1">«</button>
+          <button class="ev-page-btn"
+                  (click)="goToPage(currentPage - 1)"
+                  [disabled]="currentPage === 1">‹</button>
+          <button class="ev-page-btn"
+                  *ngFor="let p of pageNumbers"
+                  [class.active]="p === currentPage"
+                  (click)="goToPage(p)">{{ p }}</button>
+          <button class="ev-page-btn"
+                  (click)="goToPage(currentPage + 1)"
+                  [disabled]="currentPage === totalPages">›</button>
+          <button class="ev-page-btn"
+                  (click)="goToPage(totalPages)"
+                  [disabled]="currentPage === totalPages">»</button>
+        </div>
+        <div class="ev-page-size">
+          <select [(ngModel)]="pageSize"
+                  (change)="currentPage = 1"
+                  class="ev-size-select">
+            <option [ngValue]="10">10 / page</option>
+            <option [ngValue]="25">25 / page</option>
+            <option [ngValue]="50">50 / page</option>
+          </select>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

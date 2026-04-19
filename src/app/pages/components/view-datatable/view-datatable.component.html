@@ -1,0 +1,132 @@
+<!-- SEARCH + EXPORTS -->
+<div class="datatable-toolbar">
+
+  <!-- EXPORT BUTTONS -->
+  <div class="export-buttons">
+    <button class="export-btn excel" (click)="exportExcel()">
+      <lucide-icon name="file-spreadsheet" class="icon"></lucide-icon>
+      Excel
+    </button>
+
+    <button class="export-btn csv" (click)="exportCSV()">
+      <lucide-icon name="file-code" class="icon"></lucide-icon>
+      CSV
+    </button>
+
+    <button class="export-btn pdf" (click)="exportPDF()">
+      <lucide-icon name="file-text" class="icon"></lucide-icon>
+      PDF
+    </button>
+  </div>
+
+  <!-- SEARCH INPUT -->
+  <input
+    class="search-input"
+    type="text"
+    placeholder="Search..."
+    [(ngModel)]="searchText"
+    (input)="applySearch()"
+  />
+</div>
+
+
+<!-- TABLE -->
+<div class="table-wrapper" *ngIf="!loading; else loader">
+
+  <!-- HEADER -->
+  <div class="header-container">
+    <table class="smart-table">
+      <thead>
+        <tr>
+
+          <!-- STICKY FIRST COLUMN -->
+          <th class="sticky-col">#</th>
+
+          <th *ngFor="let col of columns"
+              (click)="sortBy(col.field)"
+              class="header-cell">
+
+            <div class="header-content">
+              <span>{{ col.header }}</span>
+
+              <i class="sort-icon"
+                 [class.asc]="sortDirection[col.field] === 'asc'"
+                 [class.desc]="sortDirection[col.field] === 'desc'"></i>
+            </div>
+
+          </th>
+
+        </tr>
+      </thead>
+    </table>
+  </div>
+
+
+  <!-- BODY -->
+  <div class="scroll-body">
+    <table class="smart-table">
+      <tbody>
+
+        <tr *ngFor="let row of paginatedData; let i = index">
+
+          <!-- FIXED FIRST COLUMN -->
+          <td class="sticky-col">
+            {{ (currentPage - 1) * pageSize + (i + 1) }}
+          </td>
+
+          <td *ngFor="let col of columns">
+
+            <!-- STATUS BADGE -->
+            <ng-container *ngIf="col.field === 'statusName'; else normalCell">
+              <span class="status-badge" [ngClass]="getStatusClass(row[col.field])">
+                {{ row[col.field] }}
+              </span>
+            </ng-container>
+
+            <!-- NORMAL TEXT -->
+            <ng-template #normalCell>
+              {{ row[col.field] }}
+            </ng-template>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- PAGINATION -->
+  <div class="paginator-container">
+
+    <button class="page-btn" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
+    <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
+
+    <ng-container *ngFor="let p of pages">
+      <button class="page-number"
+              [class.active]="p === currentPage"
+              (click)="goToPage(p)">
+        {{ p }}
+      </button>
+    </ng-container>
+
+    <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">›</button>
+    <button class="page-btn" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+
+    <select class="rows-select" [(ngModel)]="pageSize" (change)="onRowsChange()">
+      <option *ngFor="let r of [5, 10, 20, 50]" [ngValue]="r">{{ r }}</option>
+    </select>
+
+  </div>
+
+</div>
+
+
+<!-- LOADER -->
+<ng-template #loader>
+  <div class="loader-container">
+    <div class="spinner"></div>
+    <p>Loading data...</p>
+  </div>
+</ng-template>

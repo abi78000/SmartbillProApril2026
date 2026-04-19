@@ -1,0 +1,155 @@
+<header class="header">
+  <!-- TOP HEADER -->
+  <div class="top-header">
+    <button class="mobile-menu-btn" (click)="toggleMobileMenu()">
+      <lucide-angular name="menu"></lucide-angular>
+    </button>
+
+    <div class="brand">
+      <span class="brand-text">SmartBill</span>
+      <span class="brand-pro">Pro</span>
+    </div>
+
+    <div class="right" *ngIf="isLoggedIn()">
+      <div class="user-menu" (click)="toggleUserDropdown($event)">
+        <div class="user-info">
+          <span class="username">
+            {{ getCurrentUserName() || "User" | titlecase }}
+          </span>
+          <span class="role">
+            {{ getCurrentUserRole() || "Guest" | titlecase }}
+          </span>
+        </div>
+        <lucide-angular name="chevron-down"></lucide-angular>
+      </div>
+
+      <ul class="dropdown" *ngIf="userDropdownOpen">
+        <li (click)="goToProfile()">Profile</li>
+        <li (click)="goToSettings()">Settings</li>
+        <li (click)="logout()">Logout</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- DESKTOP NAV (CLICK BASED) -->
+  <nav class="nav-bar" *ngIf="!isMobile">
+    <ul class="nav-list">
+      <li
+        class="nav-item"
+        *ngFor="let item of navItems"
+        [class.open]="item.expanded"
+      >
+        <!-- MENU WITH SUBMENU -->
+        <a
+          class="nav-link"
+          *ngIf="item.children?.length"
+          (click)="onMenuClick(item, $event)"
+        >
+          <lucide-angular
+            *ngIf="item.icon"
+            [name]="item.icon"
+            class="menu-icon"
+          ></lucide-angular>
+
+          <span>{{ item.label }}</span>
+
+          <lucide-angular name="chevron-down"></lucide-angular>
+        </a>
+
+        <!-- MENU WITHOUT SUBMENU -->
+        <a
+          class="nav-link"
+          *ngIf="!item.children?.length"
+          [routerLink]="item.route"
+          (click)="closeAllMenus()"
+        >
+          <lucide-angular
+            *ngIf="item.icon"
+            [name]="item.icon"
+            class="menu-icon"
+          ></lucide-angular>
+
+          <span>{{ item.label }}</span>
+        </a>
+
+        <!-- SUBMENU -->
+        <ul class="submenu" *ngIf="item.children?.length && item.expanded">
+          <li *ngFor="let sub of item.children">
+            <a
+              class="submenu-link"
+              [routerLink]="sub.route"
+              (click)="closeAllMenus()"
+            >
+              <lucide-angular
+                *ngIf="sub.icon"
+                [name]="sub.icon"
+                class="submenu-icon"
+              ></lucide-angular>
+
+              <span>{{ sub.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<!-- MOBILE OVERLAY -->
+<div
+  class="mobile-overlay"
+  *ngIf="isMobileMenuOpen"
+  (click)="closeMobileMenu()"
+></div>
+
+<!-- MOBILE DRAWER -->
+<aside class="mobile-nav" [class.open]="isMobileMenuOpen">
+  <div class="mobile-nav-header">
+    <span>Menu</span>
+    <button (click)="closeMobileMenu()">✕</button>
+  </div>
+
+  <input class="mobile-search" placeholder="Search modules..." />
+
+  <ul class="mobile-nav-list">
+    <li *ngFor="let item of navItems">
+      <div class="mobile-parent" (click)="toggleMobileItem(item)">
+        <div class="mobile-left">
+          <lucide-angular
+            *ngIf="item.icon"
+            [name]="item.icon"
+            class="menu-icon"
+          ></lucide-angular>
+
+          <span>{{ item.label }}</span>
+        </div>
+
+        <lucide-angular name="chevron-down"></lucide-angular>
+      </div>
+
+      <ul class="mobile-submenu" *ngIf="item.expanded">
+        <li *ngFor="let sub of item.children">
+          <a [routerLink]="sub.route" (click)="closeMobileMenu()">
+            <lucide-angular
+              *ngIf="sub.icon"
+              [name]="sub.icon"
+              class="submenu-icon"
+            ></lucide-angular>
+
+            <span>{{ sub.label }}</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+
+  <div class="mobile-user">
+    <strong>{{ getCurrentUserName() }}</strong>
+    <small>{{ getCurrentUserRole() }}</small>
+
+    <div class="mobile-actions">
+      <button (click)="goToSettings()">Settings</button>
+      <button class="logout" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</aside>

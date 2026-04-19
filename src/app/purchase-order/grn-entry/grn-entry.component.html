@@ -1,0 +1,140 @@
+<div class="form-container">
+  <h5>Purchase Order Filters</h5>
+
+  <div class="form-grid">
+
+    <!-- COMPANY -->
+    <div class="form-column">
+      <label class="form-label">Company</label>
+      <select class="form-select"
+              [(ngModel)]="filters.companyId"
+              (change)="onCompanyChange()"
+              appFocusOnKey
+              targetId="companyName"
+              [autoFocus]="true">
+        <option [ngValue]="null">-- Select Company --</option>
+        <option *ngFor="let c of companies" [ngValue]="c.companyID">
+          {{ c.companyName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- BRANCH -->
+    <div class="form-column">
+      <label class="form-label">Branch</label>
+      <select class="form-select"
+              [(ngModel)]="filters.branchId"
+              (change)="onBranchChange()"
+              appFocusOnKey
+              targetId="branchName">
+        <option [ngValue]="null">-- Select Branch --</option>
+        <option *ngFor="let b of branches" [ngValue]="b.branchID">
+          {{ b.branchName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- SUPPLIER -->
+    <div class="form-column">
+      <label class="form-label">Supplier</label>
+      <select class="form-select"
+              [(ngModel)]="filters.supplierId"
+              (change)="onSupplierChange()"
+              appFocusOnKey
+              targetId="supplierName">
+        <option [ngValue]="null">-- Select Supplier --</option>
+        <option *ngFor="let s of suppliers" [ngValue]="s.supplierID">
+          {{ s.supplierName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- PO NUMBER -->
+    <div class="form-column">
+      <label class="form-label">PO Number</label>
+      <select class="form-select"
+              [(ngModel)]="filters.poNumber"
+              (change)="onPoNumberChange()"
+              appFocusOnKey
+              targetId="poNumber">
+        <option [ngValue]="null">-- Select PO Number --</option>
+        <option *ngFor="let p of poNumbers" [ngValue]="p.poNumber">
+          {{ p.poNumber }}
+        </option>
+      </select>
+    </div>
+
+    <!-- GRN DATE -->
+    <div class="form-column">
+      <label class="form-label">GRN Date</label>
+      <input type="date"
+             class="form-control"
+             [(ngModel)]="grnDate"
+             appFocusOnKey
+             targetId="grnDate" />
+    </div>
+
+    <!-- INVOICE NUMBER -->
+    <div class="form-column">
+      <label class="form-label">Invoice No</label>
+      <input type="text"
+             class="form-control"
+             [(ngModel)]="invoiceNumber"
+             appFocusOnKey
+             targetId="invoiceNumber" />
+    </div>
+
+    <!-- INVOICE DATE -->
+    <div class="form-column">
+      <label class="form-label">Invoice Date</label>
+      <input type="date"
+             class="form-control"
+             [(ngModel)]="invoiceDate"
+             appFocusOnKey
+             targetId="invoiceDate" />
+    </div>
+
+    <!-- TRANSPORT NAME -->
+    <div class="form-column">
+      <label class="form-label">Transport Name</label>
+      <input type="text"
+             class="form-control"
+             [(ngModel)]="transportName"
+             appFocusOnKey
+             targetId="transportName" />
+    </div>
+
+    <!-- VEHICLE NUMBER -->
+    <div class="form-column">
+      <label class="form-label">Vehicle Number</label>
+      <input type="text"
+             class="form-control"
+             [(ngModel)]="vehicleNumber" />
+    </div>
+
+  </div>
+
+  <button (click)="saveGrn()">Save</button>
+
+  <!-- SEARCH + RESET -->
+  <div class="mt-3 d-flex gap-2">
+    <button class="btn btn-secondary w-100" (click)="resetFilters()">Reset</button>
+  </div>
+</div>
+
+<!-- GRID -->
+<app-input-data-grid
+  [columns]="visibleColumns"
+  [data]="purchaseOrderEntries"
+  (numberChanged)="onGridNumberChanged($event)"
+  [parent]="{
+    categories: categories,
+    subCategories: subCategories,
+    suppliers: suppliers,
+    statuses: statuses
+  }"
+  selectionMode="FullRowSelect"
+  [allowUserToAddRows]="false"
+  [allowUserToDeleteRows]="false"
+  [allowUserToResizeColumns]="true">
+</app-input-data-grid>

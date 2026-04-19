@@ -1,0 +1,134 @@
+<div class="data-grid-container">
+  <table class="table">
+    <!-- HEADER -->
+    <thead>
+      <tr>
+        <th
+          *ngFor="let col of columns; let i = index; trackBy: trackByCol"
+          [style.width.px]="col.width"
+        >
+          <div class="th-content">
+            {{ col.header }}
+
+            <span
+              *ngIf="allowUserToResizeColumns"
+              class="resize-handle"
+              (mousedown)="startResize($event, i)"
+            ></span>
+          </div>
+        </th>
+      </tr>
+    </thead>
+
+    <!-- BODY -->
+    <tbody>
+      <tr
+        *ngFor="let row of data; let r = index; trackBy: trackByRow"
+        [class.row-focused]="
+          selectionMode === 'FullRowSelect' && focusedCell.row === r
+        "
+        (click)="selectionMode === 'FullRowSelect' ? focusCell(r, 0) : null"
+      >
+        <td
+          *ngFor="let col of columns; let c = index; trackBy: trackByCol"
+          [class.focused]="focusedCell.row === r && focusedCell.col === c"
+          (click)="selectionMode !== 'FullRowSelect' ? focusCell(r, c) : null"
+        >
+          <ng-container [ngSwitch]="col.type">
+            <!-- TEXT -->
+            <input
+              *ngSwitchCase="'text'"
+              #gridInput
+              type="text"
+              class="cell-input"
+              [(ngModel)]="row[col.field]"
+              [readonly]="col.readOnly"
+              autocomplete="off"
+              (focus)="focusCell(r, c)"
+              (click)="$event.stopPropagation()"
+              (keydown)="handleKeyDown($event, r, c)"
+            />
+
+            <!-- NUMBER -->
+            <input
+              *ngSwitchCase="'number'"
+              #gridInput
+              type="number"
+              class="cell-input"
+               appInputRestrict="number"
+              [(ngModel)]="row[col.field]"
+              [readonly]="col.readOnly"
+              (click)="$event.stopPropagation()"
+              autocomplete="off"
+              (focus)="focusCell(r, c)"
+              (keydown)="handleKeyDown($event, r, c)"
+              (ngModelChange)="onNumberChanged(r, col.field)"
+            />
+
+            <!-- DATE -->
+            <input
+              *ngSwitchCase="'date'"
+              #gridInput
+              type="date"
+              class="cell-input"
+              [ngModel]="formatDate(row[col.field])"
+              (ngModelChange)="onDateChange($event, row, col.field)"
+              [disabled]="col.readOnly"
+              (focus)="focusCell(r, c)"
+              (click)="$event.stopPropagation()"
+              (keydown)="handleKeyDown($event, r, c)"
+            />
+
+            <!-- CHECKBOX -->
+            <input
+              *ngSwitchCase="'boolean'"
+              #gridInput
+              type="checkbox"
+              class="cell-checkbox"
+              [(ngModel)]="row[col.field]"
+              (focus)="focusCell(r, c)"
+              (click)="$event.stopPropagation()"
+              (keydown)="handleKeyDown($event, r, c)"
+            />
+
+           
+            <select
+              *ngSwitchCase="'select'"
+              #gridInput
+              class="cell-input"
+              [(ngModel)]="row[col.field]"
+              [disabled]="col.readOnly"
+              (click)="$event.stopPropagation()"
+              (focus)="!col.disableMouseFocus && focusCell(r, c)"
+              (keydown)="handleSelectKeyDown($event, r, c, gridInput)"
+            >
+              <option value="">-- Select --</option>
+
+              <option
+                *ngFor="let opt of parent[col.options]"
+                [ngValue]="opt[col.optionValue]"
+              >
+                {{ opt[col.optionLabel] }}
+              </option>
+            </select>
+
+            
+            <!-- DEFAULT -->
+            <input
+              *ngSwitchDefault
+              #gridInput
+              type="text"
+              class="cell-input"
+              [(ngModel)]="row[col.field]"
+              [readonly]="col.readOnly"
+              (click)="$event.stopPropagation()"
+              autocomplete="off"
+              (focus)="focusCell(r, c)"
+              (keydown)="handleKeyDown($event, r, c)"
+            />
+          </ng-container>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

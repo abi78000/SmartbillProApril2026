@@ -1,0 +1,97 @@
+<div class="master-table-box">
+  <!-- Toolbar -->
+  <div class="mt-toolbar">
+    <div class="mt-title">{{ title }}</div>
+
+    <div class="mt-actions">
+      <input
+        type="text"
+        placeholder="Search..."
+        [(ngModel)]="searchText"
+        (input)="applySearch()"
+      />
+
+      <button (click)="exportExcel()">
+        <lucide-icon name="file-spreadsheet"></lucide-icon>
+        Excel
+      </button>
+
+      <button (click)="exportCSV()">
+        <lucide-icon name="file-text"></lucide-icon>
+        CSV
+      </button>
+
+      <button (click)="exportPDF()">
+        <lucide-icon name="file"></lucide-icon>
+        PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Wrapper (for mobile scroll) -->
+  <div class="mt-table-wrapper">
+    <table class="mt-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th *ngFor="let c of columns">{{ c.header }}</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let row of paginatedData; let i = index">
+          <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+
+          <!-- Dynamic columns -->
+          <td *ngFor="let c of columns">
+            <!-- Active / Inactive badge -->
+            <ng-container *ngIf="c.field === 'isActive'; else normalCell">
+              <span
+                class="mt-status"
+                [class.active]="row[c.field]"
+                [class.inactive]="!row[c.field]"
+              >
+                {{ row[c.field] ? "Active" : "Inactive" }}
+              </span>
+            </ng-container>
+
+            <!-- Normal cell -->
+            <ng-template #normalCell>
+              {{ row[c.field] }}
+            </ng-template>
+          </td>
+
+          <!-- Actions -->
+          <td>
+            <button class="edit" (click)="onEdit(row)" title="Edit">
+  <lucide-icon name="pencil"></lucide-icon>
+</button>
+
+<button class="del" (click)="onDelete(row)" title="Delete">
+  <lucide-icon name="trash-2"></lucide-icon>
+</button>
+
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="mt-pagination">
+    <button (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
+
+    <button
+      *ngFor="let p of pages"
+      (click)="goToPage(p)"
+      [class.active]="p === currentPage"
+    >
+      {{ p }}
+    </button>
+
+    <button (click)="nextPage()" [disabled]="currentPage === totalPages">
+      ›
+    </button>
+  </div>
+</div>

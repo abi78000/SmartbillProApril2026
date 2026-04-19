@@ -1,0 +1,362 @@
+/* ================================
+   RESET & BASE
+================================ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f5f6fa;
+}
+
+/* ================================
+   HEADER BAR
+================================ */
+.master-top-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px 16px;
+}
+
+.master-top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.master-title-text {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1d1160;
+}
+
+.master-subtitle-text {
+  font-size: 12px;
+  color: #666;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid #1d1160;
+  border-radius: 6px;
+  background: #fff;
+  color: #1d1160;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.back-btn:hover {
+  background: #f3f4ff;
+}
+
+/* ================================
+   PAGE LAYOUT
+================================ */
+.page-layout {
+  height: calc(100vh - 110px);
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  grid-template-rows: auto 1fr;
+  gap: 12px;
+  padding: 12px 12px 55px;
+  overflow: hidden;
+}
+
+/* ================================
+   FORM SECTION
+================================ */
+.form-section {
+  grid-column: 1 / -1;
+  background: #fff;
+  padding: 16px 18px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* 3 column desktop layout */
+.form-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px 20px;
+  width: 100%;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.form-field label {
+  font-size: 13px;
+  margin-bottom: 4px;
+  color: #444;
+}
+
+.form-field input,
+.form-field select {
+  width: 100%;
+  height: 38px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 13px;
+  background: #fff;
+}
+
+.form-field input:focus,
+.form-field select:focus {
+  outline: none;
+  border-color: #1d1160;
+  box-shadow: 0 0 0 2px rgba(29,17,96,0.15);
+}
+
+.form-field input[type="date"] {
+  color: #000;
+}
+
+/* Save buttons */
+.save-field {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.save-btn {
+  background: #1d1160;
+  color: #fff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.save-btn:hover {
+  background: #140c44;
+}
+
+/* ================================
+   GRID CONTAINER
+================================ */
+.grid-container {
+  grid-column: 1 / 2;
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin-top: 14px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* ================================
+   POPUP GRID
+================================ */
+.popup-grid {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.25);
+  z-index: 5000;
+}
+
+.popup-grid app-small-grid {
+  display: block;
+  width: 100%;
+}
+
+.popup-close-btn {
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ================================
+   TOTAL SUMMARY PANEL
+================================ */
+.total-summary {
+  grid-column: 2 / 3;
+  width: 320px;
+  padding: 12px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  background: #fafafa;
+  position: sticky;
+  top: 140px;
+  height: fit-content;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+}
+
+.total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.total-row label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.total-input,
+.textno {
+  width: 140px;
+  padding: 4px 6px;
+  text-align: right;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #f3f3f3;
+}
+
+.highlight {
+  background: #e7f7ff;
+  font-weight: bold;
+}
+
+.highlight-red {
+  background: #ffe7e7;
+  color: #b00000;
+  font-weight: bold;
+}
+
+/* ================================
+   SHORTCUT BAR
+================================ */
+.shortcut-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 40px;
+  width: 100%;
+  background: #1d1160;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+.pos-shortcuts-inner {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.skey span {
+  background: #ffb703;
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-right: 4px;
+}
+
+.sep {
+  opacity: 0.6;
+}
+
+/* ================================
+   TABLET
+================================ */
+@media (max-width: 1100px) {
+  .form-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .page-layout {
+    grid-template-columns: 1fr 300px;
+  }
+}
+
+/* ================================
+   MOBILE
+================================ */
+@media (max-width: 700px) {
+
+  body {
+    overflow: auto;
+  }
+
+  .page-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    height: auto;
+    padding-bottom: 60px;
+  }
+
+  .form-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .grid-container {
+    max-height: 32vh;
+    margin-top: 16px;
+  }
+
+  .total-summary {
+    width: 100%;
+    position: relative;
+    top: 0;
+    margin-top: 12px;
+  }
+
+  /* Compact grid */
+  app-input-data-grid table thead th {
+    font-size: 11px;
+    padding: 6px 4px;
+  }
+
+  app-input-data-grid table tbody td {
+    font-size: 11px;
+    padding: 6px 4px;
+  }
+
+  .shortcut-bar {
+    height: 44px;
+  }
+
+  .pos-shortcuts-inner {
+    font-size: 11px;
+    gap: 8px;
+  }
+}
+
+/* ================================
+   SMALL MOBILE (320px)
+================================ */
+@media (max-width: 380px) {
+
+  .master-title-text {
+    font-size: 16px;
+  }
+
+  .form-field input,
+  .form-field select {
+    height: 36px;
+    font-size: 12px;
+  }
+
+  .total-input,
+  .textno {
+    width: 120px;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,149 @@
+<div class="master-layout">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+
+    <div class="master-top-left">
+      <lucide-icon name="percent"></lucide-icon>
+      <div>
+        <div class="master-title-text">TAX MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newTaxCreate()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD TAX
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="refreshTaxes()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <div class="total-badge saas">
+      TOTAL TAX : {{ taxes.length }}
+    </div>
+
+  </div>
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>CREATE TAX</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrUpdateTax()"
+          [disabled]="taxForm?.invalid || duplicateError"
+        >
+          {{ tax.taxID ? 'UPDATE' : 'SAVE' }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="resetTax()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+    <form #taxForm="ngForm">
+     
+    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+
+
+        <div class="form-grid">
+
+          <!-- Tax Name -->
+          <div class="form-column">
+            <label>Tax Name</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="tax.taxName"
+              name="taxName"
+              required
+              appInputRestrict="text"
+              (ngModelChange)="checkDuplicate()"
+              appFocusOnKey
+            />
+            <div class="text-warning small mt-1" *ngIf="duplicateError">
+              This tax already exists!
+            </div>
+          </div>
+
+          <!-- Tax Rate -->
+          <div class="form-column">
+            <label>Tax Rate (%)</label>
+            <input
+              type="number"
+              class="input-common"
+              [(ngModel)]="tax.taxRate"
+              name="taxRate"
+              appFocusOnKey
+            />
+          </div>
+
+          <!-- Cess Rate -->
+          <div class="form-column">
+            <label>Cess Rate (%)</label>
+            <input
+              type="number"
+              class="input-common"
+              [(ngModel)]="tax.cessRate"
+              name="cessRate"
+              appFocusOnKey
+            />
+          </div>
+
+          <!-- Status -->
+          <div class="form-column">
+            <label>Status</label>
+            <label class="switch">
+              <input
+                type="checkbox"
+                [(ngModel)]="tax.isActive"
+                name="isActive"
+                appFocusOnKey
+              />
+              <span class="slider"></span>
+              <span class="switch-text">
+                {{ tax.isActive ? 'Active' : 'Inactive' }}
+              </span>
+            </label>
+          </div>
+
+        </div>
+
+      </fieldset>
+    </form>
+
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="taxes"
+      [columns]="taxColumns"
+      title="ALL TAX"
+      companyName="SmartBillPro"
+      (edit)="editTax($event)"
+      (delete)="deleteTax($event)"
+    >
+    </app-master-table-view>
+
+  </div>
+
+</div>

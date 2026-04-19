@@ -1,0 +1,171 @@
+<div class="master-layout">
+
+  <!-- ================= HEADER ================= -->
+  <div class="master-top-header">
+    <div class="master-top-left">
+      <lucide-icon name="layers"></lucide-icon>
+      <div>
+        <div class="master-title-text">PRICE LIST MAPPING</div>
+        <div class="master-subtitle-text">Product Price Configuration</div>
+      </div>
+    </div>
+
+    <div class="master-top-right">
+      <button
+        class="master-btn-primary"
+        (click)="savePrices()"
+        [disabled]="!isGridEnabled">
+        <lucide-icon name="save"></lucide-icon>
+        SAVE
+      </button>
+    </div>
+
+    <div class="total-badge">
+      TOTAL PRODUCTS : {{ products.length }}
+    </div>
+  </div>
+
+  <!-- ================= MAIN ================= -->
+  <div class="mapping-container">
+
+    <!-- ================= LEFT PANEL ================= -->
+    <div class="mapping-left master-panel">
+
+      <div class="form-grid">
+
+        <!-- COMPANY -->
+        <div class="form-column full-width">
+          <label>Company</label>
+          <select
+            class="input-common"
+            [(ngModel)]="selectedCompanyId"
+            (change)="onCompanyChange(selectedCompanyId)">
+            <option value="">Select Company</option>
+            <option *ngFor="let c of companies" [value]="c.companyID">
+              {{ c.companyName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- BRANCH -->
+        <div class="form-column full-width">
+          <label>Branch</label>
+          <select
+            class="input-common"
+            [(ngModel)]="selectedBranchId"
+            (change)="onBranchChange(selectedBranchId)"
+            [disabled]="!selectedCompanyId">
+            <option value="">Select Branch</option>
+            <option *ngFor="let b of branches" [value]="b.branchID">
+              {{ b.branchName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- PRICE LIST -->
+        <div class="form-column full-width">
+          <label>Price List</label>
+          <select
+            class="input-common"
+            [(ngModel)]="selectedPriceListId"
+            (change)="onPriceListChange()"
+            [disabled]="!selectedBranchId">
+            <option value="">Select Price List</option>
+            <option *ngFor="let p of priceLists" [value]="p.priceListID">
+              {{ p.priceListName }}
+            </option>
+          </select>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ================= RIGHT PANEL ================= -->
+    <div class="mapping-right master-panel">
+
+      <!-- EMPTY STATE -->
+      <div *ngIf="!isGridEnabled" class="empty-state">
+        <lucide-icon name="alert-triangle"></lucide-icon>
+        <p>Select <b>Company → Branch → Price List</b> to enable pricing</p>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-responsive" *ngIf="isGridEnabled">
+
+        <table class="table table-hover">
+
+          <thead class="table-header">
+            <tr>
+              <th>#</th>
+              <th>Product Code</th>
+              <th>Product Name</th>
+              <th style="width: 130px;">Price</th>
+              <th style="width: 160px;">Action</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="let p of products; let i = index"
+              [class.existing-row]="p.isExisting">
+
+              <!-- INDEX -->
+              <td>{{ i + 1 }}</td>
+
+              <!-- PRODUCT -->
+              <td>{{ p.productCode }}</td>
+              <td>{{ p.productName }}</td>
+
+              <!-- PRICE -->
+              <td>
+                <input
+                  type="number"
+                  class="input-common price-input"
+                  [(ngModel)]="p.price"
+                  [disabled]="!p.isEditable"
+                  placeholder="0.00" />
+              </td>
+
+              <!-- ACTION -->
+              <td class="action-cell">
+
+                <!-- EDIT -->
+                <button
+                  *ngIf="p.isExisting && !p.isEditable"
+                  class="btn-edit"
+                  (click)="enableEdit(p)">
+                  Edit
+                </button>
+
+                <!-- DELETE -->
+                <button
+                  *ngIf="p.isExisting"
+                  class="btn-delete"
+                  (click)="deletePrice(p)">
+                  Delete
+                </button>
+
+              </td>
+
+            </tr>
+
+            <!-- EMPTY -->
+            <tr *ngIf="products.length === 0">
+              <td colspan="5" class="text-center empty-row">
+                No products found
+              </td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

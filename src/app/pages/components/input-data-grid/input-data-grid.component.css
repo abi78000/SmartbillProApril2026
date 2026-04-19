@@ -1,0 +1,185 @@
+/* ================================
+   THEME VARIABLES
+================================= */
+:root {
+  --color-primary: #1D1160;         
+  --color-primary-dark: #140C44;    
+  --color-secondary: #F4A261;
+  --color-text-light: #ffffff;      
+  --color-text-dark: #1D1160;       
+  --color-bg-white: #F5F6FA;
+  --color-bg-light: #ffffff;
+  --color-border: #000000;
+  --color-border-hover: #aeb7ec;
+  --border-radius: 5px;
+  --shadow-soft: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* ================================
+   GRID CONTAINER
+================================= */
+.data-grid-container {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--color-bg-light);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-soft);
+  padding: 8px;
+  width: 100%;
+  height: 380px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+}
+
+/* ================================
+   TABLE
+================================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+/* ================================
+   HEADER
+================================= */
+th {
+  background: #f6f8fe;
+  text-align: left;
+  padding: 8px 10px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  border-bottom: 2px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  white-space: nowrap;
+  height: 38px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+th:last-child {
+  border-right: none;
+}
+
+/* ================================
+   DATA CELLS
+================================= */
+td {
+  background-color: var(--color-bg-light);
+  color: var(--color-text-dark);
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+  padding: 6px 8px;
+  text-align: center;
+  min-height: 20px;
+  line-height: 1.4;
+  overflow: visible;
+  transition: 0.15s ease;
+}
+
+td:last-child {
+  border-right: none;
+}
+
+/* ================================
+   INPUTS
+================================= */
+.cell-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
+  text-align: center;
+  color: inherit;
+  padding: 4px 6px;
+}
+
+/* ================================
+   SELECT (Dropdown FIX)
+================================= */
+td select {
+  width: 100%;
+  height: 30px;
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border: 1px solid #ccc !important;
+  border-radius: 4px;
+  padding: 2px;
+  outline: none !important;
+}
+
+/* Options FIX */
+td select option {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Focused cell dropdown FIX */
+td.focused select {
+  background-color: var(--color-primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* ================================
+   FOCUSED CELL
+================================= */
+td.focused {
+  background-color: var(--color-primary) !important;
+  color: var(--color-text-light) !important;
+  outline: 2px solid var(--color-primary-dark);
+  outline-offset: -1px;
+  z-index: 9 !important;
+}
+
+td.focused .cell-input {
+  color: var(--color-text-light) !important;
+  caret-color: var(--color-text-light) !important;
+}
+
+/* ================================
+   HOVER
+================================= */
+td:not(.focused):hover {
+  background-color: #e8eaff;
+}
+
+/* ================================
+   RESIZE HANDLE
+================================= */
+.resize-handle {
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+/* ================================
+   READONLY
+================================= */
+td.readonly,
+td select:disabled,
+td .cell-input:disabled {
+  background-color: #e6e6e6 !important;
+  color: #333 !important;
+  border: 1px solid #c5c5c5 !important;
+}
+
+/* ================================
+   RESPONSIVE
+================================= */
+@media (max-width: 768px) {
+  .table {
+    font-size: 13px;
+  }
+  th {
+    padding: 6px 8px;
+  }
+}

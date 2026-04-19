@@ -1,0 +1,697 @@
+
+/* =========================================
+   FORCE ARIAL SANS-SERIF (GLOBAL + PRINT)
+========================================= */
+
+html, body,
+*,
+*::before,
+*::after,
+table, th, td, tr,
+input, select, button, textarea {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 260px;
+  height: 100vh;
+  background: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* HEADER */
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.sidebar-header p {
+  margin: 4px 0 18px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* SECTIONS */
+.sidebar-section {
+  margin-bottom: 16px;
+}
+
+.sidebar-section label {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: #374151;
+}
+
+/* SELECT */
+.sidebar select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #111827;
+}
+/* =====================================================
+   RADIO TABS – PROFESSIONAL SEGMENTED CONTROL
+===================================================== */
+
+.radio-tabs {
+  display: flex;
+  height: 40px;
+  background: #f9fafb;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* TAB */
+.radio-tabs .tab {
+  flex: 1;
+  cursor: pointer;
+}
+
+/* HIDE RADIO */
+.radio-tabs input {
+  display: none;
+}
+
+/* LABEL */
+.radio-tabs span {
+  display: flex;                /* KEY FIX */
+  align-items: center;          /* vertical center */
+  justify-content: center;      /* horizontal center */
+  height: 100%;                 /* full height fill */
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* SELECTED */
+.radio-tabs input:checked + span {
+  background: #1D1160;
+  color: #ffffff;
+}
+
+/* HOVER (ONLY IF NOT SELECTED) */
+.radio-tabs .tab:hover input:not(:checked) + span {
+  background:#1D1160;
+  color: #ffffff;
+}
+
+/* ROUNDED CORNERS */
+.radio-tabs .tab:first-child span {
+  border-radius: 8px 0 0 8px;
+}
+
+.radio-tabs .tab:last-child span {
+  border-radius: 0 8px 8px 0;
+}
+
+/* =====================================================
+   SIDEBAR INFO
+===================================================== */
+.sidebar-info {
+  margin-top: 10px;
+  padding: 10px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
+
+.info-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.info-size {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* =====================================================
+   SIDEBAR ACTIONS
+===================================================== */
+.sidebar-actions {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.btn {
+  padding: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn.primary {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.btn.primary:hover {
+  background: #1d4ed8;
+}
+
+.btn.secondary {
+  background: #f3f4f6;
+  color: #111827;
+  border: 1px solid #d1d5db;
+}
+
+.btn.secondary:hover {
+  background: #e5e7eb;
+}
+
+/* =====================================================
+   PAGE WRAPPER
+===================================================== */
+.page-wrapper {
+  margin-left: 260px;
+  padding: 20px;
+}
+
+/* =====================================================
+   BASE PAGE
+===================================================== */
+.page {
+  background: #ffffff;
+  margin: auto;
+  border: 1px solid #000;
+  padding: 6mm;
+}
+
+/* =====================================================
+   PAGE SIZES
+===================================================== */
+.a4-portrait { width: 210mm; min-height: 297mm; }
+.a4-landscape { width: 297mm; min-height: 210mm; }
+
+.a5-portrait { width: 148mm; min-height: 210mm; }
+.a5-landscape { width: 210mm; min-height: 148mm; }
+
+.a6-portrait { width: 105mm; min-height: 148mm; }
+.a6-landscape { width: 148mm; min-height: 105mm; }
+
+.thermal58-portrait,
+.thermal58-landscape {
+  width: 58mm;
+  padding: 4mm;
+}
+
+.thermal80-portrait,
+.thermal80-landscape {
+  width: 80mm;
+  padding: 4mm;
+}
+
+.thermal110-portrait,
+.thermal110-landscape {
+  width: 110mm;
+  padding: 4mm;
+}
+
+/* =====================================================
+   INVOICE HEADER
+===================================================== */
+.a4-header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #000;
+  padding-bottom: 4px;
+}
+
+.header-right img {
+  height: 26px;
+  object-fit: contain;
+}
+/* =====================================================
+   COMMON TABLE STYLES
+===================================================== */
+.info-table,
+.items-table,
+.total-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+
+.info-table td,
+.items-table th,
+.items-table td,
+.total-table td {
+  border: 1px solid #000;
+  padding: 6px;
+  vertical-align: middle;
+}
+
+
+/* =====================================================
+   ITEMS TABLE
+===================================================== */
+.items-table th {
+  background: #f6ecd2;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: center;
+}
+
+.items-table td:nth-child(1),
+.items-table td:nth-child(3) {
+  text-align: center;
+}
+
+.items-table td:nth-child(4),
+.items-table td:nth-child(5),
+.items-table td:nth-child(6) {
+  text-align: right;
+}
+
+/* =====================================================
+   TOTAL TABLE  (NO nth-child HACKS)
+===================================================== */
+.total-table tr {
+  background: #fffaf0;
+  border-top: 3px solid #000;
+}
+
+/* TOTAL LABEL */
+.total-table td.total-label {
+  text-align: left;
+  font-weight: 700;
+}
+
+/* TOTAL QTY */
+.total-table td.total-qty {
+  text-align: center;
+  font-weight: 700;
+}
+
+/* EMPTY RATE CELL */
+.total-table td.total-rate {
+  text-align: center;
+}
+
+/* TOTAL DISC */
+.total-table td.total-disc {
+  text-align: right;
+  font-weight: 700;
+}
+
+/* TOTAL AMOUNT */
+.total-table td.total-amount {
+  text-align: right;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* =====================================================
+   TEXT HELPERS
+===================================================== */
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+
+/* =====================================================
+   PRINT SAFETY
+===================================================== */
+@media print {
+  body {
+    background: none;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .page-wrapper {
+    margin: 0;
+    padding: 0;
+  }
+
+  table, tr {
+    page-break-inside: avoid;
+  }
+}
+/* =====================================================
+   CONNECT VERTICAL LINES (ITEMS → TOTAL)
+===================================================== */
+
+/* Same grid for both tables */
+.items-table,
+.total-table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* ========== ITEMS TABLE COLUMN WIDTHS ========== */
+/* # */
+.items-table th:nth-child(1),
+.items-table td:nth-child(1) {
+  width: 40px;
+}
+
+/* ITEM */
+.items-table th:nth-child(2),
+.items-table td:nth-child(2) {
+  width: 260px;
+}
+
+/* QTY */
+.items-table th:nth-child(3),
+.items-table td:nth-child(3) {
+  width: 90px;
+  text-align: center;
+}
+
+/* RATE */
+.items-table th:nth-child(4),
+.items-table td:nth-child(4) {
+  width: 110px;
+  text-align: right;
+}
+
+/* DISC */
+.items-table th:nth-child(5),
+.items-table td:nth-child(5) {
+  width: 120px;
+  text-align: right;
+}
+
+/* AMOUNT */
+.items-table th:nth-child(6),
+.items-table td:nth-child(6) {
+  width: 120px;
+  text-align: right;
+}
+
+
+/* TOTAL (# + ITEM combined) */
+.total-table td:nth-child(1) {
+  width: 300px; /* 40 + 260 */
+}
+
+/* QTY */
+.total-table td:nth-child(2) {
+  width: 90px;
+  text-align: center;
+}
+
+/* RATE */
+.total-table td:nth-child(3) {
+  width: 110px;
+}
+
+/* DISC */
+.total-table td:nth-child(4) {
+  width: 120px;
+  text-align: right;
+}
+
+/* AMOUNT */
+.total-table td:nth-child(5) {
+  width: 120px;
+  text-align: right;
+}
+
+/* Visual emphasis */
+.total-table tr {
+  background: #fffaf0;
+  border-top: 3px solid #000;
+}
+
+.total-table td {
+  font-weight: 700;
+  vertical-align: middle;
+}
+/* =========================
+   GST TABLE
+========================= */
+.gst-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  margin-top: 10px;
+}
+
+.gst-table th,
+.gst-table td {
+  border: 1px solid #000;
+  padding: 5px;
+  vertical-align: middle;
+}
+
+.gst-table th {
+  background: #f6ecd2;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-align: center;
+}
+
+.gst-table tfoot td {
+  font-weight: 700;
+  background: #fffaf0;
+}
+.amount-words {
+  border: 1px solid #000;
+  padding: 6px;
+  margin-top: 8px;
+  font-size: 11px;
+}
+/* =========================
+   TERMS & NOTES
+========================= */
+.terms-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+.terms-table td {
+  border: 1px solid #000;
+  vertical-align: top;
+  padding: 6px;
+}
+
+.terms-box,
+.notes-box {
+  width: 50%;
+}
+
+.terms-box ol,
+.notes-box ul {
+  margin: 6px 0 0 14px;
+  padding: 0;
+}
+/* =========================
+   GST SUMMARY – TOTAL ROW BOLD
+========================= */
+
+/* Last row = TOTAL */
+.gst-table tr:last-child td {
+  font-weight: 700;          /* 🔥 bold */
+  background: #fffaf0;       /* optional light highlight */
+}
+
+/* TOTAL label bold */
+.gst-table tr:last-child td:first-child {
+  font-weight: 800;
+}
+
+/* TOTAL amounts bold + right aligned */
+.gst-table tr:last-child td {
+  text-align: right;
+}
+
+.gst-table tr:last-child td:first-child {
+  text-align: left;
+}
+/* =========================
+   TOTAL SUMMARY TABLE
+========================= */
+.summary-table {
+  width: 40%;
+  margin-left: auto;
+  margin-top: 10px;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.summary-table td {
+  border: 1px solid #000;
+  padding: 6px 8px;
+}
+
+.summary-table tr.net-row td {
+  background: #fffaf0;
+  font-size: 12px;
+  border-top: 2px solid #000;
+}
+
+.summary-table td:first-child {
+  text-align: left;
+}
+
+.summary-table td:last-child {
+  text-align: right;
+}/* =========================
+   ITEMS TABLE – FIXED HEIGHT + FIXED ROW
+========================= */
+
+.items-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+
+  height: 500px;              /* 🔒 fixed table height */
+}
+
+/* HEADER */
+.items-table thead th {
+  background: #f6ecd2;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ROW HEIGHT FIXED */
+.items-table tbody tr {
+  height: 10px;               /* ✅ every row same height */
+}
+
+/* CELL STYLE */
+.items-table td {
+  padding: 0 6px;             /* small padding */
+  line-height: 10px;          /* match row height */
+  vertical-align: middle;
+}
+
+/* ALIGNMENT */
+.items-table td:nth-child(1),
+.items-table td:nth-child(3) {
+  text-align: center;
+}
+
+.items-table td:nth-child(4),
+.items-table td:nth-child(5),
+.items-table td:nth-child(6) {
+  text-align: right;
+}
+/* =====================================================
+   SCREEN RESPONSIVE LAYER (NON-PRINT)
+===================================================== */
+
+/* ---------- DESKTOP (DEFAULT) ---------- */
+@media screen {
+  .page {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+
+/* ---------- TABLET (≤1024px) ---------- */
+@media screen and (max-width: 1024px) {
+
+  .sidebar {
+    width: 220px;
+  }
+
+  .page-wrapper {
+    margin-left: 220px;
+    padding: 14px;
+  }
+
+  .page {
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+
+  table {
+    font-size: 10px;
+  }
+}
+
+/* ---------- MOBILE (≤768px) ---------- */
+@media screen and (max-width: 768px) {
+
+  /* Sidebar becomes top bar */
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .page-wrapper {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  /* Invoice page scales down */
+  .page {
+    width: 100% !important;
+    min-height: auto;
+    transform: scale(0.85);
+    transform-origin: top center;
+  }
+
+  /* Tables scroll horizontally */
+  .items-table,
+  .info-table,
+  .total-table,
+  .gst-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  /* Font adjustments */
+  table {
+    font-size: 10px;
+  }
+}
+
+/* ---------- SMALL MOBILE (≤480px) ---------- */
+@media screen and (max-width: 480px) {
+
+  .page {
+    transform: scale(0.75);
+  }
+
+  .sidebar-header h2 {
+    font-size: 14px;
+  }
+
+  .sidebar-section label {
+    font-size: 11px;
+  }
+
+  .btn {
+    font-size: 12px;
+    padding: 8px;
+  }
+}
+@media screen {
+  .a4-portrait { transform: scale(0.9); }
+  .a5-portrait { transform: scale(1.1); }
+  .a6-portrait { transform: scale(1.3); }
+}

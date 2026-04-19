@@ -1,0 +1,256 @@
+/* ================= BASE ================= */
+.dashboard-container {
+  padding: 24px;
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: "Poppins", sans-serif;
+}
+
+/* ================= HEADER ================= */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 26px;
+}
+
+.header-text h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1d1160;
+}
+
+.header-text p {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6b7280;
+}
+/* ===== DATE FILTER WITH LABELS ===== */
+.date-filter {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+/* Wrap illusion */
+.date-filter input {
+  position: relative;
+  height: 36px;
+  padding: 14px 12px 0;
+  font-size: 13px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+}
+
+/* FROM DATE LABEL */
+.date-filter input:first-child::before {
+  content: "From Date";
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* TO DATE LABEL */
+.date-filter input:last-child::before {
+  content: "To Date";
+  position: absolute;
+  top: 4px;
+  left: 10px;
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* SEPARATOR */
+.date-separator {
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+
+/* =====================================================
+   OVERALL INFORMATION (ADMIN SUMMARY – NOT KPI)
+===================================================== */
+.overall-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(220px, 1fr));
+  gap: 18px;
+  margin: 22px 0 34px;
+}
+
+.info-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+
+  padding: 18px 20px;
+  background: #ffffff;
+  border-radius: 12px;
+
+  box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+/* ICON – SOFT ADMIN STYLE */
+.info-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffffff;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* TEXT */
+.info-text span {
+  display: block;
+  font-size: 13px;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.info-text strong {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* COLORS */
+.customers .info-icon { background: #2563eb; }
+.suppliers .info-icon { background: #16a34a; }
+.products  .info-icon { background: #f59e0b; }
+
+/* =====================================================
+   KPI GRID (BUSINESS METRICS – KEEP STRONG)
+===================================================== */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 32px;
+}
+
+.kpi-card {
+  position: relative;
+  min-height: 90px;
+  padding: 16px 18px 16px 72px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  color: #f7f0f0;
+  transition: transform .25s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+}
+
+/* KPI ICON */
+.kpi-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+
+  background: #fefcfc;
+  color :#1d1160;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* KPI TEXT */
+.kpi-card span {
+  font-size: 13px;
+  opacity: .95;
+}
+
+.kpi-card strong {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* KPI COLORS */
+.sales {
+  background: linear-gradient(135deg, #1d1160, #140c44);
+}
+
+.purchase {
+  background: #0e9384;
+}
+
+.outstanding {
+  background: #092c4c;
+}
+
+.supplier {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 1024px) {
+  .overall-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 14px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header-text h1 {
+    font-size: 18px;
+  }
+
+  .overall-info {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kpi-card {
+    min-height: 80px;
+    padding: 14px 16px 14px 60px;
+  }
+
+  .kpi-icon {
+    width: 36px;
+    height: 36px;
+    left: 14px;
+  }
+}

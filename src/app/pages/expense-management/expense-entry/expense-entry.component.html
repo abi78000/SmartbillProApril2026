@@ -1,0 +1,271 @@
+<div class="exp-root">
+
+  <!-- ========== TOPBAR ========== -->
+  <div class="exp-topbar">
+    <div class="exp-topbar-left">
+      <div class="exp-topbar-icon">
+        <lucide-icon name="credit-card"></lucide-icon>
+      </div>
+      <div>
+        <div class="exp-title">EXPENSE ENTRY</div>
+        <div class="exp-sub">ERP Management — SmartBill Pro</div>
+      </div>
+    </div>
+    <div class="exp-topbar-right">
+      <button class="exp-btn-save" (click)="save()" [disabled]="isSaving">
+        {{ isSaving ? 'SAVING...' : 'SAVE' }}
+      </button>
+      <button class="exp-btn-reset" (click)="initForm()" [disabled]="isSaving">
+        RESET
+      </button>
+    </div>
+  </div>
+
+  <!-- ========== BODY ========== -->
+  <div class="exp-body">
+
+    <!-- LEFT -->
+    <div class="exp-left">
+
+      <!-- Organization -->
+      <div class="exp-card">
+        <div class="exp-card-title">Organization</div>
+
+        <div class="exp-field">
+          <label>Company <span class="exp-req">*</span></label>
+          <select class="exp-input"
+                  [(ngModel)]="expenseHeader.companyID"
+                  (change)="onCompanyChange(expenseHeader.companyID)">
+            <option [ngValue]="null">-- Select Company --</option>
+            <option *ngFor="let c of companies" [ngValue]="c.companyID">
+              {{ c.companyName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="exp-field">
+          <label>Branch <span class="exp-req">*</span></label>
+          <select class="exp-input"
+                  [(ngModel)]="expenseHeader.branchID"
+                  [disabled]="!expenseHeader.companyID || !branches.length">
+            <option [ngValue]="null">
+              {{ !expenseHeader.companyID ? '-- Select Company First --' : '-- Select Branch --' }}
+            </option>
+            <option *ngFor="let b of branches" [ngValue]="b.branchID">
+              {{ b.branchName }}
+            </option>
+          </select>
+        </div>
+
+        <div class="exp-field-row">
+          <div class="exp-field">
+            <label>Expense Date</label>
+            <input type="date" class="exp-input"
+                   [(ngModel)]="expenseHeader.expenseDate" />
+          </div>
+          <div class="exp-field">
+            <label>Payment Date</label>
+            <input type="date" class="exp-input"
+                   [(ngModel)]="expenseHeader.paymentDate" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="exp-card">
+        <div class="exp-card-title">Payment Details</div>
+
+        <div class="exp-field">
+          <label>Paid To</label>
+          <input type="text" class="exp-input"
+                 [(ngModel)]="expenseHeader.paidTo"
+                 placeholder="Enter payee name" />
+        </div>
+
+        <div class="exp-field">
+          <label>Payment Mode</label>
+          <select class="exp-input"
+                  [(ngModel)]="expenseHeader.paymentMode"
+                  (change)="onPaymentModeChange()">
+            <option value="Cash">Cash</option>
+            <option value="UPI">UPI</option>
+            <option value="Bank">Bank</option>
+          </select>
+        </div>
+
+        <div class="exp-field" *ngIf="isUPI">
+          <label>UPI Reference <span class="exp-req">*</span></label>
+          <input type="text" class="exp-input"
+                 [(ngModel)]="expenseHeader.paymentReference"
+                 placeholder="Enter UPI Reference" />
+        </div>
+
+        <ng-container *ngIf="isBank">
+          <div class="exp-field">
+            <label>Bank Name <span class="exp-req">*</span></label>
+            <input type="text" class="exp-input"
+                   [(ngModel)]="expenseHeader.bankName"
+                   placeholder="Bank Name" />
+          </div>
+          <div class="exp-field">
+            <label>Account Number <span class="exp-req">*</span></label>
+            <input type="text" class="exp-input"
+                   [(ngModel)]="expenseHeader.bankAccountNumber"
+                   placeholder="Account Number" />
+          </div>
+          <div class="exp-field">
+            <label>IFSC Code <span class="exp-req">*</span></label>
+            <input type="text" class="exp-input"
+                   [(ngModel)]="expenseHeader.ifscCode"
+                   placeholder="IFSC Code" />
+          </div>
+        </ng-container>
+
+        <div class="exp-field">
+          <label>Status</label>
+          <select class="exp-input" [(ngModel)]="expenseHeader.expenseStatus">
+            <option value="Completed">Completed</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="exp-summary">
+        <div class="exp-summary-label">Session Summary</div>
+        <div class="exp-summary-row">
+          <div>
+            <div class="exp-summary-key">Total Rows</div>
+            <div class="exp-summary-val">{{ gridData.length }}</div>
+          </div>
+          <div class="exp-summary-divider"></div>
+          <div>
+            <div class="exp-summary-key">Total Amount</div>
+            <div class="exp-summary-val orange">
+              ₹ {{ getTotalAmount() | number:'1.2-2' }}
+            </div>
+          </div>
+          <div class="exp-summary-divider"></div>
+          <div>
+            <div class="exp-summary-key">Status</div>
+            <div class="exp-summary-status">
+              <span class="exp-status-dot"></span>
+              <span class="exp-status-text">{{ expenseHeader.expenseStatus }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="exp-right">
+
+      <div class="exp-grid-card">
+
+        <div class="exp-grid-header">
+          <span class="exp-grid-title">EXPENSE ITEMS</span>
+          <button class="exp-btn-add" (click)="addRow()">+ Add Row</button>
+        </div>
+
+        <div class="exp-grid-wrap">
+          <table class="exp-table">
+            <thead>
+              <tr>
+                <th style="width:36px;text-align:center;">#</th>
+                <th style="width:170px;">Category <span class="exp-req">*</span></th>
+                <th style="width:170px;">Sub Category</th>
+                <th>Description</th>
+                <th style="width:65px;text-align:center;">Qty <span class="exp-req">*</span></th>
+                <th style="width:95px;text-align:right;">Rate <span class="exp-req">*</span></th>
+                <th style="width:105px;text-align:right;">Amount</th>
+                <th style="width:38px;"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of gridData; let i = index">
+
+                <td class="exp-row-num">{{ i + 1 }}</td>
+
+                <td>
+                  <select class="exp-cell-select"
+                          [(ngModel)]="row.expenseCategoryID"
+                          (change)="onCategoryChange(i)">
+                    <option [ngValue]="null">-- Select --</option>
+                    <option *ngFor="let cat of categories"
+                            [ngValue]="cat.expenseCategoryID">
+                      {{ cat.categoryName }}
+                    </option>
+                  </select>
+                </td>
+
+                <td>
+                  <select class="exp-cell-select"
+                          [(ngModel)]="row.expenseSubCategoryID"
+                          [disabled]="!row.subCategories?.length">
+                    <option [ngValue]="null">
+                      {{ !row.expenseCategoryID ? '-- Select Category First --' : '-- Select --' }}
+                    </option>
+                    <option *ngFor="let sub of row.subCategories"
+                            [ngValue]="sub.expenseSubCategoryID">
+                      {{ sub.subCategoryName }}
+                    </option>
+                  </select>
+                </td>
+
+                <td>
+                  <input type="text"
+                         class="exp-cell-input"
+                         [(ngModel)]="row.description"
+                         placeholder="Description" />
+                </td>
+
+                <td>
+                  <input type="number"
+                         class="exp-cell-input center"
+                         [(ngModel)]="row.quantity"
+                         min="1"
+                         (ngModelChange)="onQtyRateChange(row)" />
+                </td>
+
+                <td>
+                  <input type="number"
+                         class="exp-cell-input right"
+                         [(ngModel)]="row.rate"
+                         min="0"
+                         (ngModelChange)="onQtyRateChange(row)" />
+                </td>
+
+                <td>
+                  <input type="number"
+                         class="exp-cell-input right readonly"
+                         [ngModel]="row.amount"
+                         readonly />
+                </td>
+
+                <td style="text-align:center;">
+                  <button class="exp-del-btn" (click)="deleteRow(i)">✕</button>
+                </td>
+
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Total Bar -->
+      <div class="exp-total-bar">
+        <div class="exp-total-meta">
+          <span class="exp-total-key">Rows</span>
+          <span class="exp-total-count">{{ gridData.length }}</span>
+        </div>
+        <div class="exp-total-divider"></div>
+        <div class="exp-total-meta">
+          <span class="exp-total-key">Total Amount</span>
+          <span class="exp-total-amount">₹ {{ getTotalAmount() | number:'1.2-2' }}</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

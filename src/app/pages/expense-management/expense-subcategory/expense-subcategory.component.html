@@ -1,0 +1,129 @@
+<div class="master-layout">
+
+  <!-- ================= HEADER ================= -->
+  <div class="master-top-header">
+    <div class="master-top-left">
+      <lucide-icon name="layout-grid"></lucide-icon>
+      <div>
+        <div class="master-title-text">EXPENSE SUBCATEGORY MASTER</div>
+        <div class="master-subtitle-text">ERP Management</div>
+      </div>
+    </div>
+
+    <div class="master-top-right">
+      <button class="master-btn-primary" (click)="newSubCategory()">
+        ADD
+      </button>
+
+      <button class="master-btn-primary" (click)="reset()">
+        REFRESH
+      </button>
+    </div>
+
+    <div class="total-badge saas">
+      TOTAL : {{ subCategories.length }}
+    </div>
+  </div>
+
+  <!-- ================= FORM ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <h2>CREATE SUBCATEGORY</h2>
+
+      <div>
+        <button class="master-btn-outline" (click)="save()">
+          {{ isEditMode ? 'UPDATE' : 'SAVE' }}
+        </button>
+
+        <button class="master-btn-primary" (click)="reset()">CLEAR</button>
+      </div>
+    </div>
+
+    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+
+      <div class="form-grid">
+
+        <!-- COMPANY -->
+        <div class="form-column">
+          <label>Company <span class="text-danger">*</span></label>
+          <select class="input-common"
+                  [(ngModel)]="subCategory.companyID"
+                  (change)="onCompanyChange(subCategory.companyID)">
+            <option value="">Select Company</option>
+            <option *ngFor="let c of companies" [value]="c.companyID">
+              {{ c.companyName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- CATEGORY -->
+        <div class="form-column">
+          <label>Category <span class="text-danger">*</span></label>
+          <select class="input-common"
+                  [(ngModel)]="subCategory.expenseCategoryID"
+                  (change)="onCategoryChange()"
+                  [disabled]="!subCategory.companyID">
+            <option value="">Select Category</option>
+            <option *ngFor="let c of categories" [value]="c.expenseCategoryID">
+              {{ c.categoryName }}
+            </option>
+          </select>
+        </div>
+
+        <!-- SUBCATEGORY CODE -->
+        <div class="form-column">
+          <label>SubCategory Code</label>
+          <input class="input-common"
+                 [(ngModel)]="subCategory.subCategoryCode"
+                 readonly />
+        </div>
+
+        <!-- SUBCATEGORY NAME -->
+        <div class="form-column">
+          <label>SubCategory Name <span class="text-danger">*</span></label>
+          <input class="input-common"
+                 [(ngModel)]="subCategory.subCategoryName"
+                 placeholder="Enter subcategory name" />
+        </div>
+
+        <!-- DESCRIPTION -->
+        <div class="form-column">
+          <label>Description</label>
+          <input class="input-common"
+                 [(ngModel)]="subCategory.description"
+                 placeholder="Optional description" />
+        </div>
+
+        <!-- STATUS -->
+        <div class="form-column">
+          <label>Status</label>
+          <label class="switch">
+            <input type="checkbox" [(ngModel)]="subCategory.isActive" />
+            <span class="slider"></span>
+            <span class="switch-text">
+              {{ subCategory.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="subCategories || []"
+      [columns]="columns"
+      title="ALL EXPENSE SUBCATEGORIES"
+      (edit)="edit($event)"
+      (delete)="delete($event)">
+    </app-master-table-view>
+
+  </div>
+
+</div>

@@ -1,0 +1,145 @@
+<div class="ui-page">
+
+  <!-- ================= HEADER ================= -->
+  <div class="ui-header">
+    <div class="ui-title d-flex align-items-center gap-2">
+      <lucide-icon name="bar-chart"></lucide-icon>
+      Sales Reports
+    </div>
+    <div class="ui-subtitle">
+      Summary, Detailed, Customer & Area wise sales analytics
+    </div>
+  </div>
+
+  <!-- ================= FILTER BAR ================= -->
+  <div class="ui-filter">
+    <div class="ui-filter-grid">
+
+      <div class="ui-field">
+        <label>From Date</label>
+        <input
+          type="date"
+          [(ngModel)]="filters.fromDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="ui-field">
+        <label>To Date</label>
+        <input
+          type="date"
+          [(ngModel)]="filters.toDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="ui-field">
+        <label>Company</label>
+        <select
+          [(ngModel)]="filters.companyId"
+          (change)="onCompanyChange()"
+        >
+          <option *ngFor="let c of companies" [ngValue]="c.companyID">
+            {{ c.companyName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="ui-field">
+        <label>Branch</label>
+        <select
+          [(ngModel)]="filters.branchId"
+          (change)="onFilterChange()"
+        >
+          <option [ngValue]="null">All Branches</option>
+          <option *ngFor="let b of branches" [ngValue]="b.branchID">
+            {{ b.branchName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="ui-field">
+        <label>Report Type</label>
+        <select
+          [(ngModel)]="filters.reportType"
+          (change)="onFilterChange()"
+        >
+          <option value="SUMMARY">Summary</option>
+          <option value="DETAILED">Detailed</option>
+          <option value="PAYMODE">Paymode</option>
+          <option value="CUSTOMER">Customer-wise</option>
+          <option value="AREA">Area-wise</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ================= KPI CARDS ================= -->
+  <div class="ui-kpi-grid">
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-primary">
+        <lucide-icon name="bar-chart"></lucide-icon>
+        Total Sales
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalSales | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-warning">
+        <lucide-icon name="percent"></lucide-icon>
+        Taxable
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalTaxable | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-info">
+        <lucide-icon name="receipt"></lucide-icon>
+        GST
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalGST | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-success">
+        <lucide-icon name="wallet"></lucide-icon>
+        Paid
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalPaid | number:'1.2-2' }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-danger">
+        <lucide-icon name="alert-circle"></lucide-icon>
+        Balance
+      </div>
+      <div class="ui-kpi-value">
+        ₹ {{ totalBalance | number:'1.2-2' }}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ================= TABLE ================= -->
+  <div class="ui-table">
+    <div class="ui-table-body">
+      <app-view-datatable
+        [data]="salesData"
+        [columns]="columns"
+        title="Sales Report"
+        companyName="SMARTBILLPRO">
+      </app-view-datatable>
+    </div>
+  </div>
+
+</div>

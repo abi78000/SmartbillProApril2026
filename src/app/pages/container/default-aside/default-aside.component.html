@@ -1,0 +1,48 @@
+
+
+    <!-- Sidebar -->
+    <nav 
+      [class.collapsed]="!isSidebarOpen" 
+      class="sidebar d-flex flex-column shadow-sm">
+
+      <ul class="nav flex-column mb-auto">
+        <ng-container *ngFor="let item of navItems">
+
+          <!-- Single item -->
+          <li *ngIf="!item.children" class="nav-item">
+            <a [routerLink]="item.route" routerLinkActive="active" class="nav-link">
+              <i *ngIf="item.icon" class="{{ item.icon }}"></i>
+              <span class="label" *ngIf="isSidebarOpen">{{ item.label }}</span>
+            </a>
+          </li>
+
+          <!-- Parent item -->
+          <li *ngIf="item.children" class="nav-item">
+            <a class="nav-link d-flex justify-content-between align-items-center"
+               (click)="toggleItem(item)">
+              <span class="d-flex align-items-center">
+                <i *ngIf="item.icon" class="{{ item.icon }}"></i>
+                <span class="label" *ngIf="isSidebarOpen">{{ item.label }}</span>
+              </span>
+              <i class="bi" 
+                 [ngClass]="{
+                   'bi-chevron-down': !item.expanded, 
+                   'bi-chevron-up': item.expanded
+                 }"
+                 *ngIf="isSidebarOpen"></i>
+            </a>
+
+            <ul class="nav flex-column ms-3" *ngIf="item.expanded && isSidebarOpen">
+              <li *ngFor="let child of item.children">
+                <a [routerLink]="child.route" routerLinkActive="active" class="nav-link">
+                  <i *ngIf="child.icon" class="{{ child.icon }}"></i>
+                  <span>{{ child.label }}</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+        </ng-container>
+      </ul>
+    </nav>
+

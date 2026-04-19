@@ -1,0 +1,282 @@
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>Print Settings</h2>
+    <p>Invoice Layout</p>
+  </div>
+
+  <div class="sidebar-section">
+    <label>Page Size</label>
+    <select [(ngModel)]="selectedPageSize" (change)="updateSizeInfo()">
+      <option value="a4">A4</option>
+      <option value="a5">A5</option>
+      <option value="a6">A6</option>
+      <option value="thermal58">Thermal 58 mm</option>
+      <option value="thermal80">Thermal 80 mm</option>
+      <option value="thermal110">Thermal 110 mm</option>
+    </select>
+  </div>
+
+  <div class="sidebar-section">
+    <label>Orientation</label>
+    <div class="radio-tabs">
+      <label class="tab">
+        <input
+          type="radio"
+          name="orientation"
+          value="portrait"
+          [(ngModel)]="orientation"
+          (change)="updateSizeInfo()"
+        />
+        <span>Portrait</span>
+      </label>
+
+      <label class="tab">
+        <input
+          type="radio"
+          name="orientation"
+          value="landscape"
+          [(ngModel)]="orientation"
+          (change)="updateSizeInfo()"
+        />
+        <span>Landscape</span>
+      </label>
+    </div>
+  </div>
+
+  <div class="sidebar-info">
+    <div class="info-title">{{ pageLabel }}</div>
+    <div class="info-size">{{ pageSizeText }}</div>
+  </div>
+
+  <div class="sidebar-actions">
+    <button class="btn primary" (click)="printInvoice()">Print</button>
+    <button class="btn secondary" (click)="downloadPDF()">Download PDF</button>
+  </div>
+</aside>
+
+<!-- ===== PAGE PREVIEW ===== -->
+<div class="page-wrapper">
+  <div
+    id="invoicePDF"
+    class="page"
+    [ngClass]="selectedPageSize + '-' + orientation"
+  >
+    <!-- HEADER -->
+    <div class="a4-header">
+      <div class="header-left">
+        TAX INVOICE
+        <span class="tag">ORIGINAL</span>
+      </div>
+      <div class="header-right">
+        <img src="assets/logos/sb-favicon.png" />
+      </div>
+    </div>
+
+    <!-- INVOICE CONTENT -->
+    <div class="invoice-box">
+      <!-- ===== BILL INFO ===== -->
+      <table class="info-table">
+        <tbody>
+          <tr>
+            <td colspan="2" class="business-box">
+              Business Name : {{ company?.companyName || "Business Name"
+              }}<br />
+              <div class="business-mobile">Mobile: {{ company?.mobile }}</div>
+            </td>
+
+            <td class="invoice-box">
+              <strong>Invoice No</strong><br />
+              {{ invoice?.invoiceNumber }}
+            </td>
+
+            <td class="invoice-box">
+              <strong>Date</strong><br />
+              {{ invoice?.invoiceDate | date : "dd-MM-yyyy" }}
+            </td>
+          </tr>
+
+          <tr>
+            <td colspan="2" class="party-box">
+              <strong>BILL TO</strong><br />
+              CASH SALE
+            </td>
+
+            <td colspan="2" class="party-box">
+              <strong>SHIP TO</strong><br />
+              CASH SALE
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ===== ITEMS TABLE ===== -->
+      <table class="items-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Disc</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let i of invoice.items; let idx = index">
+            <td class="text-center">{{ idx + 1 }}</td>
+            <td>{{ i.productName }}</td>
+            <td class="text-center">{{ i.quantity }}</td>
+            <td class="text-right">{{ i.saleRate | number : "1.2-2" }}</td>
+            <td class="text-right">
+              {{ i.discountAmount | number : "1.2-2" }}
+            </td>
+            <td class="text-right">
+              {{ i.netAmount | number : "1.2-2" }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+  
+
+          <!-- ===== TOTAL TABLE (COLUMN PERFECT) ===== -->
+      <table class="total-table">
+        <tbody>
+          <tr>
+            <td colspan="2"><strong>TOTAL</strong></td>
+
+            <td class="text-center">
+              <strong>{{ invoice.totalQuantity }}</strong>
+            </td>
+
+            <td></td>
+
+            <td class="text-right">
+              <strong>{{ invoice.totalDiscAmount | number : "1.2-2" }}</strong>
+            </td>
+
+            <td class="text-right">
+              <strong
+                >₹ {{ invoice.totalInvoiceAmount | number : "1.2-2" }}</strong
+              >
+            </td>
+          </tr>
+        </tbody>
+      </table>  
+            <!-- ===== TOTAL SUMMARY ===== -->
+      <table class="summary-table">
+        <tbody>
+          <tr>
+            <td>Gross Amount</td>
+            <td class="text-right">
+              ₹ {{ invoice.totalGrossAmount | number : "1.2-2" }}
+            </td>
+          </tr>
+
+          <tr>
+            <td>Discount Amount</td>
+            <td class="text-right">
+              ₹ {{ invoice.totalDiscAmount | number : "1.2-2" }}
+            </td>
+          </tr>
+
+          <tr>
+            <td>Taxable Amount</td>
+            <td class="text-right">
+              ₹ {{ invoice.totalTaxableAmount | number : "1.2-2" }}
+            </td>
+          </tr>
+
+          <tr>
+            <td>GST Amount</td>
+            <td class="text-right">
+              ₹ {{ invoice.totalGstAmount | number : "1.2-2" }}
+            </td>
+          </tr>
+
+          <tr>
+            <td>CESS Amount</td>
+            <td class="text-right">
+              ₹ {{ invoice.totalCESSAmount | number : "1.2-2" }}
+            </td>
+          </tr>
+
+          <tr class="net-row">
+            <td><strong>Net Amount</strong></td>
+            <td class="text-right">
+              <strong
+                >₹ {{ invoice.totalInvoiceAmount | number : "1.2-2" }}</strong
+              >
+            </td>
+          </tr>
+
+          <tr>
+            <td>Round Off</td>
+            <td class="text-right">
+              ₹ {{ invoice.totalRoundOff | number : "1.2-2" }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- ===== GST SUMMARY ===== -->
+      <table class="gst-table">
+        <thead>
+          <tr>
+            <th>HSN / SAC</th>
+            <th>Taxable Value</th>
+            <th>CGST %</th>
+            <th>CGST Amt</th>
+            <th>SGST %</th>
+            <th>SGST Amt</th>
+            <th>IGST %</th>
+            <th>IGST Amt</th>
+            <th>Total Tax</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let g of taxSummary">
+            <td class="text-center">{{ g.hsn }}</td>
+            <td class="text-right">{{ g.taxable | number : "1.2-2" }}</td>
+            <td class="text-center">{{ g.cgstRate }}</td>
+            <td class="text-right">{{ g.cgstAmount | number : "1.2-2" }}</td>
+            <td class="text-center">{{ g.sgstRate }}</td>
+            <td class="text-right">{{ g.sgstAmount | number : "1.2-2" }}</td>
+            <td class="text-center">{{ g.igstRate }}</td>
+            <td class="text-right">{{ g.igstAmount | number : "1.2-2" }}</td>
+            <td class="text-right">{{ g.totalTax | number : "1.2-2" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- ===== TOTAL IN WORDS ===== -->
+    <div class="amount-words">
+      <strong>Total (in words):</strong><br />
+      {{ invoice.totalInvoiceAmountWords }}
+    </div>
+    <!-- ===== TERMS & NOTES ===== -->
+    <table class="terms-table">
+      <tr>
+        <td class="terms-box">
+          <strong>Terms & Conditions</strong>
+          <ol>
+            <li>Goods once sold will not be taken back.</li>
+            <li>All disputes are subject to local jurisdiction only.</li>
+            <li>Payment due within agreed credit period.</li>
+          </ol>
+        </td>
+
+        <td class="notes-box">
+          <strong>Notes</strong>
+          <ul>
+            <li>Thank you for your business.</li>
+            <li>Computer generated invoice.</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>

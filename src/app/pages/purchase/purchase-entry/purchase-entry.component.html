@@ -1,0 +1,299 @@
+
+
+<div class="master-top-header">
+  <div class="master-top-left">
+    <button class="back-btn" type="button" (click)="goBack()">
+      <lucide-icon name="arrow-left"></lucide-icon>
+      Back
+    </button>
+    <lucide-icon name="shopping-cart"></lucide-icon>
+
+    <div>
+      <div class="master-title-text">PURCHASE ENTRY</div>
+      <div class="master-subtitle-text">Enterprise Resource Planning</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-layout">
+  <div class="form-section">
+    <div class="form-grid-4">
+      <!-- Accounting Year -->
+      <div class="form-field">
+        <label>Accounting Year</label>
+        <input type="text" [value]="accountingYear" disabled />
+      </div>
+
+      <!-- Company -->
+      <div class="form-field">
+        <label class="required">Company Name</label>
+        <select
+          [(ngModel)]="selectedCompanyId"
+          (ngModelChange)="onCompanyChange($event)"
+          appFocusOnKey
+          targetId="companyName"
+          [autoFocus]="true"
+        >
+          <option *ngFor="let c of companies" [value]="c.companyID">
+            {{ c.companyName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Branch -->
+      <div class="form-field">
+        <label class="required">Branch</label>
+        <select
+          [(ngModel)]="selectedBranchId"
+          (ngModelChange)="applyTopSelectionsToGrid()"
+          appFocusOnKey
+          targetId="branchName"
+        >
+          <option [ngValue]="null">-- Select Branch --</option>
+          <option *ngFor="let b of branches" [value]="b.branchID">
+            {{ b.branchName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Supplier -->
+      <div class="form-field">
+        <label class="required">Supplier</label>
+        <select
+          [(ngModel)]="selectedSupplierId"
+          (ngModelChange)="applyTopSelectionsToGrid()"
+          appFocusOnKey
+          targetId="supplierName"
+        >
+          <option [ngValue]="null">-- Select Supplier --</option>
+          <option *ngFor="let s of suppliers" [value]="s.supplierID">
+            {{ s.supplierName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-field">
+        <div class="form-field">
+          <label>Invoice No</label>
+          <input
+            type="text"
+            [(ngModel)]="invoiceNo"
+            appFocusOnKey
+            targetId="invoiceNo"
+            disabled
+            readonly
+          />
+        </div>
+      </div>
+
+      <!-- Payment Mode -->
+      <div class="form-field">
+        <label>Payment Mode</label>
+        <select
+          [(ngModel)]="selectedPaymentMode"
+          appFocusOnKey
+          targetId="paymentMode"
+        >
+          <option *ngFor="let pm of paymentModes" [value]="pm.paymentModeID">
+            {{ pm.paymentModeName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Invoice No -->
+      <div class="form-field">
+        <label>Invoice Date</label>
+        <input
+          type="date"
+          [(ngModel)]="selectedInvoiceDate"
+          (ngModelChange)="applyTopSelectionsToGrid()"
+          appFocusOnKey
+          targetId="invoiceDate"
+        />
+      </div>
+
+      <!-- Supplier Invoice No -->
+      <div class="form-field">
+        <label>Supplier Invoice No</label>
+        <input
+          type="text"
+          [(ngModel)]="supplierInvoiceNo"
+          appFocusOnKey
+          targetId="supplierInvoiceNo"
+        />
+      </div>
+
+      <!-- SAVE BUTTON CELL -->
+      <div class="form-field save-field"><button class="save-btn">
+  <lucide-icon name="plus-circle"></lucide-icon>
+  NEW PURCHASE
+</button>
+
+<button class="save-btn primary" (click)="savePurchase()">
+  <lucide-icon name="save"></lucide-icon>
+  SAVE PURCHASE
+</button>
+
+      </div>
+    </div>
+
+    <!-- Validation -->
+    <div *ngIf="validationLabel" class="validation-text">
+      {{ validationLabel }}
+    </div>
+
+    <div class="popup-grid" *ngIf="smallGridVisible">
+      <button class="popup-close-btn" (click)="smallGridVisible = false">
+        ✕
+      </button>
+
+      <app-small-grid
+        [columns]="productGridColumns"
+        [data]="smallGridData"
+        (rowSelected)="onProductSelected($event)"
+      ></app-small-grid>
+    </div>
+  </div>
+  <div class="grid-container">
+    <!-- Main Editable Grid -->
+    <app-input-data-grid
+      [columns]="visibleColumns"
+      [data]="purchaseEntries"
+      (numberChanged)="onGridNumberChanged($event)"
+      (rowAdded)="onGridRowAdded($event)"
+      [parent]="{
+        branches: branches,
+        companies: companies,
+        categories: categories,
+        subCategories: subCategories,
+        brands: brands,
+        units: units,
+        hsnCodes: hsnCodes,
+        taxes: taxes,
+        cesses: cesses,
+        suppliers: suppliers,
+        statuses: statuses,
+        showSmallGrid: showSmallGrid.bind(this)
+      }"
+      selectionMode="FullRowSelect"
+      [allowUserToAddRows]="true"
+      [allowUserToDeleteRows]="true"
+      [allowUserToResizeColumns]="true"
+    ></app-input-data-grid>
+  </div>
+  <!-- ============================
+      TOTAL SUMMARY SECTION
+============================= -->
+  <div class="total-summary">
+    <div class="total-row">
+      <label>Gross Amount</label>
+      <input
+        type="number"
+        [value]="totalGrossAmount"
+        readonly
+        class="total-input"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>Discount Amount</label>
+      <input
+        type="number"
+        [value]="totalDiscAmount"
+        readonly
+        class="total-input"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>Taxable Amount</label>
+      <input
+        type="number"
+        [value]="totalTaxableAmount"
+        readonly
+        class="total-input"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>GST Amount</label>
+      <input
+        type="number"
+        [value]="totalGstAmount"
+        readonly
+        class="total-input"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>CESS Amount</label>
+      <input
+        type="number"
+        [value]="totalCessAmount"
+        readonly
+        class="total-input"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>Net Amount</label>
+      <input
+        type="number"
+        [value]="totalNetAmount"
+        readonly
+        class="total-input"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>Total Invoice</label>
+      <input
+        type="number"
+        [value]="totalInvoiceAmount"
+        readonly
+        class="total-input highlight"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>Paid Amount</label>
+      <input
+        id="paidAmountInput"
+        type="number"
+        [(ngModel)]="totalPaidAmount"
+        (ngModelChange)="onPaidAmountChanged()"
+        class="textno"
+        appFocusOnKey
+      />
+    </div>
+    <div class="total-row">
+      <label>Balance Amount</label>
+      <input
+        type="number"
+        [value]="totalBalanceAmount"
+        readonly
+        class="total-input highlight-red"
+      />
+    </div>
+
+    <div class="total-row">
+      <label>Round Off</label>
+      <input
+        type="number"
+        [value]="totalRoundOff"
+        readonly
+        class="total-input"
+      />
+    </div>
+  </div>
+</div>
+
+<!-- Shortcut bar INSIDE product-management -->
+<div class="shortcut-bar">
+  <div class="pos-shortcuts-inner">
+    <div class="skey"><span>Shift+N</span> ADD NEW PURCHASE</div>
+    <div class="sep">|</div>
+
+    <div class="skey"><span>Shift+S</span> SAVE PURCHASE</div>
+  </div>
+</div>

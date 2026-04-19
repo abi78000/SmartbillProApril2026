@@ -1,0 +1,59 @@
+.small-grid-container {
+  margin-top: 10px;
+  width: 520px;
+  height:270px;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 5px;
+  z-index: 9999;
+}
+
+.small-grid-scroll {
+  max-height: calc(6 * 32px + 10px);
+  overflow-y: auto;
+  border: 1px solid #ddd;
+}
+
+.small-grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: #fff;
+}
+
+.small-grid thead th {
+  background: #f5f5f5;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  font-weight: 600;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.small-grid tbody td {
+  padding: 6px 10px;
+  border: 1px solid #e3e3e3;
+  white-space: nowrap;
+}
+
+.small-grid tbody tr {
+  height: 32px;
+}
+
+.small-grid tbody tr:hover {
+  background: #e8f0fe;
+}
+.search-box {
+  width: 100%;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.active {
+  background-color: #1D1160 !important;
+  color: white !important;
+}

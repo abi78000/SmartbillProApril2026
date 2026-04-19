@@ -1,0 +1,147 @@
+<div class="master-layout">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+
+    <!-- LEFT -->
+    <div class="master-top-left">
+      <lucide-icon name="credit-card"></lucide-icon>
+
+      <div>
+        <div class="master-title-text">PAYMENT MODE MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newPaymentMode()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD PAYMENT MODE
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="refreshPaymentModes()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="total-badge saas">
+      TOTAL PAYMENT MODES : {{ paymentModes.length }}
+    </div>
+
+  </div>
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>{{ paymentMode.paymentModeID ? 'EDIT PAYMENT MODE' : 'CREATE PAYMENT MODE' }}</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="savePaymentMode()"
+        >
+          {{ paymentMode.paymentModeID ? 'UPDATE' : 'SAVE' }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="cancelEdit()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+
+      <div class="form-grid">
+
+        <!-- Payment Mode Name -->
+        <div class="form-column">
+          <label>Payment Mode Name</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="paymentMode.paymentModeName"
+            name="paymentModeName"
+            placeholder="Enter payment mode"
+            required
+          />
+        </div>
+
+        <!-- Payment Type -->
+        <div class="form-column">
+          <label>Payment Type</label>
+          <select
+            class="input-common"
+            [(ngModel)]="paymentMode.paymentType"
+            name="paymentType"
+          >
+            <option value="">Select Type</option>
+            <option value="Cash">Cash</option>
+            <option value="Online">Online</option>
+            <option value="Card">Card</option>
+            <option value="Bank">Bank Transfer</option>
+          </select>
+        </div>
+
+        <!-- Description -->
+        <div class="form-column">
+          <label>Description</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="paymentMode.description"
+            name="description"
+            placeholder="Optional description"
+          />
+        </div>
+
+        <!-- Status -->
+        <div class="form-column">
+          <label>Status</label>
+
+          <label class="switch">
+            <input
+              type="checkbox"
+              [(ngModel)]="paymentMode.isActive"
+              name="isActive"
+            />
+            <span class="slider"></span>
+            <span class="switch-text">
+              {{ paymentMode.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="paymentModes"
+      [columns]="paymentModeColumns"
+      title="ALL PAYMENT MODES"
+      companyName="SmartBillPro"
+      (edit)="editPaymentMode($event)"
+      (delete)="deletePaymentMode($event)"
+    >
+    </app-master-table-view>
+
+  </div>
+
+</div>

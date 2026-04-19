@@ -1,0 +1,143 @@
+<div class="master-layout">
+
+  <!-- ================= TOP HEADER ================= -->
+  <div class="master-top-header">
+
+    <!-- LEFT -->
+    <div class="master-top-left">
+      <lucide-icon name="hash"></lucide-icon>
+      <div>
+        <div class="master-title-text">HSN MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newHSNCreate()">
+        <lucide-icon name="plus"></lucide-icon>
+        ADD HSN
+      </button>
+
+      <button class="master-btn-primary" type="button" (click)="refreshHSN()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+
+    <!-- TOTAL -->
+    <div class="total-badge saas">
+      TOTAL HSN : {{ hsns.length }}
+    </div>
+
+  </div>
+
+  <!-- ================= LEFT FORM PANEL ================= -->
+  <div class="master-panel">
+
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="pencil"></lucide-icon>
+        <h2>CREATE HSN</h2>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrUpdateHSN()"
+        >
+          {{ hsn.hsnid ? "UPDATE" : "SAVE" }}
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="resetHSN()"
+        >
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+  <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+      <div class="form-grid">
+
+        <!-- Tax -->
+        <div class="form-column">
+          <label>Select Tax</label>
+          <select
+            class="input-common"
+            [(ngModel)]="hsn.taxID"
+            name="taxID"
+            required
+          >
+            <option value="">Select Tax</option>
+            <option *ngFor="let t of taxes" [value]="t.taxID">
+              {{ t.taxName }} ({{ t.taxRate }}%)
+            </option>
+          </select>
+        </div>
+
+        <!-- HSN Code -->
+        <div class="form-column">
+          <label>HSN Code</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="hsn.hsnCode"
+            name="hsnCode"
+            required
+          />
+        </div>
+
+        <!-- HSN Name -->
+        <div class="form-column">
+          <label>HSN Name</label>
+          <input
+            type="text"
+            class="input-common"
+            [(ngModel)]="hsn.description"
+            name="description"
+            required
+          />
+        </div>
+
+        <!-- Status -->
+        <div class="form-column">
+          <label>Status</label>
+          <label class="switch">
+            <input
+              type="checkbox"
+              [(ngModel)]="hsn.isActive"
+              name="isActive"
+            />
+            <span class="slider"></span>
+            <span class="switch-text">
+              {{ hsn.isActive ? "Active" : "Inactive" }}
+            </span>
+          </label>
+        </div>
+
+      </div>
+
+    </fieldset>
+
+  </div>
+
+  <!-- ================= RIGHT TABLE PANEL ================= -->
+  <div class="master-panel">
+
+    <app-master-table-view
+      [data]="hsns"
+      [columns]="hsnColumns"
+      title="ALL HSN"
+      companyName="SmartBillPro"
+      (edit)="editHSN($event)"
+      (delete)="deleteHSN($event)"
+    >
+    </app-master-table-view>
+
+  </div>
+
+</div>

@@ -1,0 +1,154 @@
+<!-- ============================
+      TOP FORM
+=============================== -->
+<div class="form-container">
+  <div class="form-grid">
+    <!-- Accounting Year -->
+    <div class="form-column">
+      <label class="block font-medium mb-1">Accounting Year</label>
+
+      <input
+        class="form-input w-full"
+        type="text"
+        [value]="accountingYear"
+        disabled
+      />
+    </div>
+
+    <!-- Company -->
+    <div class="form-column">
+      <label class="block font-medium mb-1">Company Name</label>
+      <select
+        class="form-select w-full"
+        [(ngModel)]="selectedCompanyId"
+        (ngModelChange)="onCompanyChange($event)"
+        appFocusOnKey
+        targetId="companyName"
+        [autoFocus]="true"
+      >
+        <option *ngFor="let c of companies" [value]="c.companyID">
+          {{ c.companyName }}
+        </option>
+      </select>
+    </div>
+    <!-- Branch -->
+    <div class="form-column">
+      <label class="block font-medium mb-1">Branch</label>
+      <select
+        class="form-select w-full"
+        [(ngModel)]="selectedBranchId"
+        (ngModelChange)="applyTopSelectionsToGrid()"
+        appFocusOnKey
+        targetId="branchName"
+      >
+        <option [ngValue]="null">-- Select Branch --</option>
+        <option *ngFor="let b of branches" [ngValue]="b.branchID">
+          {{ b.branchName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Supplier -->
+    <div class="form-column">
+      <label class="block font-medium mb-1">Supplier</label>
+      <select
+        class="form-select w-full"
+        [(ngModel)]="selectedSupplierId"
+        (ngModelChange)="applyTopSelectionsToGrid()"
+        appFocusOnKey
+        targetId="supplierName"
+      >
+        <option [ngValue]="null">-- Select Supplier --</option>
+        <option *ngFor="let s of suppliers" [ngValue]="s.supplierID">
+          {{ s.supplierName }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Expected Delivery -->
+    <div class="form-column">
+      <label class="block font-medium mb-1">Expected Delivery Date</label>
+      <input
+        type="date"
+        class="form-input w-full"
+        [(ngModel)]="selectedExpDeliveryDate"
+        (ngModelChange)="applyTopSelectionsToGrid()"
+        appFocusOnKey
+        targetId="expdate"
+      />
+    </div>
+
+    <!-- PO Date -->
+    <div class="form-column">
+      <label class="block font-medium mb-1">PO Date</label>
+      <input
+        type="date"
+        class="form-input w-full"
+        [(ngModel)]="selectedPoDate"
+        (ngModelChange)="applyTopSelectionsToGrid()"
+        appFocusOnKey
+        targetId="podate"
+      />
+    </div>
+  </div>
+
+  <div *ngIf="validationLabel" class="text-red-600 font-medium mt-1">
+    {{ validationLabel }}
+  </div>
+  <button
+    class="btn btn-primary mt-3"
+    appFocusOnKey
+    targetId="SavePurchaseOrderBtn"
+    (click)="savePurchaseOrder()"
+  >
+    Save Purchase Order
+  </button>
+</div>
+
+<!-- ============================
+      GRID + POPUP
+=============================== -->
+<div class="product-management mt-4">
+  <div class="data-grid-section grid-container">
+    <!-- 👉 POPUP SMALL GRID -->
+    <div class="popup-grid" *ngIf="smallGridVisible">
+      <button class="popup-close-btn" (click)="smallGridVisible = false">
+        ✕
+      </button>
+
+      <app-small-grid
+        [columns]="productGridColumns"
+        [data]="smallGridData"
+        (rowSelected)="onProductSelected($event)"
+      >
+      </app-small-grid>
+    </div>
+
+    <!-- 👉 MAIN PURCHASE GRID -->
+    <app-input-data-grid
+      [columns]="visibleColumns"
+      [data]="purchaseOrderEntries"
+      (numberChanged)="onGridNumberChanged($event)"
+      (rowAdded)="onGridRowAdded($event)"
+      [parent]="{
+        branches: branches,
+        companies: companies,
+        categories: categories,
+        subCategories: subCategories,
+        brands: brands,
+        units: units,
+        hsnCodes: hsnCodes,
+        taxes: taxes,
+        cesses: cesses,
+        suppliers: suppliers,
+        statuses: statuses,
+        showSmallGrid: showSmallGrid.bind(this)
+      }"
+      selectionMode="FullRowSelect"
+      [allowUserToAddRows]="true"
+      [allowUserToDeleteRows]="true"
+      [allowUserToResizeColumns]="true"
+    >
+    </app-input-data-grid>
+  </div>
+</div>

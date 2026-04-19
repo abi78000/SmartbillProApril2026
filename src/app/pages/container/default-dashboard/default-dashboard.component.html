@@ -1,0 +1,105 @@
+<div class="dashboard-container">
+  <!-- HEADER -->
+  <div class="dashboard-header">
+    <div class="header-text">
+      <h1>Welcome back, {{ userName }}</h1>
+      <p>Here’s what’s happening in your business</p>
+    </div>
+
+    <div class="date-filter">
+      <input
+        type="date"
+        [(ngModel)]="fromDate"
+        [max]="toDate"
+        (change)="onDateChange()"
+      />
+
+      <span class="date-separator">→</span>
+
+      <input
+        type="date"
+        [(ngModel)]="toDate"
+        [max]="today"
+        (change)="onDateChange()"
+      />
+    </div>
+  </div>
+
+  <!-- KPI GRID -->
+  <div class="kpi-grid" *ngIf="dashboardData && !loading">
+    <div class="kpi-card sales">
+      <lucide-icon name="trending-up" class="kpi-icon"></lucide-icon>
+      <span>Total Sales</span>
+      <strong
+        >₹
+        {{
+          dashboardData.dashboard.totalSalesAmount | number : "1.0-0"
+        }}</strong
+      >
+    </div>
+    <div class="kpi-card purchase">
+      <lucide-icon name="shopping-cart" class="kpi-icon"></lucide-icon>
+      <span>Total Purchase</span>
+      <strong
+        >₹
+        {{
+          dashboardData.dashboard.totalPurchaseAmount | number : "1.0-0"
+        }}</strong
+      >
+    </div>
+
+    <div class="kpi-card outstanding">
+      <lucide-icon name="wallet" class="kpi-icon"></lucide-icon>
+      <span>Customer Outstanding</span>
+      <strong
+        >₹
+        {{
+          dashboardData.dashboard.customerOutstandingAmount | number : "1.0-0"
+        }}</strong
+      >
+    </div>
+
+    <div class="kpi-card supplier">
+      <lucide-icon name="truck" class="kpi-icon"></lucide-icon>
+      <span>Supplier Outstanding</span>
+      <strong
+        >₹
+        {{
+          dashboardData.dashboard.supplierOutstandingAmount | number : "1.0-0"
+        }}</strong
+      >
+    </div>
+  </div>
+
+  
+<!-- OVERALL INFO CONTAINER -->
+<div class="overall-info" *ngIf="dashboardData && !loading">
+
+  <div class="info-card customers">
+    <lucide-icon name="users" class="info-icon"></lucide-icon>
+    <div class="info-text">
+      <span>Total Customers</span>
+      <strong>{{ dashboardData.dashboard.customerCount }}</strong>
+    </div>
+  </div>
+
+  <div class="info-card suppliers">
+    <lucide-icon name="user-check" class="info-icon"></lucide-icon>
+    <div class="info-text">
+      <span>Total Suppliers</span>
+      <strong>{{ dashboardData.dashboard.supplierCount }}</strong>
+    </div>
+  </div>
+
+  <div class="info-card products">
+    <lucide-icon name="package" class="info-icon"></lucide-icon>
+    <div class="info-text">
+      <span>Total Products</span>
+      <strong>{{ dashboardData.dashboard.productCount }}</strong>
+    </div>
+  </div>
+
+</div>
+
+</div>
+

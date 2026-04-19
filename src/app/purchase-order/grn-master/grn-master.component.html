@@ -1,0 +1,56 @@
+<div class="grn-master-container">
+
+  <!-- HEADER -->
+  <h3 class="title">GRN Master</h3>
+
+  <!-- TAB BUTTONS -->
+  <div class="tab-bar">
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'entry'"
+      (click)="setTab('entry')"
+    >
+      GRN Entry
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'view'"
+      (click)="setTab('view')"
+    >
+      GRN View
+    </button>
+
+    <button
+      class="tab-btn"
+      [class.active]="activeTab === 'approval'"
+      (click)="setTab('approval')"
+      disabled
+    >
+      GRN Approval (soon)
+    </button>
+
+  </div>
+
+  <!-- CONTENT -->
+  <div class="tab-content">
+
+    <!-- GRN ENTRY -->
+    <div *ngIf="activeTab === 'entry'">
+      <app-grn-entry></app-grn-entry>
+    </div>
+
+    <!-- GRN VIEW -->
+    <div *ngIf="activeTab === 'view'">
+        <app-grn-view></app-grn-view>
+    </div>
+
+    <!-- GRN APPROVAL (coming soon) -->
+    <div *ngIf="activeTab === 'approval'">
+      <p class="coming-soon">GRN Approval screen will be added soon.</p>
+    </div>
+
+  </div>
+
+</div>

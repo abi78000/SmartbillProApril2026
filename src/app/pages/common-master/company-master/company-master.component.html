@@ -1,0 +1,321 @@
+<div class="master-layout">
+  <!-- ==============================
+     TOP HEADER : COMPANY MASTER
+============================== -->
+  <div class="master-top-header">
+    <!-- LEFT -->
+    <div class="master-top-left">
+      <lucide-icon name="building-2"></lucide-icon>
+
+      <div>
+        <div class="master-title-text">COMPANY MASTER</div>
+        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="master-top-right">
+      <button class="master-btn-primary" type="button" (click)="newCompany()">
+        <lucide-icon name="plus"></lucide-icon>
+       ADD COMPANY
+      </button>
+       <button class="master-btn-primary" type="button" (click)="Refresh()">
+        <lucide-icon name="refresh-cw"></lucide-icon>
+        REFRESH
+      </button>
+    </div>
+    <div class="total-badge saas">TOTAL COMPANIES : {{ totalCompanies }}</div>
+  </div>
+
+  <!-- LEFT -->
+  <div class="master-panel">
+    <div class="master-header">
+      <div class="master-title">
+        <lucide-icon name="user"></lucide-icon>
+
+        <div>
+          <h2>COMPANY PROFILE</h2>
+        </div>
+      </div>
+
+      <div class="master-actions">
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="saveOrDeleteCompany()"
+        >
+          {{ isEditMode ? "UPDATE" : "SAVE" }}
+        </button>
+
+        <button type="button" class="master-btn-primary" (click)="resetForm()">
+          CLEAR
+        </button>
+      </div>
+    </div>
+
+    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
+      <form class="company-form">
+        <!-- 3-column fields -->
+        <div class="form-grid">
+          <!-- Column 1 -->
+          <div class="form-column">
+            <label>Company Name</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.companyName"
+              name="companyName"
+              required
+              appFocusOnKey
+              [autoFocus]="true"
+              [autoSelectNext]="true"
+              appInputRestrict="text"
+            />
+
+            <label>Phone</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.phone"
+              name="phone"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="number"
+            />
+
+            <label>Alternate Phone</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.alternatePhone"
+              name="alternatePhone"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="number"
+            />
+
+            <label>Email</label>
+            <input
+              type="email"
+              class="input-common"
+              [(ngModel)]="company.email"
+              name="email"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="email"
+            />
+
+            <label>Website</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.website"
+              name="website"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="text"
+            />
+          </div>
+
+          <!-- Column 2 -->
+          <div class="form-column">
+            <label>Address Line 1</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.addressLine1"
+              name="addressLine1"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="address"
+            />
+
+            <label>Address Line 2</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.addressLine2"
+              name="addressLine2"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="address"
+            />
+
+            <label>Address Line 3</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.addressLine3"
+              name="addressLine3"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="address"
+            />
+
+            <label>Address Line 4</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.addressLine4"
+              name="addressLine4"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="address"
+            />
+
+            <label>City</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.city"
+              name="city"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="letter"
+            />
+
+            <label>State</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.state"
+              name="state"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="letter"
+            />
+          </div>
+
+          <!-- Column 3 -->
+          <div class="form-column">
+            <label>Country</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.country"
+              name="country"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="letter"
+            />
+
+            <label>Pincode</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.pincode"
+              name="pincode"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="number"
+            />
+
+            <label>GST Number</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.gstNumber"
+              name="gstNumber"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="text"
+            />
+
+            <label>PAN Number</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.panNumber"
+              name="panNumber"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="text"
+            />
+
+            <label>CIN Number</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.cinNumber"
+              name="cinNumber"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="text"
+            />
+
+            <label>Bank Name</label>
+            <input
+              type="text"
+              class="input-common"
+              [(ngModel)]="company.bankName"
+              name="bankName"
+              appFocusOnKey
+              [autoSelectNext]="true"
+              appInputRestrict="text"
+            />
+          </div>
+        </div>
+
+        <!-- Images & Checkbox -->
+        <div class="form-grid">
+          <div class="form-column">
+            <label>Company Logo</label>
+            <input
+              type="file"
+              class="file-common"
+              (change)="onFileSelected($event, 'logo')"
+              accept="image/*"
+            />
+            <img
+              *ngIf="company.companyLogo"
+              [src]="'data:image/png;base64,' + company.companyLogo"
+              class="preview-image"
+            />
+          </div>
+
+          <div class="form-column">
+            <label>Company Image</label>
+            <input
+              type="file"
+              class="file-common"
+              (change)="onFileSelected($event, 'image')"
+              accept="image/*"
+            />
+            <img
+              *ngIf="company.companyImage"
+              [src]="'data:image/png;base64,' + company.companyImage"
+              class="preview-image"
+            />
+          </div>
+
+          <div class="form-column checkbox-column">
+            <label class="checkbox-common">
+              <input
+                type="checkbox"
+                [(ngModel)]="company.isActive"
+                name="isActive"
+              />
+              Is Active
+            </label>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="form-actions"></div>
+      </form>
+    </fieldset>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="master-panel">
+    <app-master-table-view
+      [data]="companies"
+      [columns]="companyColumns"
+      title="ALL COMPANIES"
+      companyName="SmartBillPro"
+      (edit)="editCompany($event)"
+      (delete)="deleteCompany($event)"
+    >
+    </app-master-table-view>
+  </div>
+</div>
