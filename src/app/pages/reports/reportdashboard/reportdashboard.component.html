@@ -1,1 +1,150 @@
-<p>reportdashboard works!</p>
+<div class="ui-page">
+  <!-- ================= HEADER ================= -->
+
+  <div class="ui-header">
+    <div class="ui-title d-flex align-items-center gap-2">
+      <lucide-icon name="layout-dashboard"> </lucide-icon>
+
+      Report Dashboard
+    </div>
+
+    <div class="ui-subtitle">Business overview and analytics</div>
+  </div>
+
+  <!-- ================= FILTER ================= -->
+
+  <div class="ui-filter">
+    <div class="ui-filter-grid">
+      <div class="ui-field">
+        <label>From Date</label>
+
+        <input
+          type="date"
+          [(ngModel)]="filters.fromDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="ui-field">
+        <label>To Date</label>
+
+        <input
+          type="date"
+          [(ngModel)]="filters.toDate"
+          (change)="onFilterChange()"
+        />
+      </div>
+
+      <div class="ui-field">
+        <label>Company</label>
+
+        <select [(ngModel)]="filters.companyId" (change)="onCompanyChange()">
+          <option *ngFor="let c of companies" [ngValue]="c.companyID">
+            {{ c.companyName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="ui-field">
+        <label>Branch</label>
+
+        <select [(ngModel)]="filters.branchId" (change)="onFilterChange()">
+          <option [ngValue]="null">All Branches</option>
+
+          <option *ngFor="let b of branches" [ngValue]="b.branchID">
+            {{ b.branchName }}
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= KPI ================= -->
+
+  <div class="ui-kpi-grid">
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-primary">Sales</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.totalSales | number: "1.2-2" }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-success">Profit</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.totalProfit | number: "1.2-2" }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-warning">GST</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.totalGST | number: "1.2-2" }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-danger">Outstanding</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.totalOutstanding | number: "1.2-2" }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-info">Stock Value</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.totalStock | number: "1.2-2" }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-primary">Total Bills</div>
+
+      <div class="ui-kpi-value">
+        {{ dashboard.totalBills }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-success">Cash</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.cashTotal | number: "1.2-2" }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-info">Card</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.cardTotal | number: "1.2-2" }}
+      </div>
+    </div>
+
+    <div class="ui-kpi">
+      <div class="ui-kpi-head kpi-warning">UPI</div>
+
+      <div class="ui-kpi-value">
+        ₹ {{ dashboard.upiTotal | number: "1.2-2" }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TABLE ================= -->
+
+  <div class="ui-table">
+    <div class="ui-table-body">
+      <app-view-datatable
+        [data]="dashboard.transactions"
+        [columns]="visibleColumns"
+        [loading]="loading"
+      >
+      </app-view-datatable>
+    </div>
+  </div>
+</div>

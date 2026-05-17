@@ -173,7 +173,6 @@ button.btn-secondary:hover {
   border-color: #545b62;
 }
 
-
 button.btn-light {
   background-color: #f8f9fa;
   color: #000;
@@ -254,7 +253,9 @@ lucide-icon {
   vertical-align: middle;
   margin-right: 6px;
   cursor: pointer;
-  transition: color 0.25s ease, transform 0.15s ease;
+  transition:
+    color 0.25s ease,
+    transform 0.15s ease;
 }
 
 /* Active (pressed) */
@@ -486,7 +487,9 @@ select.form-select {
   color: #333;
   margin-bottom: 1rem;
   cursor: pointer;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 select.form-select:focus {
@@ -556,7 +559,9 @@ select {
   padding: 10px 12px;
   font-size: 0.95rem;
   background-color: #fff;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 input:focus,
@@ -633,7 +638,9 @@ button,
   outline: none;
   position: relative;
   overflow: hidden; /* enables ripple */
-  transition: background-color 0.3s ease, box-shadow 0.2s ease,
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.2s ease,
     transform 0.15s ease;
   display: inline-flex;
   align-items: center;
@@ -652,7 +659,9 @@ button,
   opacity: 0.5;
   pointer-events: none;
   background: white;
-  transition: transform 0.6s ease, opacity 1s ease;
+  transition:
+    transform 0.6s ease,
+    opacity 1s ease;
 }
 
 .btn:active::after {
@@ -767,7 +776,7 @@ button,
 }
 .btn-elevated:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-} 
+}
 /* ========================================================
    FIX — REMOVE TOP EMPTY SPACE UNDER HEADER
 ======================================================== */
@@ -809,290 +818,6 @@ button,
 
 /* Reports section
 
-
-/* ================= GLOBAL ================= */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html,
-body {
-  height: 100%;
-  background: #f5f6fa;
-  font-family: "Poppins", sans-serif;
-}
-
-/* ================= HEADER ================= */
-.app-header {
-  height: 64px;
-  background: linear-gradient(90deg, #24126a, #1b0f4f);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 24px;
-  color: #fff;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-/* HEADER LEFT */
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.logo-text .brand {
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.logo-text .pro {
-  color: #f4a261;
-}
-
-/* ================= PAGE LAYOUT ================= */
-.reports-page {
-  display: flex;
-  gap: 24px;
-  height: calc(100vh - 64px);
-  padding: 20px;
-  align-items: stretch;
-}
-
-/* ================= SIDEBAR ================= */
-.report-tabs {
-  width: 260px;
-  height: 100%;
-  background: linear-gradient(180deg, #24126a, #1b0f4f);
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border-radius: 5px;
-  position: sticky;
-  top: 84px; /* header + padding */
-}
-
-/* SIDEBAR TITLE */
-.report-title {
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 14px;
-}
-/* ================= TAB BUTTON (VERTICAL) ================= */
-.tab-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  width: 100%;
-  padding: 12px 16px;
-
-  border: none;
-  background: transparent;
-  color: #cfd0ff;
-
-  font-size: 14px;
-  font-weight: 500;
-  text-align: left;
-
-  border-radius: 10px;
-  cursor: pointer;
-  position: relative;
-
-  transition: background 0.2s ease, color 0.2s ease;
-}
-
-/* ICON */
-.tab-btn i,
-.tab-btn lucide-icon {
-  width: 18px;
-  height: 18px;
-  opacity: 0.9;
-}
-
-/* HOVER */
-.tab-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-}
-
-/* ================= ACTIVE TAB ================= */
-.tab-btn.active {
-  background: linear-gradient(
-    90deg,
-    rgba(250, 204, 21, 0.18),
-    rgba(59, 42, 143, 0.95)
-  );
-  color: #ffffff;
-  font-weight: 600;
-}
-
-/* LEFT INDICATOR BAR */
-.tab-btn.active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 8px;
-  bottom: 8px;
-  width: 4px;
-  border-radius: 4px;
-  background: #facc15;
-}
-
-/* ICON STRONGER WHEN ACTIVE */
-.tab-btn.active i,
-.tab-btn.active lucide-icon {
-  opacity: 1;
-}
-
-/* ================= CONTENT ================= */
-.report-content {
-  flex: 1;
-  background: #ffffff;
-  padding: 28px;
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.08);
-  border-radius: 12px;
-  overflow-y: auto;
-}
-
-/* CONTENT HEADERS */
-.report-content h2 {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.report-subtitle {
-  color: #6b7280;
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-/* ================= SCROLLBAR ================= */
-.report-content::-webkit-scrollbar {
-  width: 8px;
-}
-
-.report-content::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-.report-content::-webkit-scrollbar-thumb {
-  background: #c7c7ff;
-  border-radius: 6px;
-}
-
-.report-content::-webkit-scrollbar-thumb:hover {
-  background: #9a9aff;
-}
-
-/* ================= RESPONSIVE ================= */
-@media (max-width: 1024px) {
-  .report-tabs {
-    width: 220px;
-  }
-}
-@media (max-width: 768px) {
-  /* ================= PAGE ================= */
-  .reports-page {
-    flex-direction: column;
-    padding: 0 10px 12px; /* clean edge spacing */
-    gap: 12px;
-    margin-top: 0;
-  }
-
-  /* ================= TABS BAR ================= */
-  .report-tabs {
-    width: 100%;
-    height: 40px;
-    margin: 0;
-    padding: 12px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    position: sticky;
-    top: 80px;
-    z-index: 300;
-    background: #ffffff;
-    overflow-x: auto;
-    overflow-y: hidden;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Hide scrollbar */
-  .report-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  /* Remove title */
-  .report-title {
-    display: none;
-  }
-
-  /* ================= TAB PILL ================= */
-  .tab-btn {
-    flex-shrink: 0;
-    padding: 10px 20px;
-    border-radius: 10px;
-    color: #00022b;
-    border-radius: 40px;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.2px;
-
-    text-align: center;
-    justify-content: center;
-    border: 4px solid #aeaeae;
-    transition: all 0.25s ease;
-  }
-
-  /* Hover / touch feedback */
-  .tab-btn:active {
-    transform: scale(0.96);
-  }
-
-  /* ================= ACTIVE TAB ================= */
-  .tab-btn.active {
-    background: #ecefff;
-    color: #24126a;
-    font-weight: 600;
-    border: 4px solid #24126a;
-  }
-
-  /* Remove desktop indicator */
-  .tab-btn::before {
-    display: none;
-  }
-
-  /* Hide icons on mobile */
-  .tab-btn i,
-  .tab-btn lucide-icon {
-    display: none;
-  }
-
-  /* ================= CONTENT ================= */
-  .report-content {
-    padding: 14px;
-    border-radius: 16px;
-    background: #ffffff;
-  }
-}
-
 /* =====================================================
    COMMON UI SYSTEM – SINGLE CSS FILE
    ===================================================== */
@@ -1129,225 +854,6 @@ body {
   color: #111827;
 }
 
-/* ---------- PAGE ---------- */
-.ui-page {
-  padding: 20px;
-}
-
-.ui-header {
-  margin-bottom: 16px;
-}
-
-.ui-title {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--ui-primary);
-}
-
-.ui-subtitle {
-  font-size: 13px;
-  color: var(--ui-muted);
-}
-
-/* ---------- FILTER BAR ---------- */
-.ui-filter {
-  background: var(--ui-card);
-  border: 1px solid var(--ui-border);
-  border-radius: var(--ui-radius);
-  padding: 14px;
-  box-shadow: var(--ui-shadow-sm);
-  margin-bottom: 18px;
-}
-
-.ui-filter-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 14px;
-}
-
-.ui-field label {
-  display: block;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #374151;
-}
-
-.ui-field input,
-.ui-field select {
-  width: 100%;
-  height: 36px;
-  padding: 6px 10px;
-  font-size: 13px;
-  border-radius: 8px;
-  border: 1px solid var(--ui-border);
-}
-
-.ui-field input:focus,
-.ui-field select:focus {
-  outline: none;
-  border-color: var(--ui-primary);
-}
-
-/* =====================================================
-   KPI GRID
-===================================================== */
-.ui-kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 18px;
-  margin-bottom: 22px;
-}
-
-/* =====================================================
-   KPI CARD
-===================================================== */
-.ui-kpi {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 22px 22px 24px;
-  border: 1.8px solid #e5e7eb;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s ease;
-}
-
-.ui-kpi:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
-}
-
-/* =====================================================
-   KPI HEADER (TITLE)
-===================================================== */
-.ui-kpi-head {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 16px;
-  letter-spacing: 0.3px;
-}
-
-/* =====================================================
-   HIDE LUCIDE ICON (NO HTML CHANGE)
-===================================================== */
-.ui-kpi-head lucide-icon {
-  display: none !important;
-}
-
-/* =====================================================
-   KPI VALUE
-===================================================== */
-.ui-kpi-value {
-  font-size: 22px;
-  font-weight: 700;
-  color: #000000;
-  letter-spacing: 0.3px;
-}
-
-/* =====================================================
-   KPI COLOR STYLES
-===================================================== */
-
-/* Primary – Total Sales */
-.ui-kpi:has(.kpi-primary) {
-  border-color: #2447fa;
-}
-.ui-kpi:has(.kpi-primary) .ui-kpi-head {
-  color: #4f46e5;
-}
-
-/* Info – Bills / Avg */
-.ui-kpi:has(.kpi-info) {
-  border-color: #024462;
-}
-.ui-kpi:has(.kpi-info) .ui-kpi-head {
-  color: #00293d;
-}
-
-/* Warning – GST */
-.ui-kpi:has(.kpi-warning) {
-  border-color: #fdba74;
-}
-.ui-kpi:has(.kpi-warning) .ui-kpi-head {
-  color: #c2410c;
-}
-
-/* Success – Cash */
-.ui-kpi:has(.kpi-success) {
-  border-color: #02772f;
-}
-.ui-kpi:has(.kpi-success) .ui-kpi-head {
-  color: #15803d;
-}
-
-/* Danger – Card */
-.ui-kpi:has(.kpi-danger) {
-  border-color: #5d0000;
-}
-.ui-kpi:has(.kpi-danger) .ui-kpi-head {
-  color: #dc2626;
-}
-
-/* =====================================================
-   MOBILE OPTIMIZATION
-===================================================== */
-@media (max-width: 640px) {
-  .ui-kpi {
-    padding: 18px 18px 20px;
-  }
-
-  .ui-kpi-head {
-    font-size: 14px;
-    margin-bottom: 12px;
-  }
-
-  .ui-kpi-value {
-    font-size: 20px;
-  }
-}
-
-/* ---------- TABLE ---------- */
-.ui-table {
-  background: var(--ui-card);
-  border-radius: var(--ui-radius);
-  border: 1px solid var(--ui-border);
-  box-shadow: var(--ui-shadow-sm);
-  overflow: hidden;
-}
-
-.ui-table-body {
-  max-height: calc(100vh - 420px);
-  overflow: auto;
-}
-
-/* ---------- ACTION BAR ---------- */
-.ui-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid var(--ui-border);
-}
-
-.ui-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  border: 1px solid var(--ui-border);
-  background: #fff;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.ui-search {
-  padding: 6px 10px;
-  font-size: 13px;
-  border-radius: 8px;
-  border: 1px solid var(--ui-border);
-}
-
 /* ---------- SCROLL FIX ---------- */
 html,
 body {
@@ -1365,10 +871,7 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
-
 }
-
-
 
 /* =====================================
    LUCIDE ICON — GLOBAL THEME
@@ -1376,7 +879,8 @@ body {
 
 lucide-icon,
 .lucide {
- width: 22px; height: 22px;
+  width: 22px;
+  height: 22px;
   stroke-width: 2;
   stroke: currentColor;
   color: currentColor;
@@ -1413,19 +917,29 @@ lucide-icon:active:not(.disabled),
 ===================================== */
 
 lucide-icon.success,
-.lucide.success { color: #16a34a; }   /* green */
+.lucide.success {
+  color: #16a34a;
+} /* green */
 
 lucide-icon.warning,
-.lucide.warning { color: #f59e0b; }   /* amber */
+.lucide.warning {
+  color: #f59e0b;
+} /* amber */
 
 lucide-icon.error,
-.lucide.error { color: #dc2626; }     /* red */
+.lucide.error {
+  color: #dc2626;
+} /* red */
 
 lucide-icon.info,
-.lucide.info { color: #2563eb; }      /* blue */
+.lucide.info {
+  color: #2563eb;
+} /* blue */
 
 lucide-icon.alert,
-.lucide.alert { color: #ea580c; }     /* orange */
+.lucide.alert {
+  color: #ea580c;
+} /* orange */
 
 /* =====================================
    DISABLED STATE
@@ -1453,13 +967,26 @@ button .lucide {
    SIZE UTILITIES
 ===================================== */
 
-.icon-xs {width: 22px; height: 22px; }
-.icon-sm { width: 22px; height: 22px; }
-.icon-md { width: 22px; height: 22px; }
-.icon-lg { width: 22px; height: 22px; }
-.icon-xl { width: 26px; height: 26px; }
-
-
+.icon-xs {
+  width: 22px;
+  height: 22px;
+}
+.icon-sm {
+  width: 22px;
+  height: 22px;
+}
+.icon-md {
+  width: 22px;
+  height: 22px;
+}
+.icon-lg {
+  width: 22px;
+  height: 22px;
+}
+.icon-xl {
+  width: 26px;
+  height: 26px;
+}
 
 /* ==============================
    MASTER LAYOUT GRID
@@ -1502,7 +1029,6 @@ button .lucide {
   gap: 16px;
 }
 
-
 /* ======================================================
    TOP LEFT
 ====================================================== */
@@ -1513,8 +1039,6 @@ button .lucide {
   align-items: flex-start;
   gap: 3px;
 }
-
-
 
 .master-title-text {
   font-size: 18px;
@@ -1627,10 +1151,6 @@ button .lucide {
   background: #e9ecf8;
 }
 
-
-
-
-
 /* ==============================
    FORM
 ============================== */
@@ -1684,7 +1204,6 @@ button .lucide {
     grid-template-columns: 1fr; /* single column in mobile */
   }
 }
-
 
 @media (max-width: 900px) {
   .form-grid {
@@ -1866,7 +1385,7 @@ button .lucide {
   background: #ffffff;
   border-radius: 50%;
   transition: 0.3s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Active state */
@@ -1896,8 +1415,8 @@ button .lucide {
   box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
 }
 
-
-html, body {
+html,
+body {
   max-width: 100%;
   overflow-x: hidden;
 }
@@ -1970,7 +1489,6 @@ input[type="file"] {
 ============================== */
 
 @media (max-width: 600px) {
-
   .master-top-header {
     flex-direction: column;
     align-items: stretch;
@@ -2014,7 +1532,6 @@ input[type="file"] {
 ============================== */
 
 @media (max-width: 768px) {
-
   .master-table-box {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
@@ -2045,7 +1562,6 @@ input[type="file"] {
 ============================== */
 
 @media (max-width: 600px) {
-
   .table-header,
   .list-header {
     flex-direction: column;
@@ -2069,7 +1585,6 @@ input[type="file"] {
 ============================== */
 
 @media (max-width: 600px) {
-
   .pagination,
   .mt-pagination {
     flex-wrap: wrap;
@@ -2083,7 +1598,6 @@ input[type="file"] {
 ============================== */
 
 @media (max-width: 600px) {
-
   .switch-text {
     font-size: 11px;
   }
@@ -2098,8 +1612,6 @@ input[type="file"] {
     height: 14px;
   }
 }
-
-
 
 /* =========================================================
    POS SHORTCUT BAR – ENTERPRISE OPTIMIZED (SMARTBILLPRO)
@@ -2178,10 +1690,13 @@ input[type="file"] {
   font-size: 11.5px;
   font-weight: 700;
 
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25),
-              0 2px 5px rgba(0, 0, 0, 0.25);
+  box-shadow:
+    inset 0 -1px 0 rgba(255, 255, 255, 0.25),
+    0 2px 5px rgba(0, 0, 0, 0.25);
 
-  transition: transform 0.12s ease, background-color 0.12s ease;
+  transition:
+    transform 0.12s ease,
+    background-color 0.12s ease;
   will-change: transform;
 }
 
@@ -2234,145 +1749,122 @@ input[type="file"] {
 
 @media (min-resolution: 2dppx) {
   .skey span {
-    box-shadow: inset 0 -0.5px 0 rgba(255, 255, 255, 0.25),
-                0 1px 3px rgba(0, 0, 0, 0.25);
+    box-shadow:
+      inset 0 -0.5px 0 rgba(255, 255, 255, 0.25),
+      0 1px 3px rgba(0, 0, 0, 0.25);
   }
 }
-
 
 /* =====================================================
    MASTER LAYOUT
 ===================================================== */
 
-.master-layout{
+.master-layout {
+  width: 100%;
 
-  width:100%;
+  max-width: 100%;
 
-  max-width:100%;
+  display: flex;
 
-  display:flex;
+  flex-direction: column;
 
-  flex-direction:column;
+  gap: 20px;
 
-  gap:20px;
+  padding: 16px;
 
-  padding:16px;
-
-  box-sizing:border-box;
+  box-sizing: border-box;
 }
-
 
 /* =====================================================
    FORM + TABLE CONTAINER
 ===================================================== */
 
 .master-form-layout,
-.master-table-layout{
+.master-table-layout {
+  width: 100%;
 
-  width:100%;
+  max-width: 100%;
 
-  max-width:100%;
-
-  display:block;
+  display: block;
 }
-
 
 /* =====================================================
    ERP FORM PAGE
 ===================================================== */
 
-.erp-form-page{
+.erp-form-page {
+  width: 100%;
 
-  width:100%;
+  max-width: 100%;
 
-  max-width:100%;
+  background: #ffffff;
 
-  background:#ffffff;
+  border: 1px solid #e5e7eb;
 
-  border:1px solid #e5e7eb;
+  border-radius: 12px;
 
-  border-radius:12px;
+  overflow: hidden;
 
-  overflow:hidden;
-
-  box-shadow:
-  0 2px 10px
-  rgba(0,0,0,.04);
-
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
 }
-
 
 /* =====================================================
    FORM BODY
 ===================================================== */
 
-.erp-form-body{
+.erp-form-body {
+  width: 100%;
 
-  width:100%;
-
-  padding:20px;
-
+  padding: 20px;
 }
-
 
 /* =====================================================
    FORM GRID
 ===================================================== */
 
-.erp-form-grid{
+.erp-form-grid {
+  width: 100%;
 
-  width:100%;
+  display: grid;
 
-  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 
-  grid-template-columns:
-  repeat(
-    auto-fit,
-    minmax(320px,1fr)
-  );
+  gap: 20px;
 
-  gap:20px;
-
-  align-items:start;
+  align-items: start;
 }
-
 
 /* =====================================================
    FORM FIELD
 ===================================================== */
 
-.erp-form-field{
+.erp-form-field {
+  width: 100%;
 
-  width:100%;
+  display: flex;
 
-  display:flex;
+  flex-direction: column;
 
-  flex-direction:column;
+  gap: 8px;
 
-  gap:8px;
-
-  min-width:0;
+  min-width: 0;
 }
-
 
 /* =====================================================
    LABEL
 ===================================================== */
 
-.erp-form-field label{
+.erp-form-field label {
+  font-size: 13px;
 
-  font-size:13px;
+  font-weight: 600;
 
-  font-weight:600;
-
-  color:#374151;
+  color: #374151;
 }
 
-.erp-form-field label span{
-
-  color:red;
+.erp-form-field label span {
+  color: red;
 }
-
 
 /* =====================================================
    INPUT
@@ -2380,122 +1872,89 @@ input[type="file"] {
 
 .erp-input,
 .erp-textarea,
-.erp-file{
+.erp-file {
+  width: 100%;
 
-  width:100%;
+  border: 1px solid #d1d5db;
 
-  border:1px solid #d1d5db;
+  border-radius: 8px;
 
-  border-radius:8px;
+  background: #ffffff;
 
-  background:#ffffff;
+  font-size: 14px;
 
-  font-size:14px;
-
-  transition:.2s;
-
+  transition: 0.2s;
 }
 
+.erp-input {
+  height: 42px;
 
-.erp-input{
-
-  height:42px;
-
-  padding:0 14px;
+  padding: 0 14px;
 }
 
+.erp-textarea {
+  min-height: 100px;
 
-.erp-textarea{
+  padding: 12px;
 
-  min-height:100px;
-
-  padding:12px;
-
-  resize:vertical;
+  resize: vertical;
 }
 
+.erp-file {
+  padding: 10px;
 
-.erp-file{
-
-  padding:10px;
-
-  border-style:dashed;
+  border-style: dashed;
 }
-
 
 /* =====================================================
    FOCUS
 ===================================================== */
 
 .erp-input:focus,
-.erp-textarea:focus{
+.erp-textarea:focus {
+  outline: none;
 
-  outline:none;
+  border-color: #1d1160;
 
-  border-color:#1d1160;
-
-  box-shadow:
-  0 0 0 3px
-  rgba(29,17,96,.08);
-
+  box-shadow: 0 0 0 3px rgba(29, 17, 96, 0.08);
 }
-
 
 /* =====================================================
    CHECKBOX
 ===================================================== */
 
-.erp-checkbox{
+.erp-checkbox {
+  display: flex;
 
-  display:flex;
+  align-items: center;
 
-  align-items:center;
-
-  gap:10px;
+  gap: 10px;
 }
-
 
 /* =====================================================
    RESPONSIVE
 ===================================================== */
 
-@media(max-width:992px){
-
-.erp-form-grid{
-
-grid-template-columns:
-repeat(
-auto-fit,
-minmax(280px,1fr)
-);
-
+@media (max-width: 992px) {
+  .erp-form-grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
 }
 
-}
+@media (max-width: 768px) {
+  .master-layout {
+    padding: 10px;
+  }
 
+  .erp-form-grid {
+    grid-template-columns: 1fr;
 
-@media(max-width:768px){
+    gap: 15px;
+  }
 
-.master-layout{
-
-padding:10px;
-
-}
-
-.erp-form-grid{
-
-grid-template-columns:1fr;
-
-gap:15px;
-
-}
-
-.erp-form-body{
-
-padding:15px;
-
-}
-
+  .erp-form-body {
+    padding: 15px;
+  }
 }
 
 /* =====================================================
@@ -2503,194 +1962,640 @@ padding:15px;
 ===================================================== */
 
 html,
-body{
+body {
+  height: 100%;
 
-  height:100%;
-
-  margin:0;
+  margin: 0;
 }
 
-app-root{
+app-root {
+  min-height: 100vh;
 
-  min-height:100vh;
+  display: flex;
 
-  display:flex;
-
-  flex-direction:column;
+  flex-direction: column;
 }
-
 
 /* =====================================================
    HEADER
 ===================================================== */
 
-app-default-header{
+app-default-header {
+  position: fixed;
 
-  position:fixed;
+  top: 0;
 
-  top:0;
+  left: 0;
 
-  left:0;
+  right: 0;
 
-  right:0;
+  z-index: 1000;
 
-  z-index:1000;
+  background: #ffffff;
 
-  background:#ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 
-  box-shadow:
-  0 2px 6px rgba(0,0,0,.05);
-
-  height:80px;
+  height: 80px;
 }
-
 
 /* =====================================================
    CONTENT
 ===================================================== */
 
-.layout-content{
+.layout-content {
+  flex: 1;
 
-  flex:1;
+  margin-top: 80px;
 
-  margin-top:80px;
+  width: 100%;
 
-  width:100%;
+  padding: 20px;
 
-  padding:20px;
+  background: #ffffff;
 
-  background:#ffffff;
+  display: flex;
 
-  display:flex;
+  flex-direction: column;
 
-  flex-direction:column;
+  min-height: calc(100vh - 140px);
 
-  min-height:
-  calc(100vh - 140px);
-
-  overflow-x:hidden;
+  overflow-x: hidden;
 }
-
 
 /* FULL SCREEN */
 
-.layout-content.fullscreen{
+.layout-content.fullscreen {
+  margin-top: 0;
 
-  margin-top:0;
+  padding: 0;
 
-  padding:0;
-
-  min-height:100vh;
+  min-height: 100vh;
 }
-
 
 /* =====================================================
    FOOTER
 ===================================================== */
 
-app-default-footer{
+app-default-footer {
+  margin-top: auto;
 
-  margin-top:auto;
+  width: 100%;
 
-  width:100%;
+  background: #ffffff;
 
-  background:#ffffff;
+  border-top: 1px solid #e5e7eb;
 
-  border-top:
-  1px solid #e5e7eb;
+  padding: 12px;
 
-  padding:12px;
+  text-align: center;
 
-  text-align:center;
-
-  flex-shrink:0;
+  flex-shrink: 0;
 }
-
 
 /* =====================================================
    MOBILE
 ===================================================== */
 
-@media(max-width:768px){
+@media (max-width: 768px) {
+  .layout-content {
+    margin-top: 70px;
 
-.layout-content{
+    padding: 10px;
+  }
 
-margin-top:70px;
-
-padding:10px;
-
-}
-
-app-default-header{
-
-height:70px;
-
-}
-
+  app-default-header {
+    height: 70px;
+  }
 }
 
 /* =====================================================
    FIXED FOOTER UI
 ===================================================== */
 
-app-default-footer{
+app-default-footer {
+  position: fixed;
 
-  position:fixed;
+  left: 0;
 
-  left:0;
+  bottom: 0;
 
-  bottom:0;
+  width: 100%;
 
-  width:100%;
+  height: 50px;
 
-  height:50px;
+  display: flex;
 
-  display:flex;
+  align-items: center;
 
-  align-items:center;
+  justify-content: center;
 
-  justify-content:center;
+  background: #ffffff;
 
-  background:#ffffff;
+  border-top: 1px solid #e0e0e0;
 
-  border-top:1px solid #e0e0e0;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.05);
 
-  box-shadow:
-  0 -2px 6px rgba(0,0,0,.05);
-
-  z-index:999;
-
+  z-index: 999;
 }
-
 
 /* FOOTER CONTENT */
 
-.default-footer{
+.default-footer {
+  width: 100%;
 
-  width:100%;
+  text-align: center;
 
-  text-align:center;
+  font-size: 13px;
 
-  font-size:13px;
-
-  color:#6b7280;
+  color: #6b7280;
 }
 
-.default-footer a{
+.default-footer a {
+  color: #1d1160;
 
-  color:#1d1160;
+  text-decoration: none;
 
-  text-decoration:none;
-
-  font-weight:600;
+  font-weight: 600;
 }
-
 
 /* CONTENT SPACING FOR FOOTER */
 
-.layout-content{
-
-  padding-bottom:70px;
+.layout-content {
+  padding-bottom: 70px;
 }
 
+/* ============================================================
+   OUTSTANDING REPORTS — Professional Dashboard CSS
+   Drop-in replacement · No HTML changes required
+   ============================================================ */
 
+/* ─── Design Tokens ──────────────────────────────────────── */
+:root {
+  --ui-primary: #1a56db;
+  --ui-primary-dk: #1240b0;
+  --ui-primary-bg: #ebf2ff;
+
+  --ui-success: #0d7e47;
+  --ui-success-bg: #e8f8f0;
+  --ui-success-bd: #6ee7a8;
+
+  --ui-danger: #c81e1e;
+  --ui-danger-bg: #fef2f2;
+  --ui-danger-bd: #fca5a5;
+
+  --ui-warning: #b45309;
+  --ui-warning-bg: #fffbeb;
+  --ui-warning-bd: #fcd34d;
+
+  --ui-info: #0369a1;
+  --ui-info-bg: #e0f2fe;
+  --ui-info-bd: #7dd3fc;
+
+  --ui-card: #ffffff;
+  --ui-page-bg: #f5f7fa;
+  --ui-border: #e4e7ec;
+  --ui-border-md: #cdd2db;
+  --ui-muted: #6b7280;
+  --ui-label: #374151;
+  --ui-text: #111827;
+
+  --ui-radius: 12px;
+  --ui-radius-sm: 8px;
+  --ui-radius-lg: 16px;
+
+  --ui-shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --ui-shadow-sm:
+    0 1px 3px rgba(16, 24, 40, 0.1), 0 1px 2px rgba(16, 24, 40, 0.06);
+  --ui-shadow-md:
+    0 4px 8px -2px rgba(16, 24, 40, 0.1), 0 2px 4px -2px rgba(16, 24, 40, 0.06);
+  --ui-shadow-lg:
+    0 12px 24px -4px rgba(16, 24, 40, 0.12),
+    0 4px 8px -2px rgba(16, 24, 40, 0.06);
+
+  --ui-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ─── Page ───────────────────────────────────────────────── */
+.ui-page {
+  padding: 28px 28px 48px;
+  background: var(--ui-page-bg);
+  min-height: 100vh;
+}
+
+/* ─── Header ─────────────────────────────────────────────── */
+.ui-header {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--ui-border);
+}
+
+.ui-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ui-text);
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  gap: 10px !important;
+}
+
+.ui-title lucide-icon {
+  width: 22px;
+  height: 22px;
+  color: var(--ui-primary);
+  flex-shrink: 0;
+}
+
+.ui-subtitle {
+  font-size: 13px;
+  color: var(--ui-muted);
+  margin-top: 4px;
+  font-weight: 400;
+  letter-spacing: 0.1px;
+}
+
+/* ─── Filter Bar ─────────────────────────────────────────── */
+.ui-filter {
+  background: var(--ui-card);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius);
+  padding: 18px 20px;
+  box-shadow: var(--ui-shadow-sm);
+  margin-bottom: 22px;
+  position: relative;
+}
+
+.ui-filter::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--ui-primary) 0%, #60a5fa 100%);
+  border-radius: var(--ui-radius) var(--ui-radius) 0 0;
+}
+
+.ui-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  gap: 16px;
+  align-items: end;
+}
+
+/* ─── Fields ─────────────────────────────────────────────── */
+.ui-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.ui-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--ui-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ui-field input,
+.ui-field select {
+  width: 100%;
+  height: 38px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--ui-text);
+  background: var(--ui-card);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  box-shadow: var(--ui-shadow-xs);
+  transition: var(--ui-transition);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.ui-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+  cursor: pointer;
+}
+
+.ui-field input[type="date"] {
+  color-scheme: light;
+}
+
+.ui-field input:hover,
+.ui-field select:hover {
+  border-color: var(--ui-border-md);
+}
+
+.ui-field input:focus,
+.ui-field select:focus {
+  outline: none;
+  border-color: var(--ui-primary);
+  box-shadow: 0 0 0 3px rgba(26, 86, 219, 0.12);
+}
+
+/* ─── KPI Grid ───────────────────────────────────────────── */
+.ui-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+/* ─── KPI Card ───────────────────────────────────────────── */
+.ui-kpi {
+  background: var(--ui-card);
+  border-radius: var(--ui-radius);
+  border: 1px solid var(--ui-border);
+  box-shadow: var(--ui-shadow-sm);
+  transition: var(--ui-transition);
+  overflow: hidden;
+  position: relative;
+}
+
+.ui-kpi::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at top right,
+    rgba(255, 255, 255, 0.6) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.ui-kpi:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--ui-shadow-lg);
+}
+
+/* ─── KPI Head ───────────────────────────────────────────── */
+.ui-kpi-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 14px 20px 10px;
+}
+
+.ui-kpi-head lucide-icon {
+  display: none !important;
+}
+
+/* ─── KPI Value ──────────────────────────────────────────── */
+.ui-kpi-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ui-text);
+  letter-spacing: -0.5px;
+  padding: 0 20px 20px;
+  line-height: 1;
+}
+
+/* ─── KPI — Primary (Total Bill) ────────────────────────── */
+.ui-kpi:has(.kpi-primary) {
+  border-top: 3px solid var(--ui-primary);
+  border-color: var(--ui-border);
+  border-top-color: var(--ui-primary);
+}
+
+.ui-kpi:has(.kpi-primary) .ui-kpi-head {
+  color: var(--ui-primary);
+  background: var(--ui-primary-bg);
+}
+
+.ui-kpi:has(.kpi-primary) .ui-kpi-value {
+  color: var(--ui-primary-dk);
+}
+
+.ui-kpi:has(.kpi-primary):hover {
+  box-shadow:
+    var(--ui-shadow-lg),
+    0 0 0 1px rgba(26, 86, 219, 0.08);
+}
+
+/* ─── KPI — Success (Total Paid) ────────────────────────── */
+.ui-kpi:has(.kpi-success) {
+  border-top: 3px solid var(--ui-success);
+  border-color: var(--ui-border);
+  border-top-color: var(--ui-success);
+}
+
+.ui-kpi:has(.kpi-success) .ui-kpi-head {
+  color: var(--ui-success);
+  background: var(--ui-success-bg);
+}
+
+.ui-kpi:has(.kpi-success) .ui-kpi-value {
+  color: var(--ui-success);
+}
+
+.ui-kpi:has(.kpi-success):hover {
+  box-shadow:
+    var(--ui-shadow-lg),
+    0 0 0 1px rgba(13, 126, 71, 0.08);
+}
+
+/* ─── KPI — Danger (Outstanding) ────────────────────────── */
+.ui-kpi:has(.kpi-danger) {
+  border-top: 3px solid var(--ui-danger);
+  border-color: var(--ui-border);
+  border-top-color: var(--ui-danger);
+}
+
+.ui-kpi:has(.kpi-danger) .ui-kpi-head {
+  color: var(--ui-danger);
+  background: var(--ui-danger-bg);
+}
+
+.ui-kpi:has(.kpi-danger) .ui-kpi-value {
+  color: var(--ui-danger);
+}
+
+.ui-kpi:has(.kpi-danger):hover {
+  box-shadow:
+    var(--ui-shadow-lg),
+    0 0 0 1px rgba(200, 30, 30, 0.08);
+}
+
+/* ─── KPI — Warning ──────────────────────────────────────── */
+.ui-kpi:has(.kpi-warning) {
+  border-top: 3px solid var(--ui-warning);
+  border-color: var(--ui-border);
+  border-top-color: var(--ui-warning);
+}
+
+.ui-kpi:has(.kpi-warning) .ui-kpi-head {
+  color: var(--ui-warning);
+  background: var(--ui-warning-bg);
+}
+
+.ui-kpi:has(.kpi-warning) .ui-kpi-value {
+  color: var(--ui-warning);
+}
+
+/* ─── KPI — Info ─────────────────────────────────────────── */
+.ui-kpi:has(.kpi-info) {
+  border-top: 3px solid var(--ui-info);
+  border-color: var(--ui-border);
+  border-top-color: var(--ui-info);
+}
+
+.ui-kpi:has(.kpi-info) .ui-kpi-head {
+  color: var(--ui-info);
+  background: var(--ui-info-bg);
+}
+
+.ui-kpi:has(.kpi-info) .ui-kpi-value {
+  color: var(--ui-info);
+}
+/* ─── Professional Table Section ───────────────────────── */
+
+.ui-table {
+  background: var(--ui-card);
+
+  border: 1px solid var(--ui-border);
+
+  border-radius: 18px;
+
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+
+  overflow: hidden;
+
+  margin-top: 24px;
+
+  position: relative;
+
+  transition: all 0.25s ease;
+}
+
+/* top highlight line */
+
+.ui-table::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 3px;
+
+  background: linear-gradient(90deg, var(--ui-primary), #60a5fa);
+
+  z-index: 2;
+}
+
+/* table body */
+
+.ui-table-body {
+  padding: 18px;
+
+  background: #ffffff;
+
+  overflow: auto;
+
+  scrollbar-width: thin;
+
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+/* scrollbar */
+
+.ui-table-body::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.ui-table-body::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.ui-table-body::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+
+  border-radius: 10px;
+}
+
+.ui-table-body::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* hover effect */
+
+.ui-table:hover {
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.1);
+
+  transform: translateY(-2px);
+}
+
+/* mobile */
+
+@media (max-width: 768px) {
+  .ui-table {
+    border-radius: 14px;
+
+    margin-top: 18px;
+  }
+
+  .ui-table-body {
+    padding: 10px;
+  }
+}
+/* ─── Mobile ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ui-page {
+    padding: 16px 14px 40px;
+  }
+
+  .ui-header {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+  }
+
+  .ui-title {
+    font-size: 18px;
+  }
+
+  .ui-filter {
+    padding: 14px 14px;
+  }
+
+  .ui-filter-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .ui-kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .ui-kpi-head {
+    font-size: 11px;
+    padding: 12px 16px 8px;
+  }
+
+  .ui-kpi-value {
+    font-size: 22px;
+    padding: 0 16px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ui-filter-grid {
+    grid-template-columns: 1fr;
+  }
+}

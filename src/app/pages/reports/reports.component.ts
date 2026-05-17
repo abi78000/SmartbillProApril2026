@@ -6,7 +6,7 @@ import { TerminalReportsComponent } from './terminal-reports/terminal-reports.co
 import { SalesReportsComponent } from './sales-reports/sales-reports.component';
 import { ProfitReportsComponent } from './profit-reports/profit-reports.component';
 import { GstReportComponent } from './gst-report/gst-report.component';
-import { OutstandingReportsComponent } from './outstanding-reports/outstanding-reports.component'; // ✅ ADD
+import { OutstandingReportsComponent } from './outstanding-reports/outstanding-reports.component'; 
 import { StockReportsComponent } from './stock-reports/stock-reports.component';
 import { LucideAngularModule } from "lucide-angular";
 import { SharedModule } from '../../shared/shared.module';

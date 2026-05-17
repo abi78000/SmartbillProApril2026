@@ -1,0 +1,389 @@
+/* ======================================================
+   SMART BILL PRO - ENTERPRISE REPORT UI
+====================================================== */
+
+:root {
+  --primary: #24126a;
+  --primary-light: #4338ca;
+  --accent: #f59e0b;
+
+  --bg: #f4f6fb;
+  --card: #ffffff;
+
+  --text: #111827;
+  --muted: #64748b;
+
+  --border: #e5e7eb;
+
+  --radius: 20px;
+
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+  --shadow-md: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+/* ======================================================
+   GLOBAL
+====================================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  background: var(--bg);
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+/* ======================================================
+   HEADER
+====================================================== */
+
+.app-header {
+  height: 72px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 24px;
+
+  background: linear-gradient(90deg, #24126a, #14063d);
+
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+
+  z-index: 999;
+
+  position: sticky;
+  top: 0;
+}
+
+/* LEFT */
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* LOGO */
+
+.brand {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.pro {
+  color: #f59e0b;
+}
+
+/* BACK BUTTON */
+
+.back-btn {
+  height: 42px;
+
+  padding: 0 18px;
+
+  border: none;
+
+  border-radius: 12px;
+
+  background: #fff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* ======================================================
+   PAGE
+====================================================== */
+
+.reports-page {
+  display: flex;
+
+  gap: 20px;
+
+  padding: 20px;
+
+  height: calc(100vh - 72px);
+
+  background: var(--bg);
+}
+
+/* ======================================================
+   SIDEBAR
+====================================================== */
+
+.report-tabs {
+  width: 260px;
+
+  background: linear-gradient(180deg, #24126a, #1b0f4f);
+
+  border-radius: 24px;
+
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 6px;
+
+  box-shadow: var(--shadow-md);
+
+  overflow: auto;
+
+  flex-shrink: 0;
+}
+
+/* SIDEBAR TITLE */
+
+.report-title {
+  font-size: 18px;
+
+  font-weight: 700;
+
+  color: #fff;
+
+  padding-bottom: 14px;
+
+  margin-bottom: 12px;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ======================================================
+   TABS
+====================================================== */
+
+.tab-btn {
+  width: 100%;
+
+  padding: 13px 16px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  border: none;
+
+  background: transparent;
+
+  color: #dbe4ff;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  border-radius: 14px;
+
+  cursor: pointer;
+
+  position: relative;
+
+  transition: 0.25s;
+}
+
+.tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+
+  color: #fff;
+
+  transform: translateX(4px);
+}
+
+.tab-btn.active {
+  background: linear-gradient(
+    90deg,
+    rgba(245, 158, 11, 0.18),
+    rgba(67, 56, 202, 0.9)
+  );
+
+  color: #fff;
+
+  font-weight: 600;
+}
+
+.tab-btn.active::before {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+
+  top: 8px;
+  bottom: 8px;
+
+  width: 4px;
+
+  background: #facc15;
+
+  border-radius: 20px;
+}
+
+/* ======================================================
+   CONTENT
+====================================================== */
+
+.report-content {
+  flex: 1;
+
+  background: #fff;
+
+  border-radius: 24px;
+
+  padding: 24px;
+
+  box-shadow: var(--shadow-md);
+
+  overflow: auto;
+}
+
+/* CONTENT HEADER */
+
+.ui-header {
+  margin-bottom: 22px;
+
+  padding-bottom: 14px;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.ui-title {
+  font-size: 32px;
+  font-weight: 700;
+
+  color: #111827;
+}
+
+.ui-subtitle {
+  font-size: 14px;
+
+  color: #64748b;
+
+  margin-top: 4px;
+}
+
+/* ======================================================
+   KPI GRID
+====================================================== */
+
+.ui-kpi-grid {
+  display: grid;
+
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+  gap: 16px;
+
+  margin-top: 18px;
+}
+
+/* KPI CARD */
+
+.ui-kpi {
+  background: #fff;
+
+  border-radius: 18px;
+
+  overflow: hidden;
+
+  border: 1px solid #edf2f7;
+
+  box-shadow: var(--shadow-sm);
+
+  transition: 0.25s;
+}
+
+.ui-kpi:hover {
+  transform: translateY(-4px);
+
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.06);
+}
+
+.ui-kpi-head {
+  padding: 10px 16px;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+
+  text-transform: uppercase;
+}
+
+.ui-kpi-value {
+  padding: 14px 16px;
+
+  font-size: 18px;
+
+  font-weight: 700;
+}
+
+/* ======================================================
+   SCROLLBAR
+====================================================== */
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+
+  border-radius: 10px;
+}
+
+/* ======================================================
+   MOBILE
+====================================================== */
+
+@media (max-width: 768px) {
+  .reports-page {
+    flex-direction: column;
+
+    padding: 10px;
+  }
+
+  .report-tabs {
+    width: 100%;
+
+    display: flex;
+
+    flex-direction: row;
+
+    overflow-x: auto;
+  }
+
+  .report-title {
+    display: none;
+  }
+
+  .tab-btn {
+    flex-shrink: 0;
+  }
+
+  .report-content {
+    padding: 16px;
+  }
+}

@@ -1,6 +1,5 @@
 <!-- SEARCH + EXPORTS -->
 <div class="datatable-toolbar">
-
   <!-- EXPORT BUTTONS -->
   <div class="export-buttons">
     <button class="export-btn excel" (click)="exportExcel()">
@@ -29,56 +28,53 @@
   />
 </div>
 
-
 <!-- TABLE -->
 <div class="table-wrapper" *ngIf="!loading; else loader">
-
   <!-- HEADER -->
   <div class="header-container">
     <table class="smart-table">
       <thead>
         <tr>
-
           <!-- STICKY FIRST COLUMN -->
           <th class="sticky-col">#</th>
 
-          <th *ngFor="let col of columns"
-              (click)="sortBy(col.field)"
-              class="header-cell">
-
+          <th
+            *ngFor="let col of columns"
+            (click)="sortBy(col.field)"
+            class="header-cell"
+          >
             <div class="header-content">
               <span>{{ col.header }}</span>
 
-              <i class="sort-icon"
-                 [class.asc]="sortDirection[col.field] === 'asc'"
-                 [class.desc]="sortDirection[col.field] === 'desc'"></i>
+              <i
+                class="sort-icon"
+                [class.asc]="sortDirection[col.field] === 'asc'"
+                [class.desc]="sortDirection[col.field] === 'desc'"
+              ></i>
             </div>
-
           </th>
-
         </tr>
       </thead>
     </table>
   </div>
 
-
   <!-- BODY -->
   <div class="scroll-body">
     <table class="smart-table">
       <tbody>
-
         <tr *ngFor="let row of paginatedData; let i = index">
-
           <!-- FIXED FIRST COLUMN -->
           <td class="sticky-col">
             {{ (currentPage - 1) * pageSize + (i + 1) }}
           </td>
 
           <td *ngFor="let col of columns">
-
             <!-- STATUS BADGE -->
             <ng-container *ngIf="col.field === 'statusName'; else normalCell">
-              <span class="status-badge" [ngClass]="getStatusClass(row[col.field])">
+              <span
+                class="status-badge"
+                [ngClass]="getStatusClass(row[col.field])"
+              >
                 {{ row[col.field] }}
               </span>
             </ng-container>
@@ -87,41 +83,63 @@
             <ng-template #normalCell>
               {{ row[col.field] }}
             </ng-template>
-
           </td>
-
         </tr>
-
       </tbody>
     </table>
   </div>
 
-
   <!-- PAGINATION -->
   <div class="paginator-container">
-
-    <button class="page-btn" (click)="goToPage(1)" [disabled]="currentPage === 1">«</button>
-    <button class="page-btn" (click)="prevPage()" [disabled]="currentPage === 1">‹</button>
+    <button
+      class="page-btn"
+      (click)="goToPage(1)"
+      [disabled]="currentPage === 1"
+    >
+      «
+    </button>
+    <button
+      class="page-btn"
+      (click)="prevPage()"
+      [disabled]="currentPage === 1"
+    >
+      ‹
+    </button>
 
     <ng-container *ngFor="let p of pages">
-      <button class="page-number"
-              [class.active]="p === currentPage"
-              (click)="goToPage(p)">
+      <button
+        class="page-number"
+        [class.active]="p === currentPage"
+        (click)="goToPage(p)"
+      >
         {{ p }}
       </button>
     </ng-container>
 
-    <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">›</button>
-    <button class="page-btn" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">»</button>
+    <button
+      class="page-btn"
+      (click)="nextPage()"
+      [disabled]="currentPage === totalPages"
+    >
+      ›
+    </button>
+    <button
+      class="page-btn"
+      (click)="goToPage(totalPages)"
+      [disabled]="currentPage === totalPages"
+    >
+      »
+    </button>
 
-    <select class="rows-select" [(ngModel)]="pageSize" (change)="onRowsChange()">
+    <select
+      class="rows-select"
+      [(ngModel)]="pageSize"
+      (change)="onRowsChange()"
+    >
       <option *ngFor="let r of [5, 10, 20, 50]" [ngValue]="r">{{ r }}</option>
     </select>
-
   </div>
-
 </div>
-
 
 <!-- LOADER -->
 <ng-template #loader>
