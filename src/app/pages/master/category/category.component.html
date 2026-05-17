@@ -1,59 +1,56 @@
 <div class="master-layout">
 
-  <!-- ================= HEADER ================= -->
+  <!-- ================= TABLE VIEW ================= -->
 
-  <div class="master-top-header">
+  <ng-container *ngIf="!showForm">
 
-    <div class="master-top-left">
+    <div class="master-top-header">
 
-      <div class="master-title-wrapper">
+      <div class="master-top-left">
 
-        <h2>
-          Category
-        </h2>
+        <div class="master-title-wrapper">
+          <h2>Category Master</h2>
+        </div>
+
+      </div>
+
+      <div class="master-top-right">
+
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="refreshCategories()">
+
+          Refresh
+
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="newCategory()">
+
+          + Add Category
+
+        </button>
 
       </div>
 
     </div>
 
 
-    <div class="master-top-right">
-
-      <button
-        type="button"
-        class="master-btn-outline"
-        (click)="refreshCategories()">
-
-        Refresh
-
-      </button>
-
-
-      <button
-        type="button"
-        class="master-btn-primary"
-        (click)="newCategory()">
-
-        + Add Category
-
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- ================= TABLE VIEW ================= -->
-
-  <ng-container *ngIf="!showForm">
+    <!-- ================= TABLE ================= -->
 
     <div class="master-table-layout">
 
       <app-dynamic-table
 
         [data]="categories"
+
         [columns]="categoryColumns"
+
         (edit)="editCategory($event)"
+
         (delete)="deleteCategory($event)">
 
       </app-dynamic-table>
@@ -61,6 +58,7 @@
     </div>
 
   </ng-container>
+
 
 
   <!-- ================= FORM VIEW ================= -->

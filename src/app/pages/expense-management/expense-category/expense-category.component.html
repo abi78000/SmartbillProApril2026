@@ -1,111 +1,92 @@
 <div class="master-layout">
 
-  <!-- HEADER -->
-  <div class="master-top-header">
-    <div class="master-top-left">
-      <lucide-icon name="layers"></lucide-icon>
-      <div>
-        <div class="master-title-text">EXPENSE CATEGORY MASTER</div>
-        <div class="master-subtitle-text">ERP Management</div>
+  <!-- ================= TABLE VIEW ================= -->
+
+  <ng-container *ngIf="!showForm">
+
+    <div class="master-top-header">
+
+      <div class="master-top-left">
+
+        <div class="master-title-wrapper">
+          <h2>Expense Category Master</h2>
+        </div>
+
       </div>
-    </div>
 
-    <div class="master-top-right">
-      <button class="master-btn-primary" (click)="newCategory()">ADD</button>
-      <button class="master-btn-primary" (click)="reset()">REFRESH</button>
-    </div>
+      <div class="master-top-right">
 
-    <div class="total-badge saas">
-      TOTAL : {{ categories.length }}
-    </div>
-  </div>
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="refreshCategories()">
 
-  <!-- FORM -->
-  <div class="master-panel">
+          Refresh
 
-    <div class="master-header">
-      <h2>CREATE CATEGORY</h2>
-
-      <div>
-        <button class="master-btn-outline" (click)="save()">
-          {{ isEditMode ? 'UPDATE' : 'SAVE' }}
         </button>
-        <button class="master-btn-primary" (click)="reset()">CLEAR</button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="newCategory()">
+
+          + Add Category
+
+        </button>
+
       </div>
+
     </div>
 
-    <fieldset [disabled]="!isFormEnabled">
 
-      <div class="form-grid">
+    <!-- ================= TABLE ================= -->
 
-        <!-- COMPANY -->
-        <div class="form-column">
-          <label>Company *</label>
-          <select class="input-common"
-                  [(ngModel)]="category.companyID"
-                  (change)="onCompanyChange(category.companyID)">
-            <option value="">Select Company</option>
-            <option *ngFor="let c of companies" [value]="c.companyID">
-              {{ c.companyName }}
-            </option>
-          </select>
-        </div>
+    <div class="master-table-layout">
 
-        <!-- BRANCH -->
-        <div class="form-column">
-          <label>Branch</label>
-          <select class="input-common"
-                  [(ngModel)]="category.branchID">
-            <option value="">Select Branch</option>
-            <option *ngFor="let b of branches" [value]="b.branchID">
-              {{ b.branchName }}
-            </option>
-          </select>
-        </div>
+      <app-dynamic-table
 
-        <!-- CODE -->
-        <div class="form-column">
-          <label>Category Code</label>
-          <input class="input-common"
-                 [(ngModel)]="category.categoryCode"
-                 readonly />
-        </div>
+        [data]="categories"
 
-        <!-- NAME -->
-        <div class="form-column">
-          <label>Category Name *</label>
-          <input class="input-common"
-                 [(ngModel)]="category.categoryName" />
-        </div>
+        [columns]="categoryColumns"
 
-        <!-- DESCRIPTION -->
-        <div class="form-column">
-          <label>Description</label>
-          <input class="input-common"
-                 [(ngModel)]="category.description" />
-        </div>
+        (edit)="editCategory($event)"
 
-        <!-- STATUS -->
-        <div class="form-column">
-          <label>Status</label>
-          <input type="checkbox" [(ngModel)]="category.isActive" />
-        </div>
+        (delete)="deleteCategory($event)">
 
-      </div>
+      </app-dynamic-table>
 
-    </fieldset>
+    </div>
 
-  </div>
+  </ng-container>
 
-  <!-- TABLE -->
-  <div class="master-panel">
-    <app-master-table-view
-      [data]="categories || []"
-      [columns]="columns"
-      title="ALL EXPENSE CATEGORIES"
-      (edit)="edit($event)"
-      (delete)="delete($event)">
-    </app-master-table-view>
-  </div>
+
+
+  <!-- ================= FORM VIEW ================= -->
+
+  <ng-container *ngIf="showForm">
+
+    <div class="master-form-layout compact-form">
+
+      <app-reusable-form
+
+        [title]="formTitle"
+
+        [tabs]="categoryTabs"
+
+        [fields]="categoryFields"
+
+        [model]="category"
+
+        (fieldChange)="onFieldChange($event)"
+
+        (saveForm)="saveCategory()"
+
+        (cancelForm)="cancelForm()">
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>

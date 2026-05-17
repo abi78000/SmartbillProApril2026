@@ -64,7 +64,7 @@ export class CessComponent implements OnInit {
     },
 
     {
-      field: 'statusText',
+      field: 'isActive',
       header: 'Status',
     },
   ];

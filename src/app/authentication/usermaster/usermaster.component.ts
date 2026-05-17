@@ -1,783 +1,488 @@
-import {
-Component,
-OnInit
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {
-CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-FormsModule
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
-import {
-DynamicTableComponent
-} from '../../framework/dynamic-table/dynamic-table.component';
+import { DynamicTableComponent } from '../../framework/dynamic-table/dynamic-table.component';
 
-import {
-ReusableFormComponent
-} from '../../framework/reusable-form/reusable-form.component';
+import { ReusableFormComponent } from '../../framework/reusable-form/reusable-form.component';
 
-import {
-CommonserviceService
-} from '../../services/commonservice.service';
+import { CommonserviceService } from '../../services/commonservice.service';
 
-import {
-SweetAlertService
-} from '../../services/properties/sweet-alert.service';
+import { SweetAlertService } from '../../services/properties/sweet-alert.service';
 
 @Component({
+  selector: 'app-usermaster',
 
-selector:'app-usermaster',
+  standalone: true,
 
-standalone:true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
 
-imports:[
-CommonModule,
-FormsModule,
-DynamicTableComponent,
-ReusableFormComponent
-],
+  templateUrl: './usermaster.component.html',
 
-templateUrl:'./usermaster.component.html',
-
-styleUrls:[
-'./usermaster.component.css'
-]
-
+  styleUrls: ['./usermaster.component.css'],
 })
+export class UsermasterComponent implements OnInit {
+  showForm = false;
 
-export class UsermasterComponent
-implements OnInit{
+  isEditMode = false;
 
+  formTitle = 'New User';
 
-showForm=false;
+  users: any[] = [];
 
-isEditMode=false;
+  companies: any[] = [];
 
-formTitle='New User';
+  branches: any[] = [];
 
+  departments: any[] = [];
 
-users:any[]=[];
+  roles: any[] = [];
 
-companies:any[]=[];
+  userModel: any = {};
 
-branches:any[]=[];
-
-departments:any[]=[];
-
-roles:any[]=[];
-
-
-userModel:any={};
-
-
-
-/* ===================================
+  /* ===================================
    TABS
 =================================== */
 
-userTabs=[
+  userTabs = ['Details', 'Organization', 'Settings'];
 
-'Details',
-'Organization',
-'Settings'
-
-];
-
-
-
-/* ===================================
+  /* ===================================
    TABLE
 =================================== */
 
-userColumns=[
+  userColumns = [
+    {
+      field: 'userName',
+      header: 'User',
+    },
 
-{
-field:'userName',
-header:'User'
-},
+    {
+      field: 'email',
+      header: 'Email',
+    },
 
-{
-field:'email',
-header:'Email'
-},
+    {
+      field: 'roleName',
+      header: 'Role',
+    },
 
-{
-field:'roleName',
-header:'Role'
-},
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
 
-{
-field:'isActive',
-header:'Status'
-}
-
-];
-
-
-
-/* ===================================
+  /* ===================================
    FIELDS
 =================================== */
 
-userFields:any[]=[
+  userFields: any[] = [
+    {
+      label: 'User Name',
+      model: 'userName',
+      type: 'text',
+      required: true,
+      tab: 'Details',
+      autoFocus: true,
+    },
 
-{
-label:'User Name',
-model:'userName',
-type:'text',
-required:true,
-tab:'Details',
-autoFocus:true
-},
+    {
+      label: 'Password',
+      model: 'passwordHash',
+      type: 'text',
+      required: true,
+      tab: 'Details',
+    },
 
-{
-label:'Password',
-model:'passwordHash',
-type:'text',
-required:true,
-tab:'Details'
-},
+    {
+      label: 'Email',
+      model: 'email',
+      type: 'email',
+      required: true,
+      tab: 'Details',
+    },
 
-{
-label:'Email',
-model:'email',
-type:'email',
-required:true,
-tab:'Details'
-},
+    {
+      label: 'Company',
+      model: 'companyID',
+      type: 'select',
+      tab: 'Organization',
+      required: true,
+      options: [],
+    },
 
-{
-label:'Company',
-model:'companyID',
-type:'select',
-tab:'Organization',
-required:true,
-options:[]
-},
+    {
+      label: 'Branch',
+      model: 'branchID',
+      type: 'select',
+      tab: 'Organization',
+      required: true,
+      options: [],
+    },
 
-{
-label:'Branch',
-model:'branchID',
-type:'select',
-tab:'Organization',
-required:true,
-options:[]
-},
+    {
+      label: 'Department',
+      model: 'departmentID',
+      type: 'select',
+      tab: 'Organization',
+      required: true,
+      options: [],
+    },
 
-{
-label:'Department',
-model:'departmentID',
-type:'select',
-tab:'Organization',
-required:true,
-options:[]
-},
+    {
+      label: 'Role',
+      model: 'roleID',
+      type: 'select',
+      tab: 'Organization',
+      required: true,
+      options: [],
+    },
 
-{
-label:'Role',
-model:'roleID',
-type:'select',
-tab:'Organization',
-required:true,
-options:[]
-},
+    {
+      label: 'Is Active',
+      model: 'isActive',
+      type: 'checkbox',
+      tab: 'Settings',
+    },
+  ];
 
-{
-label:'Is Active',
-model:'isActive',
-type:'checkbox',
-tab:'Settings'
-}
+  constructor(
+    private commonservice: CommonserviceService,
 
-];
+    private swal: SweetAlertService,
+  ) {}
 
+  ngOnInit() {
+    this.resetModel();
 
-constructor(
+    this.loadCompanies();
 
-private commonservice:CommonserviceService,
+    this.loadBranches();
 
-private swal:SweetAlertService
+    this.loadDepartments();
 
-){}
+    this.loadRoles();
 
+    this.loadUsers();
+  }
 
-ngOnInit(){
-
-this.resetModel();
-
-this.loadCompanies();
-
-this.loadBranches();
-
-this.loadDepartments();
-
-this.loadRoles();
-
-this.loadUsers();
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    LOAD COMPANIES
 =================================== */
 
-loadCompanies(){
+  loadCompanies() {
+    this.commonservice.getCompanies().subscribe({
+      next: (res: any) => {
+        this.companies = res;
 
-this.commonservice
-.getCompanies()
-.subscribe({
+        const field = this.userFields.find((x) => x.model === 'companyID');
 
-next:(res:any)=>{
+        if (field) {
+          field.options = res.map((company: any) => ({
+            label: company.companyName,
 
-this.companies=res;
+            value: company.companyID,
+          }));
+        }
+      },
 
-const field=
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
-this.userFields.find(
-
-x=>x.model==='companyID'
-
-);
-
-if(field){
-
-field.options=
-
-res.map(
-
-(company:any)=>({
-
-label:
-company.companyName,
-
-value:
-company.companyID
-
-})
-
-);
-
-}
-
-},
-
-error:(err)=>{
-
-console.log(err);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    LOAD BRANCHES
 =================================== */
 
-loadBranches(){
+  loadBranches() {
+    this.commonservice.getBranches().subscribe({
+      next: (res: any) => {
+        this.branches = res;
 
-this.commonservice
-.getBranches()
-.subscribe({
+        const field = this.userFields.find((x) => x.model === 'branchID');
 
-next:(res:any)=>{
+        if (field) {
+          field.options = res.map((branch: any) => ({
+            label: branch.branchName,
 
-this.branches=res;
+            value: branch.branchID,
+          }));
+        }
+      },
 
-const field=
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
-this.userFields.find(
-
-x=>x.model==='branchID'
-
-);
-
-if(field){
-
-field.options=
-
-res.map(
-
-(branch:any)=>({
-
-label:
-branch.branchName,
-
-value:
-branch.branchID
-
-})
-
-);
-
-}
-
-},
-
-error:(err)=>{
-
-console.log(err);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    LOAD DEPARTMENTS
 =================================== */
 
-loadDepartments(){
+  loadDepartments() {
+    this.commonservice.getDepartments().subscribe({
+      next: (res: any) => {
+        this.departments = res;
 
-this.commonservice
-.getDepartments()
-.subscribe({
+        const field = this.userFields.find((x) => x.model === 'departmentID');
 
-next:(res:any)=>{
+        if (field) {
+          field.options = res.map((department: any) => ({
+            label: department.departmentName,
 
-this.departments=res;
+            value: department.departmentID,
+          }));
+        }
+      },
 
-const field=
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
-this.userFields.find(
-
-x=>x.model==='departmentID'
-
-);
-
-if(field){
-
-field.options=
-
-res.map(
-
-(department:any)=>({
-
-label:
-department.departmentName,
-
-value:
-department.departmentID
-
-})
-
-);
-
-}
-
-},
-
-error:(err)=>{
-
-console.log(err);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    LOAD ROLES
 =================================== */
 
-loadRoles(){
+  loadRoles() {
+    this.commonservice.getRoles().subscribe({
+      next: (res: any) => {
+        this.roles = res;
 
-this.commonservice
-.getRoles()
-.subscribe({
+        const field = this.userFields.find((x) => x.model === 'roleID');
 
-next:(res:any)=>{
+        if (field) {
+          field.options = res.map((role: any) => ({
+            label: role.roleName,
 
-this.roles=res;
+            value: role.roleID,
+          }));
+        }
+      },
 
-const field=
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
-this.userFields.find(
-
-x=>x.model==='roleID'
-
-);
-
-if(field){
-
-field.options=
-
-res.map(
-
-(role:any)=>({
-
-label:
-role.roleName,
-
-value:
-role.roleID
-
-})
-
-);
-
-}
-
-},
-
-error:(err)=>{
-
-console.log(err);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    LOAD USERS
 =================================== */
 
-loadUsers(){
+  loadUsers() {
+    this.commonservice.getUsers().subscribe({
+      next: (res: any) => {
+        this.users = res.map((user: any) => ({
+          ...user,
 
-this.commonservice
-.getUsers()
-.subscribe({
+          roleName:
+            this.roles.find((r) => r.roleID === user.roleID)?.roleName || '',
 
-next:(res:any)=>{
+          statusText: user.isActive ? 'Active' : 'Inactive',
+        }));
+      },
 
-this.users=
+      error: (err) => {
+        console.log(err);
+      },
+    });
+  }
 
-res.map(
-
-(user:any)=>({
-
-...user,
-
-roleName:
-
-this.roles.find(
-
-r=>
-
-r.roleID===user.roleID
-
-)?.roleName || '',
-
-
-statusText:
-
-user.isActive
-
-?
-
-'Active'
-
-:
-
-'Inactive'
-
-})
-
-);
-
-},
-
-error:(err)=>{
-
-console.log(err);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    ADD
 =================================== */
 
-addUser(){
+  addUser() {
+    this.resetModel();
 
-this.resetModel();
+    this.formTitle = 'New User';
 
-this.formTitle='New User';
+    this.isEditMode = false;
 
-this.isEditMode=false;
+    this.showForm = true;
+  }
 
-this.showForm=true;
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    EDIT
 =================================== */
 
-editUser(row:any){
+  editUser(row: any) {
+    this.userModel = {
+      ...row,
+    };
 
-this.userModel={
+    this.formTitle = 'Edit User';
 
-...row
+    this.isEditMode = true;
 
-};
+    this.showForm = true;
+  }
 
-this.formTitle='Edit User';
-
-this.isEditMode=true;
-
-this.showForm=true;
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    SAVE
 =================================== */
 
-saveUser(data:any){
+  saveUser(data: any) {
+    if (!data.userName) {
+      return this.swal.warning(
+        'Validation',
 
-if(!data.userName){
+        'User Name Required',
+      );
+    }
 
-return this.swal.warning(
+    if (!data.email) {
+      return this.swal.warning(
+        'Validation',
 
-'Validation',
+        'Email Required',
+      );
+    }
 
-'User Name Required'
+    const payload = {
+      userID: data.userID || 0,
 
-);
+      companyID: Number(data.companyID),
 
-}
+      branchID: Number(data.branchID),
 
+      departmentID: Number(data.departmentID),
 
-if(!data.email){
+      roleID: Number(data.roleID),
 
-return this.swal.warning(
+      userName: data.userName,
 
-'Validation',
+      email: data.email,
 
-'Email Required'
+      passwordHash: data.passwordHash,
 
-);
+      isActive: Boolean(data.isActive),
 
-}
+      createdByUserID: data.createdByUserID || 0,
 
+      createdSystemName: 'AngularApp',
 
-const payload={
+      createdAt: data.createdAt || new Date(),
 
-userID:
-data.userID||0,
+      updatedByUserID: 0,
 
-companyID:
-Number(data.companyID),
+      updatedSystemName: 'AngularApp',
 
-branchID:
-Number(data.branchID),
+      updatedAt: new Date(),
+    };
 
-departmentID:
-Number(data.departmentID),
+    this.commonservice.saveUser(payload).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
 
-roleID:
-Number(data.roleID),
+          this.isEditMode ? 'User Updated' : 'User Created',
+        );
 
-userName:
-data.userName,
+        this.loadUsers();
 
-email:
-data.email,
+        this.cancelForm();
+      },
 
-passwordHash:
-data.passwordHash,
+      error: (err) => {
+        console.log(err);
 
-isActive:
-Boolean(
-data.isActive
-),
+        this.swal.error(
+          'Error',
 
-createdByUserID:
-data.createdByUserID||0,
+          'Save Failed',
+        );
+      },
+    });
+  }
 
-createdSystemName:
-'AngularApp',
-
-createdAt:
-data.createdAt||new Date(),
-
-updatedByUserID:0,
-
-updatedSystemName:
-'AngularApp',
-
-updatedAt:
-new Date()
-
-};
-
-
-this.commonservice
-.saveUser(payload)
-.subscribe({
-
-next:()=>{
-
-this.swal.success(
-
-'Success',
-
-this.isEditMode
-
-?
-
-'User Updated'
-
-:
-
-'User Created'
-
-);
-
-this.loadUsers();
-
-this.cancelForm();
-
-},
-
-error:(err)=>{
-
-console.log(err);
-
-this.swal.error(
-
-'Error',
-
-'Save Failed'
-
-);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    DELETE
 =================================== */
 
-deleteUser(row:any){
+  deleteUser(row: any) {
+    row.isActive = false;
 
-row.isActive=false;
+    this.commonservice.saveUser(row).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
 
-this.commonservice
-.saveUser(row)
-.subscribe({
+          'Deleted Successfully',
+        );
 
-next:()=>{
+        this.loadUsers();
+      },
+    });
+  }
 
-this.swal.success(
-
-'Success',
-
-'Deleted Successfully'
-
-);
-
-this.loadUsers();
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    REFRESH
 =================================== */
 
-refresh(){
+  refresh() {
+    this.cancelForm();
 
-this.cancelForm();
+    this.loadUsers();
+  }
 
-this.loadUsers();
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    CANCEL
 =================================== */
 
-cancelForm(){
+  cancelForm() {
+    this.showForm = false;
 
-this.showForm=false;
+    this.resetModel();
+  }
 
-this.resetModel();
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    RESET
 =================================== */
 
-resetModel(){
+  resetModel() {
+    this.userModel = {
+      userID: 0,
 
-this.userModel={
+      companyID: null,
 
-userID:0,
+      branchID: null,
 
-companyID:null,
+      departmentID: null,
 
-branchID:null,
+      roleID: null,
 
-departmentID:null,
+      userName: '',
 
-roleID:null,
+      email: '',
 
-userName:'',
+      passwordHash: '',
 
-email:'',
+      isActive: true,
 
-passwordHash:'',
+      createdByUserID: 0,
 
-isActive:true,
+      createdSystemName: '',
 
-createdByUserID:0,
+      createdAt: '',
 
-createdSystemName:'',
+      updatedByUserID: 0,
 
-createdAt:'',
+      updatedSystemName: '',
 
-updatedByUserID:0,
-
-updatedSystemName:'',
-
-updatedAt:''
-
-};
-
-}
-
+      updatedAt: '',
+    };
+  }
 }

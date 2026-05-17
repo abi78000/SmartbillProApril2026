@@ -1,244 +1,351 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MasterService } from '../../../services/master.service';
-import { ValidationService } from '../../../services/properties/validation.service';
-import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
-import { FocusOnKeyDirective } from '../../../directives/focus-on-key.directive';
-import { Category, SubCategory } from '../../models/common-models/master-models/master';
-import { CommonserviceService } from '../../../services/commonservice.service';
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-import { share } from 'rxjs';
+
 import { SharedModule } from '../../../shared/shared.module';
 
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
 
-interface ApiResponse {
-  success: boolean;
-  message?: string;
-}
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
+
+import { MasterService } from '../../../services/master.service';
+import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
+import { CommonserviceService } from '../../../services/commonservice.service';
 
 @Component({
   selector: 'app-sub-category',
-   standalone: true,
-  imports: [CommonModule, FormsModule, FocusOnKeyDirective,MasterTableViewComponent,SharedModule],
+  standalone: true,
+
+  imports: [
+    CommonModule,
+    FormsModule,
+    SharedModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
+
   templateUrl: './sub-category.component.html',
-  styleUrls: ['./sub-category.component.css']
+  styleUrls: ['./sub-category.component.css'],
 })
-export class SubCategoryComponent {
-   subCategories: SubCategory[] = [];
-  categories: Category[] = [];
-  subCategory: SubCategory = this.newSubCategory();
+export class SubCategoryComponent implements OnInit {
+  showForm = false;
+
   duplicateError = false;
-  subCategoryColumns = [
-    { field: 'subCategoryName', header: 'SubCategory Name' },
-    { field: 'categoryName', header: 'Category Name' },
-    { field: 'isActive', header: 'Active' },
-  ];
+
   isEditMode = false;
-  isFormEnabled = false;
+
+  formTitle = 'New SubCategory';
+
+  subCategories: any[] = [];
+
+  categories: any[] = [];
+
+  subCategory: any = {};
+
+  /*================ TABS =================*/
+
+  subCategoryTabs = ['Details', 'Settings'];
+
+  /*================ TABLE =================*/
+
+  subCategoryColumns = [
+    {
+      field: 'subCategoryName',
+      header: 'SubCategory',
+    },
+
+    {
+      field: 'categoryName',
+      header: 'Category',
+    },
+
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
+
+  /*================ FIELDS =================*/
+
+  subCategoryFields: any[] = [
+    {
+      label: 'Category',
+
+      model: 'categoryID',
+
+      type: 'select',
+
+      required: true,
+
+      tab: 'Details',
+
+      options: [] as any[],
+    },
+
+    {
+      label: 'SubCategory Name',
+
+      model: 'subCategoryName',
+
+      type: 'text',
+
+      required: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Description',
+
+      model: 'description',
+
+      type: 'textarea',
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Is Active',
+
+      model: 'isActive',
+
+      type: 'checkbox',
+
+      tab: 'Settings',
+    },
+  ];
 
   constructor(
-    private readonly masterService: MasterService,
-    private readonly swall: SweetAlertService,
-    private readonly commonservice: CommonserviceService
+    private masterService: MasterService,
+
+    private swall: SweetAlertService,
+
+    private commonservice: CommonserviceService,
   ) {}
 
   ngOnInit() {
     this.loadCategories();
+
     this.loadSubCategories();
-  }
 
-    newSubCategoryCreate() {
     this.resetSubCategory();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
-  refreshSubCategories() {
-    this.resetSubCategory();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
-  /** Create new blank subcategory */
-  private newSubCategory(): SubCategory {
-    const now = new Date().toISOString();
-    return {
-      subCategoryID: 0,
-      subCategoryName: '',
-      categoryID: 0,
-      description: '',
-      isActive: true,
-      createdByUserID: 0,
-      createdSystemName: 'AngularApp',
-      createdAt: now,
-      updatedByUserID: 0,
-      updatedSystemName: 'AngularApp',
-      updatedAt: now
-    };
   }
 
-  /** Focus helper */
-  private focusSubCategory() {
-    setTimeout(() => {
-      const el = document.getElementById('subCategoryName') as HTMLInputElement | null;
-      el?.focus();
-      el?.select();
-    }, 0);
-  }
+  /*================ CATEGORY =================*/
 
-  /** Load all categories */
   loadCategories() {
     this.masterService.getCategories().subscribe({
-      next: res => (this.categories = res ?? []),
-      error: () => this.swall.error('Error', 'Failed to load categories!')
+      next: (res: any) => {
+        this.categories = res || [];
+
+        const field = this.subCategoryFields.find(
+          (x: any) => x.model === 'categoryID',
+        );
+
+        if (field) {
+          field.options = this.categories.map((x: any) => ({
+            label: x.categoryName,
+            value: x.categoryID,
+          }));
+        }
+      },
+
+      error: () => {
+        this.swall.error('Error', 'Category Load Failed');
+      },
     });
   }
 
-  /** Load subcategories optionally filtered by category */
+  /*================ SUBCATEGORY =================*/
+
   loadSubCategories(categoryId?: number) {
     this.masterService.getSubCategories(categoryId).subscribe({
-      next: res => (this.subCategories = res ?? []),
-      error: () => this.swall.error('Error', 'Failed to load subcategories!')
+      next: (res: any) => {
+        this.subCategories = (res || []).map((x: any) => ({
+          ...x,
+
+          categoryName:
+            this.categories.find((c: any) => c.categoryID === x.categoryID)
+              ?.categoryName || '',
+
+          statusText: x.isActive ? 'Active' : 'Inactive',
+        }));
+      },
+
+      error: () => {
+        this.swall.error('Error', 'SubCategory Load Failed');
+      },
     });
   }
 
-  /** Check for duplicates in current category */
-  checkDuplicate() {
-    const name = this.subCategory.subCategoryName?.trim().toLowerCase() || '';
-    const catId = this.subCategory.categoryID;
+  /*================ ADD =================*/
 
-    if (!name || !catId) {
-      this.duplicateError = false;
-      return;
+  newSubCategory() {
+    this.resetSubCategory();
+
+    this.showForm = true;
+
+    this.isEditMode = false;
+
+    this.formTitle = 'New SubCategory';
+  }
+
+  /*================ EDIT =================*/
+
+  editSubCategory(row: any) {
+    this.subCategory = {
+      ...row,
+    };
+
+    this.showForm = true;
+
+    this.isEditMode = true;
+
+    this.formTitle = 'Edit SubCategory';
+  }
+
+  /*================ FIELD CHANGE =================*/
+
+  onFieldChange(event: any) {
+    this.subCategory[event.field] = event.value;
+
+    if (event.field === 'subCategoryName') {
+      this.checkDuplicate();
     }
+  }
 
-    this.duplicateError = this.subCategories.some(sc =>
-      sc.subCategoryName.trim().toLowerCase() === name &&
-      sc.categoryID === catId &&
-      sc.subCategoryID !== this.subCategory.subCategoryID
+  /*================ DUPLICATE =================*/
+
+  checkDuplicate() {
+    const name = this.subCategory.subCategoryName?.trim().toLowerCase();
+
+    const categoryID = this.subCategory.categoryID;
+
+    this.duplicateError = this.subCategories.some(
+      (x: any) =>
+        x.subCategoryName.trim().toLowerCase() === name &&
+        x.categoryID === categoryID &&
+        x.subCategoryID !== this.subCategory.subCategoryID,
     );
   }
 
-  /** Validate before save/update */
-  private validateSubCategory(): boolean {
-    this.subCategory.subCategoryName = this.subCategory.subCategoryName?.trim() || '';
+  /*================ SAVE =================*/
+
+  saveOrUpdateSubCategory() {
     this.checkDuplicate();
 
     if (!this.subCategory.categoryID) {
-      this.swall.warning('Validation', 'Please select a Category!');
-      return false;
+      return this.swall.warning(
+        'Validation',
+
+        'Select Category',
+      );
     }
 
     if (!this.subCategory.subCategoryName) {
-      this.swall.warning('Validation', 'SubCategory Name is required!', () => this.focusSubCategory());
-      return false;
+      return this.swall.warning(
+        'Validation',
+
+        'SubCategory Required',
+      );
     }
 
     if (this.duplicateError) {
-      this.swall.warning('Validation', 'SubCategory already exists!', () => this.focusSubCategory());
-      return false;
+      return this.swall.warning(
+        'Validation',
+
+        'SubCategory Exists',
+      );
     }
 
-    return true;
-  }
+    const userId = this.commonservice.getCurrentUserId();
 
-  /** Save or Update with backend duplicate check */
-  saveOrUpdateSubCategory() {
-    if (!this.subCategory.categoryID || !this.subCategory.subCategoryName?.trim()) {
-      this.swall.warning('Validation', 'Please fill required fields!');
-      return;
+    const now = new Date().toISOString();
+
+    if (this.subCategory.subCategoryID === 0) {
+      this.subCategory.createdByUserID = userId;
+
+      this.subCategory.createdAt = now;
+    } else {
+      this.subCategory.updatedByUserID = userId;
+
+      this.subCategory.updatedAt = now;
     }
 
-    // Fetch latest subcategories for the current category before saving
-    this.masterService.getSubCategories(this.subCategory.categoryID).subscribe({
-      next: (latestSubCats) => {
-        const nameToCheck = this.subCategory.subCategoryName.trim().toLowerCase();
-        const duplicate = latestSubCats.some(sc =>
-          sc.subCategoryName.trim().toLowerCase() === nameToCheck &&
-          sc.subCategoryID !== this.subCategory.subCategoryID
+    this.masterService.saveSubCategory(this.subCategory).subscribe({
+      next: () => {
+        this.swall.success(
+          'Success',
+
+          this.isEditMode ? 'Updated' : 'Saved',
         );
 
-        if (duplicate) {
-          this.swall.warning('Validation', 'SubCategory already exists!');
-          return;
-        }
+        this.loadSubCategories();
 
-        // Proceed to save
-        const userId = this.commonservice.getCurrentUserId();
-        const now = new Date().toISOString();
-
-        if (this.subCategory.subCategoryID === 0) {
-          this.subCategory.createdByUserID = userId;
-          this.subCategory.createdAt = now;
-        } else {
-          this.subCategory.updatedByUserID = userId;
-          this.subCategory.updatedAt = now;
-        }
-
-        this.masterService.saveSubCategory(this.subCategory).subscribe({
-          next: (res: ApiResponse) => {
-            if (res.success) {
-              this.loadSubCategories(this.subCategory.categoryID);
-              this.resetSubCategory();
-              this.swall.success('Success', res.message || 'SubCategory saved successfully!');
-            } else {
-              this.swall.error('Error', res.message || 'Something went wrong!');
-            }
-          },
-          error: () => this.swall.error('Error', 'Failed to save subcategory!')
-        });
+        this.cancelForm();
       },
-      error: () => this.swall.error('Error', 'Failed to validate duplicates!')
+
+      error: () => {
+        this.swall.error(
+          'Error',
+
+          'Save Failed',
+        );
+      },
     });
   }
 
-  /** Edit subcategory */
-  editSubCategory(sc: SubCategory) {
-    this.subCategory = { ...sc };
-    this.checkDuplicate(); // update duplicate error
-    this.focusSubCategory();
-  }
+  /*================ DELETE =================*/
 
-  /** Delete subcategory */
-  deleteSubCategory(sc: SubCategory) {
-    this.swall.confirm(`Delete ${sc.subCategoryName}?`, 'This will mark it as inactive.').then(result => {
-      if (!result.isConfirmed) return;
+  deleteSubCategory(row: any) {
+    row.isActive = false;
 
-      const userId = this.commonservice.getCurrentUserId();
-      const deleted = {
-        ...sc,
-        isActive: false,
-        updatedByUserID: userId,
-        updatedAt: new Date().toISOString()
-      };
+    row.updatedByUserID = this.commonservice.getCurrentUserId();
 
-      this.masterService.saveSubCategory(deleted).subscribe({
-        next: (res: ApiResponse) => {
-          if (res.success) {
-            this.loadSubCategories();
-            this.swall.success('Deleted!', res.message || 'SubCategory deleted successfully!');
-          } else {
-            this.swall.error('Error', res.message || 'Failed to delete!');
-          }
-        },
-        error: () => this.swall.error('Error', 'Failed to delete!')
-      });
+    row.updatedAt = new Date().toISOString();
+
+    this.masterService.saveSubCategory(row).subscribe({
+      next: () => {
+        this.swall.success(
+          'Success',
+
+          'Deleted',
+        );
+
+        this.loadSubCategories();
+      },
     });
   }
 
-  /** Reset form */
+  /*================ CANCEL =================*/
+
+  cancelForm() {
+    this.showForm = false;
+
+    this.resetSubCategory();
+  }
+
+  /*================ REFRESH =================*/
+
+  refreshSubCategories() {
+    this.cancelForm();
+
+    this.loadSubCategories();
+  }
+
+  /*================ RESET =================*/
+
   resetSubCategory() {
-    this.subCategory = this.newSubCategory();
-    this.duplicateError = false;
-    this.focusSubCategory();
-  }
+    this.subCategory = {
+      subCategoryID: 0,
 
-  /** Filter subcategories by category */
-  filterByCategory(event: any) {
-    const categoryId = +event.target.value || undefined;
-    this.loadSubCategories(categoryId);
-  }
+      subCategoryName: '',
 
-  /** Get category name by ID */
-  getCategoryName(categoryID: number): string {
-    return this.categories.find(c => c.categoryID === categoryID)?.categoryName || '-';
-  }}
+      categoryID: 0,
+
+      description: '',
+
+      isActive: true,
+    };
+  }
+}

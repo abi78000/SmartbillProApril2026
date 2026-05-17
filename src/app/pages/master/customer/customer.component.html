@@ -1,245 +1,92 @@
 <div class="master-layout">
 
-  <!-- ================= TOP HEADER ================= -->
-  <div class="master-top-header">
+  <!-- ================= TABLE VIEW ================= -->
 
-    <div class="master-top-left">
-      <lucide-icon name="user"></lucide-icon>
-      <div>
-        <div class="master-title-text">CUSTOMER MASTER</div>
-        <div class="master-subtitle-text">Enterprise Resource Planning</div>
-      </div>
-    </div>
+  <ng-container *ngIf="!showForm">
 
-    <div class="master-top-right">
-      <button class="master-btn-primary" type="button" (click)="newCustomerCreate()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD CUSTOMER
-      </button>
+    <div class="master-top-header">
 
-      <button class="master-btn-primary" type="button" (click)="refreshCustomers()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
-      </button>
-    </div>
+      <div class="master-top-left">
 
-    <div class="total-badge saas">
-      TOTAL CUSTOMERS : {{ customers.length }}
-    </div>
+        <div class="master-title-wrapper">
+          <h2>Customer Master</h2>
+        </div>
 
-  </div>
-
-  <!-- ================= LEFT FORM PANEL ================= -->
-  <div class="master-panel">
-
-    <div class="master-header">
-      <div class="master-title">
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>CREATE CUSTOMER</h2>
       </div>
 
-      <div class="master-actions">
+      <div class="master-top-right">
+
         <button
           type="button"
           class="master-btn-outline"
-          (click)="saveOrUpdateCustomer()"
-          [disabled]="duplicateError"
-        >
-          {{ customer.customerID ? 'UPDATE' : 'SAVE' }}
+          (click)="refreshCustomers()">
+
+          Refresh
+
         </button>
 
         <button
           type="button"
           class="master-btn-primary"
-          (click)="resetCustomer()"
-        >
-          CLEAR
+          (click)="newCustomer()">
+
+          + Add Customer
+
         </button>
+
       </div>
+
     </div>
 
-   <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
 
-      <div class="form-grid">
+    <!-- ================= TABLE ================= -->
 
-        <!-- Code -->
-        <div class="form-column">
-          <label>Code</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.customerCode"
-            name="customerCode"
-            readonly
-            appFocusOnKey
-          />
-        </div>
+    <div class="master-table-layout">
 
-        <!-- Name -->
-        <div class="form-column">
-          <label>Customer Name</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.customerName"
-            name="customerName"
-            required
-            appInputRestrict="letter"
-            appFocusOnKey
-            (ngModelChange)="checkDuplicate()"
-          />
-          <div class="text-warning small mt-1" *ngIf="duplicateError">
-            Customer name already exists!
-          </div>
-        </div>
+      <app-dynamic-table
 
-        <!-- Phone -->
-        <div class="form-column">
-          <label>Phone</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.phone"
-            name="phone"
-            appInputRestrict="number"
-            appFocusOnKey
-          />
-        </div>
+        [data]="customers"
 
-        <!-- Alt Phone -->
-        <div class="form-column">
-          <label>Alt Phone</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.alternatePhone"
-            name="alternatePhone"
-            appInputRestrict="number"
-            appFocusOnKey
-          />
-        </div>
+        [columns]="customerColumns"
 
-        <!-- Email -->
-        <div class="form-column">
-          <label>Email</label>
-          <input
-            type="email"
-            class="input-common"
-            [(ngModel)]="customer.email"
-            name="email"
-            appFocusOnKey
-          />
-        </div>
+        (edit)="editCustomer($event)"
 
-        <!-- Postal -->
-        <div class="form-column">
-          <label>Postal Code</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.postalCode"
-            name="postalCode"
-            appInputRestrict="number"
-            appFocusOnKey
-          />
-        </div>
+        (delete)="deleteCustomer($event)">
 
-        <!-- Address 1 -->
-        <div class="form-column full-width">
-          <label>Address Line 1</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.addressLine1"
-            name="addressLine1"
-            appFocusOnKey
-          />
-        </div>
+      </app-dynamic-table>
 
-        <!-- Address 2 -->
-        <div class="form-column full-width">
-          <label>Address Line 2</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.addressLine2"
-            name="addressLine2"
-            appFocusOnKey
-          />
-        </div>
+    </div>
 
-        <!-- City -->
-        <div class="form-column">
-          <label>City</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.city"
-            name="city"
-            appFocusOnKey
-          />
-        </div>
+  </ng-container>
 
-        <!-- State -->
-        <div class="form-column">
-          <label>State</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.state"
-            name="state"
-            appFocusOnKey
-          />
-        </div>
 
-        <!-- Country -->
-        <div class="form-column">
-          <label>Country</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="customer.country"
-            name="country"
-            appFocusOnKey
-          />
-        </div>
 
-        <!-- Status -->
-        <div class="form-column">
-          <label>Status</label>
-          <label class="switch">
-            <input
-              type="checkbox"
-              [(ngModel)]="customer.isActive"
-              name="isActive"
-              appFocusOnKey
-            />
-            <span class="slider"></span>
-            <span class="switch-text">
-              {{ customer.isActive ? 'Active' : 'Inactive' }}
-            </span>
-          </label>
-        </div>
+  <!-- ================= FORM VIEW ================= -->
 
-      </div>
+  <ng-container *ngIf="showForm">
 
-    </fieldset>
+    <div class="master-form-layout compact-form">
 
-  </div>
+      <app-reusable-form
 
-  <!-- ================= RIGHT TABLE PANEL ================= -->
-  <div class="master-panel">
+        [title]="formTitle"
 
-    <app-master-table-view
-      [data]="customers"
-      [columns]="customerColumns"
-      title="ALL CUSTOMERS"
-      companyName="SmartBillPro"
-      (edit)="editCustomer($event)"
-      (delete)="deleteCustomer($event)"
-    >
-    </app-master-table-view>
+        [tabs]="customerTabs"
 
-  </div>
+        [fields]="customerFields"
+
+        [model]="customer"
+
+        (fieldChange)="onFieldChange($event)"
+
+        (saveForm)="saveOrUpdateCustomer()"
+
+        (cancelForm)="cancelForm()">
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>

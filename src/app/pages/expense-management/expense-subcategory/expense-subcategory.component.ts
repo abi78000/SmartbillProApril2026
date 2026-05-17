@@ -2,85 +2,179 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
+
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
+
+import { SharedModule } from '../../../shared/shared.module';
+
 import { ExpenseService } from '../../../services/expense.service';
 import { CommonserviceService } from '../../../services/commonservice.service';
 import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
 
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-import { SharedModule } from '../../../shared/shared.module';
-
 @Component({
   selector: 'app-expense-subcategory',
+
   standalone: true,
-  imports: [CommonModule, FormsModule, MasterTableViewComponent, SharedModule],
+
+  imports: [
+    CommonModule,
+    FormsModule,
+    SharedModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
+
   templateUrl: './expense-subcategory.component.html',
-  styleUrls: ['./expense-subcategory.component.css']
+
+  styleUrls: ['./expense-subcategory.component.css'],
 })
 export class ExpenseSubcategoryComponent implements OnInit {
-
-  companies: any[] = [];
-  categories: any[] = [];
-  subCategories: any[] = [];
+  showForm = false;
 
   isEditMode = false;
-  isFormEnabled = false;
 
-  subCategory: any;
+  formTitle = 'New Expense SubCategory';
+
+  companies: any[] = [];
+
+  categories: any[] = [];
+
+  subCategories: any[] = [];
+
+  subCategory: any = {};
+
+  /*================ TABLE =================*/
+
+  subCategoryColumns = [
+    {
+      field: 'subCategoryName',
+      header: 'SubCategory',
+    },
+
+    {
+      field: 'subCategoryCode',
+      header: 'Code',
+    },
+
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
+
+  /*================ TABS =================*/
+
+  subCategoryTabs = ['Details', 'Settings'];
+
+  /*================ FIELDS =================*/
+
+  subCategoryFields: any[] = [
+    {
+      label: 'Company',
+
+      model: 'companyID',
+
+      type: 'select',
+
+      required: true,
+
+      tab: 'Details',
+
+      options: [] as any[],
+    },
+
+    {
+      label: 'Category',
+
+      model: 'expenseCategoryID',
+
+      type: 'select',
+
+      required: true,
+
+      tab: 'Details',
+
+      options: [] as any[],
+    },
+
+    {
+      label: 'SubCategory Code',
+
+      model: 'subCategoryCode',
+
+      type: 'text',
+
+      readonly: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'SubCategory Name',
+
+      model: 'subCategoryName',
+
+      type: 'text',
+
+      required: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Description',
+
+      model: 'description',
+
+      type: 'textarea',
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Is Active',
+
+      model: 'isActive',
+
+      type: 'checkbox',
+
+      tab: 'Settings',
+    },
+  ];
 
   constructor(
     private expenseService: ExpenseService,
+
     private commonService: CommonserviceService,
-    private swal: SweetAlertService
+
+    private swal: SweetAlertService,
   ) {}
 
-  ngOnInit(): void {
-    this.initForm();
+  ngOnInit() {
+    this.resetSubCategory();
+
     this.loadCompanies();
-
-    const companyId = this.getCompanyId();
-    if (companyId) {
-      this.subCategory.companyID = companyId;
-      this.loadCategories(companyId);
-    }
   }
 
-  // ================= TABLE =================
-  columns = [
-    { field: 'subCategoryName', header: 'SubCategory Name' },
-    { field: 'subCategoryCode', header: 'Code' },
-    { field: 'isActive', header: 'Active' }
-  ];
-
-  // ================= INIT =================
-  initForm() {
-    this.subCategory = this.getEmpty();
-  }
-
-  getEmpty() {
-    return {
-      expenseSubCategoryID: 0,
-      companyID: this.getCompanyId(),
-      branchID: null,
-      expenseCategoryID: null,
-      subCategoryCode: '',
-      subCategoryName: '',
-      description: '',
-      isActive: true
-    };
-  }
-
-  getCompanyId() {
-    return Number(localStorage.getItem('companyID')) || 0;
-  }
-
-  // ================= LOAD =================
+  /*================ LOAD =================*/
 
   loadCompanies() {
     this.commonService.getCompanies().subscribe({
       next: (res: any) => {
         this.companies = Array.isArray(res) ? res : res.data || [];
+
+        const field = this.subCategoryFields.find(
+          (x: any) => x.model === 'companyID',
+        );
+
+        if (field) {
+          field.options = this.companies.map((x: any) => ({
+            label: x.companyName,
+            value: x.companyID,
+          }));
+        }
       },
-      error: () => this.swal.error('Error', 'Failed to load companies')
     });
   }
 
@@ -88,129 +182,154 @@ export class ExpenseSubcategoryComponent implements OnInit {
     this.expenseService.getCategories(companyId).subscribe({
       next: (res: any) => {
         this.categories = Array.isArray(res) ? res : res.data || [];
+
+        const field = this.subCategoryFields.find(
+          (x: any) => x.model === 'expenseCategoryID',
+        );
+
+        if (field) {
+          field.options = this.categories.map((x: any) => ({
+            label: x.categoryName,
+            value: x.expenseCategoryID,
+          }));
+        }
       },
-      error: () => this.swal.error('Error', 'Failed to load categories')
     });
   }
 
   loadSubCategories() {
-    if (!this.subCategory.companyID || !this.subCategory.expenseCategoryID) return;
+    if (!this.subCategory.companyID || !this.subCategory.expenseCategoryID)
+      return;
 
     this.expenseService
-      .getSubCategories(this.subCategory.companyID, this.subCategory.expenseCategoryID)
+      .getSubCategories(
+        this.subCategory.companyID,
+        this.subCategory.expenseCategoryID,
+      )
       .subscribe({
         next: (res: any) => {
-          this.subCategories = Array.isArray(res) ? res : res.data || [];
+          this.subCategories = (Array.isArray(res) ? res : res.data || []).map(
+            (x: any) => ({
+              ...x,
+
+              statusText: x.isActive ? 'Active' : 'Inactive',
+            }),
+          );
         },
-        error: () => this.swal.error('Error', 'Failed to load subcategories')
       });
   }
 
-  // ================= CODE GENERATION =================
+  /*================ FORM =================*/
 
-  generateSubCategoryCode() {
-    if (!this.subCategory.companyID) return;
+  newSubCategory() {
+    this.resetSubCategory();
 
-    const company = this.companies.find(
-      (c: any) => c.companyID == this.subCategory.companyID
-    );
+    this.showForm = true;
 
-    if (!company) return;
+    this.isEditMode = false;
 
-    const name = company.companyName.replace(/\s+/g, '').toUpperCase();
-    const nextNo = (this.subCategories.length + 1).toString().padStart(2, '0');
-
-    this.subCategory.subCategoryCode = `SUB-${name}-${nextNo}`;
+    this.formTitle = 'New Expense SubCategory';
   }
 
-  // ================= EVENTS =================
+  editSubCategory(row: any) {
+    this.subCategory = { ...row };
 
-  onCompanyChange(companyId: number) {
-    this.categories = [];
-    this.subCategories = [];
+    this.showForm = true;
 
-    if (companyId) {
-      this.loadCategories(companyId);
-      this.generateSubCategoryCode();
+    this.isEditMode = true;
+
+    this.formTitle = 'Edit Expense SubCategory';
+
+    this.loadCategories(row.companyID);
+  }
+
+  /*================ FIELD =================*/
+
+  onFieldChange(event: any) {
+    this.subCategory[event.field] = event.value;
+
+    if (event.field === 'companyID') {
+      this.loadCategories(event.value);
+    }
+
+    if (event.field === 'expenseCategoryID') {
+      this.loadSubCategories();
     }
   }
 
-  onCategoryChange() {
-    this.subCategories = [];
-    this.loadSubCategories();
-    this.generateSubCategoryCode();
-  }
+  /*================ SAVE =================*/
 
-  // ================= FORM =================
-
-  newSubCategory() {
-    this.initForm();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-    this.generateSubCategoryCode();
-  }
-
-  reset() {
-    this.initForm();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
-
-  // ================= SAVE =================
-
-  save() {
+  saveSubCategory() {
     if (
       !this.subCategory.companyID ||
       !this.subCategory.expenseCategoryID ||
       !this.subCategory.subCategoryName
     ) {
-      this.swal.warning('Warning', 'Company, Category & Name required');
-      return;
+      return this.swal.warning('Validation', 'Required fields missing');
     }
 
     this.expenseService.saveSubCategory(this.subCategory).subscribe({
       next: () => {
-        this.swal.success('Success', 'Saved successfully');
+        this.swal.success('Success', 'Saved Successfully');
+
         this.loadSubCategories();
-        this.reset();
+
+        this.cancelForm();
       },
-      error: (err) => {
-        this.swal.error('Error', err?.error?.message || 'Save failed');
-      }
     });
   }
 
-  // ================= EDIT =================
+  /*================ DELETE =================*/
 
-  edit(row: any) {
-    this.subCategory = { ...row };
-    this.isEditMode = true;
-    this.isFormEnabled = true;
+  deleteSubCategory(row: any) {
+    const payload = {
+      ...row,
 
-    if (row.companyID) {
-      this.loadCategories(row.companyID);
-    }
-
-    if (row.expenseCategoryID) {
-      this.loadSubCategories();
-    }
-  }
-
-  // ================= DELETE =================
-
-  delete(row: any) {
-    if (!confirm(`Delete ${row.subCategoryName}?`)) return;
-
-    const payload = { ...row, isActive: false };
+      isActive: false,
+    };
 
     this.expenseService.saveSubCategory(payload).subscribe({
       next: () => {
-        this.swal.success('Deleted', 'SubCategory deleted');
+        this.swal.success('Deleted', 'SubCategory Deleted');
+
         this.loadSubCategories();
       },
-      error: () => {
-        this.swal.error('Error', 'Delete failed');
-      }
     });
+  }
+
+  /*================ CANCEL =================*/
+
+  cancelForm() {
+    this.showForm = false;
+
+    this.resetSubCategory();
+  }
+
+  /*================ REFRESH =================*/
+
+  refreshSubCategories() {
+    this.cancelForm();
+
+    this.loadSubCategories();
+  }
+
+  /*================ RESET =================*/
+
+  resetSubCategory() {
+    this.subCategory = {
+      expenseSubCategoryID: 0,
+
+      companyID: 0,
+
+      expenseCategoryID: 0,
+
+      subCategoryCode: '',
+
+      subCategoryName: '',
+
+      description: '',
+
+      isActive: true,
+    };
   }
 }

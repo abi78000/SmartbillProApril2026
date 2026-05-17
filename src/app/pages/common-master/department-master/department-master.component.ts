@@ -1,724 +1,448 @@
-import {
-Component,
-OnInit
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {
-CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-FormsModule
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
-import {
-DynamicTableComponent
-} from '../../../framework/dynamic-table/dynamic-table.component';
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
 
-import {
-ReusableFormComponent
-} from '../../../framework/reusable-form/reusable-form.component';
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
 
-import {
-CommonserviceService
-} from '../../../services/commonservice.service';
+import { CommonserviceService } from '../../../services/commonservice.service';
 
-import {
-SweetAlertService
-} from '../../../services/properties/sweet-alert.service';
+import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
 
 @Component({
+  selector: 'app-department-master',
 
-selector:'app-department-master',
+  standalone: true,
 
-standalone:true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
 
-imports:[
-CommonModule,
-FormsModule,
-DynamicTableComponent,
-ReusableFormComponent
-],
+  templateUrl: './department-master.component.html',
 
-templateUrl:'./department-master.component.html',
-
-styleUrls:[
-'./department-master.component.css'
-]
-
+  styleUrls: ['./department-master.component.css'],
 })
+export class DepartmentMasterComponent implements OnInit {
+  showForm = false;
 
-export class DepartmentMasterComponent
-implements OnInit{
+  isEditMode = false;
 
+  formTitle = 'New Department';
 
-showForm=false;
+  branches: any[] = [];
 
-isEditMode=false;
+  departments: any[] = [];
 
-formTitle='New Department';
+  departmentModel: any = {};
 
-branches:any[]=[];
-
-departments:any[]=[];
-
-departmentModel:any={};
-
-
-
-/* ===================================
+  /* ===================================
    TABS
 =================================== */
 
-departmentTabs=[
+  departmentTabs = ['Details', 'Settings'];
 
-'Details',
-'Settings'
-
-];
-
-
-/* ===================================
+  /* ===================================
    TABLE
 =================================== */
 
-departmentColumns=[
+  departmentColumns = [
+    {
+      field: 'departmentName',
+      header: 'Department',
+    },
 
-{
-field:'departmentName',
-header:'Department'
-},
+    {
+      field: 'branchName',
+      header: 'Branch',
+    },
 
-{
-field:'branchName',
-header:'Branch'
-},
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
 
-{
-field:'isActive',
-header:'Status'
-}
-
-];
-
-
-/* ===================================
+  /* ===================================
    FORM FIELDS
 =================================== */
 
-departmentFields=[
+  departmentFields = [
+    {
+      label: 'Branch',
+      model: 'branchID',
+      type: 'select',
+      required: true,
+      tab: 'Details',
+      optionLabel: 'label',
+      optionValue: 'value',
+      options: [],
+    },
 
-{
-label:'Branch',
-model:'branchID',
-type:'select',
-required:true,
-tab:'Details',
-optionLabel:'label',
-optionValue:'value',
-options:[]
-},
+    {
+      label: 'Department Name',
+      model: 'departmentName',
+      type: 'text',
+      required: true,
+      tab: 'Details',
+      restrictType: 'text',
+      autoFocus: true,
+    },
 
-{
-label:'Department Name',
-model:'departmentName',
-type:'text',
-required:true,
-tab:'Details',
-restrictType:'text',
-autoFocus:true
+    {
+      label: 'Department Code',
+      model: 'departmentCode',
+      type: 'text',
+      tab: 'Details',
+      readonly: true,
+    },
 
-},
+    {
+      label: 'Is Active',
+      model: 'isActive',
+      type: 'checkbox',
+      tab: 'Settings',
+    },
+  ];
 
-{
-label:'Department Code',
-model:'departmentCode',
-type:'text',
-tab:'Details',
-readonly:true
-},
+  constructor(
+    private commonservice: CommonserviceService,
 
-{
-label:'Is Active',
-model:'isActive',
-type:'checkbox',
-tab:'Settings'
-}
+    private swal: SweetAlertService,
+  ) {}
 
-];
+  ngOnInit() {
+    this.resetModel();
 
+    this.loadBranches();
 
-constructor(
+    this.loadDepartments();
+  }
 
-private commonservice:CommonserviceService,
-
-private swal:SweetAlertService
-
-){}
-
-
-ngOnInit(){
-
-this.resetModel();
-
-this.loadBranches();
-
-this.loadDepartments();
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    LOAD BRANCHES
 =================================== */
 
-loadBranches(){
+  loadBranches() {
+    this.commonservice.getBranches().subscribe({
+      next: (res: any) => {
+        this.branches = res;
 
-this.commonservice
-.getBranches()
-.subscribe({
+        const field = this.departmentFields.find((x) => x.model === 'branchID');
 
-next:(res:any)=>{
+        if (field) {
+          field.options = res.map((branch: any) => ({
+            label: branch.branchName,
 
-this.branches=res;
+            value: branch.branchID,
+          }));
+        }
+      },
 
-const field=
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 
-this.departmentFields.find(
-
-x=>x.model==='branchID'
-
-);
-
-
-if(field){
-
-field.options=
-
-res.map(
-
-(branch:any)=>({
-
-label:
-branch.branchName,
-
-value:
-branch.branchID
-
-})
-
-);
-
-}
-
-},
-
-error:(err)=>{
-
-console.error(err);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    LOAD DEPARTMENTS
 =================================== */
 
-loadDepartments(){
+  loadDepartments() {
+    this.commonservice.getDepartments().subscribe({
+      next: (res: any) => {
+        this.departments = res.map((dept: any) => ({
+          ...dept,
 
-this.commonservice
-.getDepartments()
-.subscribe({
+          branchName: this.getBranchName(dept.branchID),
 
-next:(res:any)=>{
+          statusText: dept.isActive ? 'Active' : 'Inactive',
+        }));
+      },
 
-this.departments=
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
 
-res.map(
-
-(dept:any)=>({
-
-...dept,
-
-branchName:
-this.getBranchName(
-dept.branchID
-),
-
-statusText:
-dept.isActive
-?
-'Active'
-:
-'Inactive'
-
-})
-
-);
-
-},
-
-error:(err)=>{
-
-console.error(err);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    ADD
 =================================== */
 
-addDepartment(){
+  addDepartment() {
+    this.resetModel();
 
-this.resetModel();
+    this.formTitle = 'New Department';
 
-this.formTitle=
-'New Department';
+    this.isEditMode = false;
 
-this.isEditMode=false;
+    this.showForm = true;
+  }
 
-this.showForm=true;
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    EDIT
 =================================== */
 
-editDepartment(row:any){
+  editDepartment(row: any) {
+    this.departmentModel = {
+      departmentID: row.departmentID,
 
-this.departmentModel={
+      branchID: row.branchID,
 
-departmentID:
-row.departmentID,
+      departmentCode: row.departmentCode,
 
-branchID:
-row.branchID,
+      departmentName: row.departmentName,
 
-departmentCode:
-row.departmentCode,
+      isActive: row.isActive,
 
-departmentName:
-row.departmentName,
+      createdByUserID: row.createdByUserID,
 
-isActive:
-row.isActive,
+      createdSystemName: row.createdSystemName,
 
-createdByUserID:
-row.createdByUserID,
+      createdAt: row.createdAt,
 
-createdSystemName:
-row.createdSystemName,
+      updatedByUserID: row.updatedByUserID,
 
-createdAt:
-row.createdAt,
+      updatedSystemName: row.updatedSystemName,
 
-updatedByUserID:
-row.updatedByUserID,
+      updatedAt: row.updatedAt,
+    };
 
-updatedSystemName:
-row.updatedSystemName,
+    this.formTitle = 'Edit Department';
 
-updatedAt:
-row.updatedAt
+    this.isEditMode = true;
 
-};
+    this.showForm = true;
+  }
 
-this.formTitle=
-'Edit Department';
-
-this.isEditMode=true;
-
-this.showForm=true;
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    DUPLICATE CHECK
 =================================== */
-/* ===================================
+  /* ===================================
    DUPLICATE CHECK
 =================================== */
 
-isDuplicate(
+  isDuplicate(
+    list: any[],
 
-list:any[],
+    departmentName: string,
 
-departmentName:string,
+    branchID: number,
 
-branchID:number,
+    idField = 'departmentID',
 
-idField='departmentID',
+    currentId: any = null,
+  ): boolean {
+    const normalize = (text: any = '') =>
+      String(text)
+        .trim()
 
-currentId:any=null
+        .replace(/\s+/g, '')
 
-):boolean{
+        .toLowerCase();
 
+    return list.some(
+      (item) =>
+        item[idField] !== currentId &&
+        Number(item.branchID) === Number(branchID) &&
+        normalize(item.departmentName) === normalize(departmentName),
+    );
+  }
 
-const normalize=
-
-(text:any='')=>
-
-String(text)
-
-.trim()
-
-.replace(/\s+/g,'')
-
-.toLowerCase();
-
-
-return list.some(
-
-item =>
-
-item[idField]
-!==currentId
-
-&&
-
-Number(item.branchID)
-===
-Number(branchID)
-
-&&
-
-normalize(
-item.departmentName
-)
-
-===
-
-normalize(
-departmentName
-)
-
-);
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    SAVE
 =================================== */
 
-saveDepartment(data:any){
+  saveDepartment(data: any) {
+    data.departmentName = data.departmentName?.trim().replace(/\s+/g, ' ');
 
-data.departmentName=
+    /* REQUIRED */
 
-data.departmentName
-?.trim()
-.replace(/\s+/g,' ');
+    if (!data.branchID) {
+      return this.swal.warning(
+        'Validation',
 
+        'Select Branch',
+      );
+    }
 
-/* REQUIRED */
+    if (!data.departmentName) {
+      return this.swal.warning(
+        'Validation',
 
-if(!data.branchID){
+        'Department Name Required',
+      );
+    }
 
-return this.swal.warning(
-
-'Validation',
-
-'Select Branch'
-
-);
-
-}
-
-
-if(!data.departmentName){
-
-return this.swal.warning(
-
-'Validation',
-
-'Department Name Required'
-
-);
-
-}
-
-
-/* DUPLICATE CHECK
+    /* DUPLICATE CHECK
    SAME BRANCH ONLY
 */
 
-if(
+    if (
+      this.isDuplicate(
+        this.departments,
 
-this.isDuplicate(
+        data.departmentName,
 
-this.departments,
+        data.branchID,
 
-data.departmentName,
+        'departmentID',
 
-data.branchID,
+        data.departmentID,
+      )
+    ) {
+      return this.swal.warning(
+        'Duplicate',
 
-'departmentID',
+        'Department already exists in this branch',
+      );
+    }
 
-data.departmentID
+    const now = new Date().toISOString();
 
-)
+    const payload = {
+      departmentID: Number(data.departmentID) || 0,
 
-){
+      branchID: Number(data.branchID),
 
-return this.swal.warning(
+      departmentCode: data.departmentCode || '',
 
-'Duplicate',
+      departmentName: data.departmentName,
 
-'Department already exists in this branch'
+      isActive: Boolean(data.isActive),
 
-);
+      createdByUserID: data.createdByUserID || 0,
 
-}
+      createdSystemName: data.createdSystemName || 'AngularApp',
 
+      createdAt: data.createdAt || now,
 
-const now=
+      updatedByUserID: 0,
 
-new Date()
-.toISOString();
+      updatedSystemName: 'AngularApp',
 
+      updatedAt: now,
+    };
 
-const payload={
+    console.log('Sending Payload:', payload);
 
-departmentID:
-Number(
-data.departmentID
-)||0,
+    this.commonservice.saveDepartment(payload).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
 
-branchID:
-Number(
-data.branchID
-),
+          this.isEditMode ? 'Department Updated' : 'Department Created',
+        );
 
-departmentCode:
-data.departmentCode || '',
+        this.loadDepartments();
 
-departmentName:
-data.departmentName,
+        this.cancelForm();
+      },
 
-isActive:
-Boolean(
-data.isActive
-),
+      error: (err) => {
+        console.log('API Error:', err.error);
 
-createdByUserID:
-data.createdByUserID || 0,
+        this.swal.error(
+          'Error',
 
-createdSystemName:
-data.createdSystemName || 'AngularApp',
+          'Save Failed',
+        );
+      },
+    });
+  }
 
-createdAt:
-data.createdAt || now,
-
-updatedByUserID:0,
-
-updatedSystemName:'AngularApp',
-
-updatedAt:now
-
-};
-
-
-console.log(
-'Sending Payload:',
-payload
-);
-
-
-this.commonservice
-.saveDepartment(payload)
-.subscribe({
-
-next:()=>{
-
-this.swal.success(
-
-'Success',
-
-this.isEditMode
-?
-'Department Updated'
-:
-'Department Created'
-
-);
-
-this.loadDepartments();
-
-this.cancelForm();
-
-},
-
-error:(err)=>{
-
-console.log(
-'API Error:',
-err.error
-);
-
-this.swal.error(
-
-'Error',
-
-'Save Failed'
-
-);
-
-}
-
-});
-
-}
-
-
-/* ===================================
+  /* ===================================
    DELETE
 =================================== */
 
-deleteDepartment(row:any){
+  deleteDepartment(row: any) {
+    row.isActive = false;
 
-row.isActive=false;
+    this.commonservice.saveDepartment(row).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
 
-this.commonservice
-.saveDepartment(row)
-.subscribe({
+          'Deleted Successfully',
+        );
 
-next:()=>{
+        this.loadDepartments();
+      },
 
-this.swal.success(
+      error: () => {
+        this.swal.error(
+          'Error',
 
-'Success',
+          'Delete Failed',
+        );
+      },
+    });
+  }
 
-'Deleted Successfully'
-
-);
-
-this.loadDepartments();
-
-},
-
-error:()=>{
-
-this.swal.error(
-
-'Error',
-
-'Delete Failed'
-
-);
-
-}
-
-});
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    REFRESH
 =================================== */
 
-refresh(){
+  refresh() {
+    this.cancelForm();
 
-this.cancelForm();
+    this.loadDepartments();
+  }
 
-this.loadDepartments();
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    CANCEL
 =================================== */
 
-cancelForm(){
+  cancelForm() {
+    this.showForm = false;
 
-this.showForm=false;
+    this.resetModel();
+  }
 
-this.resetModel();
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    RESET
 =================================== */
 
-resetModel(){
+  resetModel() {
+    this.departmentModel = {
+      departmentID: 0,
 
-this.departmentModel={
+      branchID: null,
 
-departmentID:0,
+      departmentCode: '',
 
-branchID:null,
+      departmentName: '',
 
-departmentCode:'',
+      isActive: true,
 
-departmentName:'',
+      createdByUserID: 0,
 
-isActive:true,
+      createdSystemName: '',
 
-createdByUserID:0,
+      createdAt: '',
 
-createdSystemName:'',
+      updatedByUserID: 0,
 
-createdAt:'',
+      updatedSystemName: '',
 
-updatedByUserID:0,
+      updatedAt: '',
+    };
+  }
 
-updatedSystemName:'',
-
-updatedAt:''
-
-};
-
-}
-
-
-
-/* ===================================
+  /* ===================================
    GET BRANCH NAME
 =================================== */
 
-getBranchName(
-branchID:number
-){
+  getBranchName(branchID: number) {
+    const branch = this.branches.find((x) => x.branchID === branchID);
 
-const branch=
-
-this.branches.find(
-
-x=>
-x.branchID===branchID
-
-);
-
-return branch
-?
-branch.branchName
-:
-'';
-
-}
-
+    return branch ? branch.branchName : '';
+  }
 }

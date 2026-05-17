@@ -1,213 +1,291 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MasterService } from '../../../services/master.service';
-import { ValidationService } from '../../../services/properties/validation.service';
-import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
-import { FocusOnKeyDirective } from '../../../directives/focus-on-key.directive';
-import { Observable, share } from 'rxjs';
 
-import { HSN, Tax } from '../../models/common-models/master-models/master';
-import { SharedModule } from '../../../shared/shared.module';
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-interface ApiResponse {
-  success: boolean;
-  message?: string;
-}
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
+
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
+
+import { MasterService } from '../../../services/master.service';
+
+import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
 
 @Component({
   selector: 'app-hsn-code',
+
   standalone: true,
-  imports: [FormsModule, CommonModule, SharedModule, MasterTableViewComponent],
+
+  imports: [
+    CommonModule,
+    FormsModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
+
   templateUrl: './hsn-code.component.html',
+
   styleUrls: ['./hsn-code.component.css'],
 })
-export class HsnCodeComponent {
-  hsnColumns = [
-    { field: 'hsnCode', header: 'HSN Code' },
-    { field: 'description', header: 'Description' },
-    { field: 'taxName', header: 'Tax Name' },
-    { field: 'isActive', header: 'Active' },
-  ];
+export class HsnCodeComponent implements OnInit {
+  showForm = false;
+
   isEditMode = false;
-  isFormEnabled = false;
-  hsns: HSN[] = [];
-  hsn: HSN = this.newHSN();
-  taxes: Tax[] = [];
-  private currentUserId: number;
+
+  formTitle = 'New HSN';
+
+  hsns: any[] = [];
+
+  hsn: any = {};
+
+  taxes: any[] = [];
+
+  /*================ TABS =================*/
+
+  hsnTabs = ['Details', 'Settings'];
+
+  /*================ TABLE =================*/
+
+  hsnColumns = [
+    {
+      field: 'hsnCode',
+      header: 'HSN Code',
+    },
+
+    {
+      field: 'description',
+      header: 'Description',
+    },
+
+    {
+      field: 'taxName',
+      header: 'Tax',
+    },
+
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
+
+  /*================ FIELDS =================*/
+
+  hsnFields = [
+    {
+      label: 'Tax',
+
+      model: 'taxID',
+
+      type: 'select',
+
+      required: true,
+
+      tab: 'Details',
+
+      options: [],
+    },
+
+    {
+      label: 'HSN Code',
+
+      model: 'hsnCode',
+
+      type: 'text',
+
+      required: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Description',
+
+      model: 'description',
+
+      type: 'text',
+
+      required: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Is Active',
+
+      model: 'isActive',
+
+      type: 'checkbox',
+
+      tab: 'Settings',
+    },
+  ];
 
   constructor(
-    private readonly masterService: MasterService,
-    private readonly swall: SweetAlertService
-  ) {
-    this.currentUserId = Number(localStorage.getItem('userId')) || 0;
-  }
+    private masterService: MasterService,
+
+    private swal: SweetAlertService,
+  ) {}
 
   ngOnInit() {
+    this.resetHSN();
+
     this.loadHSNCodes();
+
     this.loadTaxes();
-    this.isFormEnabled = false;
-  }
-  newHSNCreate() {
-    this.resetHSN();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
-  refreshHSN() {
-    this.resetHSN();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
-  private newHSN(): HSN {
-    const now = new Date().toISOString();
-    return {
-      hsnid: 0,
-      hsnCode: '',
-      description: '',
-      taxID: 0,
-      isActive: true,
-      createdByUserID: this.currentUserId,
-      createdSystemName: 'AngularApp',
-      createdAt: now,
-      updatedByUserID: this.currentUserId,
-      updatedSystemName: 'AngularApp',
-      updatedAt: now,
-    };
   }
 
-  private focusHSN() {
-    setTimeout(() => {
-      const el = document.getElementById('hsnCode') as HTMLInputElement | null;
-      el?.focus();
-      el?.select();
-    }, 0);
-  }
-
-  loadHSNCodes() {
-    this.masterService.getHSNCodes().subscribe({
-      next: (res) => (this.hsns = res ?? []),
-      error: () =>
-        this.swall.error('Error', 'Failed to load HSN names!', () =>
-          this.focusHSN()
-        ),
-    });
-  }
+  /*================ LOAD TAXES =================*/
 
   loadTaxes() {
     this.masterService.getTaxes().subscribe({
-      next: (res) => (this.taxes = res ?? []),
-      error: () => this.swall.error('Error', 'Failed to load Taxes!'),
-    });
-  }
+      next: (res: any) => {
+        this.taxes = res;
 
-  private validateHSN(): boolean {
-    this.hsn.hsnCode = this.hsn.hsnCode?.trim() || '';
-    this.hsn.description = this.hsn.description?.trim() || '';
-    if (!this.hsn.hsnCode) {
-      this.swall.warning('Validation', 'HSN Code is required!', () =>
-        this.focusHSN()
-      );
-      return false;
-    }
-    if (!this.hsn.description) {
-      this.swall.warning('Validation', 'HSN Name is required!', () =>
-        this.focusHSN()
-      );
-      return false;
-    }
-    if (!this.hsn.taxID || this.hsn.taxID === 0) {
-      this.swall.warning('Validation', 'Select a Tax!', () => this.focusHSN());
-      return false;
-    }
-    return true;
-  }
+        const field = this.hsnFields.find((x: any) => x.model === 'taxID');
 
-  saveOrUpdateHSN() {
-    if (!this.validateHSN()) return;
+        if (field) {
+          field.options = res.map((x: any) => ({
+            label: x.taxName + ' (' + x.taxRate + '%)',
 
-    const now = new Date().toISOString();
-    const payload: HSN = {
-      ...this.hsn,
-      createdByUserID: this.hsn.hsnid
-        ? this.hsn.createdByUserID
-        : this.currentUserId,
-      updatedByUserID: this.currentUserId,
-      createdAt: this.hsn.createdAt || now,
-      updatedAt: now,
-      createdSystemName: 'AngularApp',
-      updatedSystemName: 'AngularApp',
-    };
-
-    this.masterService.saveHSNCode(payload).subscribe({
-      next: (res: ApiResponse) => {
-        if (res.success) {
-          this.loadHSNCodes();
-          this.resetHSN();
-          this.swall.success(
-            'Success',
-            res.message || 'HSN saved successfully!',
-            () => this.focusHSN()
-          );
-        } else {
-          this.swall.error(
-            'Error',
-            res.message || 'Something went wrong!',
-            () => this.focusHSN()
-          );
+            value: x.taxID,
+          }));
         }
       },
-      error: () =>
-        this.swall.error('Error', 'Failed to save HSN!', () => this.focusHSN()),
     });
   }
 
-  editHSN(h: HSN) {
-    this.hsn = { ...h };
-    this.focusHSN();
+  /*================ LOAD =================*/
+
+  loadHSNCodes() {
+    this.masterService.getHSNCodes().subscribe({
+      next: (res: any) => {
+        this.hsns = res.map((x: any) => ({
+          ...x,
+
+          taxName: this.getTaxName(x.taxID),
+
+          statusText: x.isActive ? 'Active' : 'Inactive',
+        }));
+      },
+
+      error: () => {
+        this.swal.error('Error', 'Load Failed');
+      },
+    });
   }
 
-  deleteHSN(h: HSN) {
-    this.swall
-      .confirm(
-        `Delete "${h.description}"?`,
-        'This will mark the HSN as inactive.'
-      )
-      .then((result) => {
-        if (!result.isConfirmed) return;
-        const deleted: HSN = {
-          ...h,
-          isActive: false,
-          updatedByUserID: this.currentUserId,
-          updatedAt: new Date().toISOString(),
-        };
-        this.masterService.saveHSNCode(deleted).subscribe({
-          next: (res: ApiResponse) =>
-            res.success
-              ? (this.loadHSNCodes(),
-                this.swall.success(
-                  'Deleted!',
-                  res.message || 'HSN deleted!',
-                  () => this.focusHSN()
-                ))
-              : this.swall.error(
-                  'Error',
-                  res.message || 'Failed to delete HSN!',
-                  () => this.focusHSN()
-                ),
-          error: () =>
-            this.swall.error('Error', 'Failed to delete HSN!', () =>
-              this.focusHSN()
-            ),
-        });
-      });
+  /*================ ADD =================*/
+
+  newHSN() {
+    this.resetHSN();
+
+    this.showForm = true;
+
+    this.formTitle = 'New HSN';
+
+    this.isEditMode = false;
   }
+
+  /*================ EDIT =================*/
+
+  editHSN(row: any) {
+    this.hsn = {
+      ...row,
+    };
+
+    this.showForm = true;
+
+    this.formTitle = 'Edit HSN';
+
+    this.isEditMode = true;
+  }
+
+  /*================ FIELD CHANGE =================*/
+
+  onFieldChange(event: any) {
+    this.hsn[event.field] = event.value;
+  }
+
+  /*================ SAVE =================*/
+
+  saveOrUpdateHSN() {
+    if (!this.hsn.hsnCode) {
+      return this.swal.warning('Validation', 'HSN Required');
+    }
+
+    if (!this.hsn.taxID) {
+      return this.swal.warning('Validation', 'Select Tax');
+    }
+
+    this.masterService.saveHSNCode(this.hsn).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
+
+          this.isEditMode ? 'Updated' : 'Saved',
+        );
+
+        this.loadHSNCodes();
+
+        this.cancelForm();
+      },
+
+      error: () => {
+        this.swal.error('Error', 'Save Failed');
+      },
+    });
+  }
+
+  /*================ DELETE =================*/
+
+  deleteHSN(row: any) {
+    row.isActive = false;
+
+    this.masterService.saveHSNCode(row).subscribe({
+      next: () => {
+        this.swal.success('Success', 'Deleted');
+
+        this.loadHSNCodes();
+      },
+    });
+  }
+
+  /*================ REFRESH =================*/
+
+  refreshHSN() {
+    this.cancelForm();
+
+    this.loadHSNCodes();
+  }
+
+  /*================ CANCEL =================*/
+
+  cancelForm() {
+    this.showForm = false;
+
+    this.resetHSN();
+  }
+
+  /*================ RESET =================*/
 
   resetHSN() {
-    this.hsn = this.newHSN();
-    this.focusHSN();
+    this.hsn = {
+      hsnid: 0,
+
+      hsnCode: '',
+
+      description: '',
+
+      taxID: null,
+
+      isActive: true,
+    };
   }
-  getTaxName(taxID: number): string {
-    const tax = this.taxes.find((t) => t.taxID === taxID);
+
+  /*================ TAX NAME =================*/
+
+  getTaxName(taxID: number) {
+    const tax = this.taxes.find((t: any) => t.taxID === taxID);
+
     return tax ? tax.taxName : '-';
   }
 }

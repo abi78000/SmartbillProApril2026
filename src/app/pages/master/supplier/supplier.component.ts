@@ -1,192 +1,330 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MasterService } from '../../../services/master.service';
-import { ValidationService } from '../../../services/properties/validation.service';
-import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
-import { FocusOnKeyDirective } from '../../../directives/focus-on-key.directive';
-import { InputRestrictDirective } from '../../../directives/input-restrict.directive';
-import { CommonserviceService } from '../../../services/commonservice.service';
-import { Observable } from 'rxjs';
-import { Supplier } from '../../models/common-models/master-models/master';
-import { SharedModule } from '../../../shared/shared.module';
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
 
-interface ApiResponse 
-{ success: boolean; message?: string; }
+import { SharedModule } from '../../../shared/shared.module';
+
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
+
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
+
+import { MasterService } from '../../../services/master.service';
+import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
+import { ValidationService } from '../../../services/properties/validation.service';
+import { CommonserviceService } from '../../../services/commonservice.service';
+
 @Component({
   selector: 'app-supplier',
-    standalone: true,
-  imports: [FormsModule, CommonModule,SharedModule,MasterTableViewComponent, FocusOnKeyDirective],
+
+  standalone: true,
+
+  imports: [
+    CommonModule,
+    FormsModule,
+    SharedModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
+
   templateUrl: './supplier.component.html',
-  styleUrl: './supplier.component.css'
+
+  styleUrls: ['./supplier.component.css'],
 })
-export class SupplierComponent {
-  suppliers: Supplier[] = [];
-  supplier!: Supplier;
+export class SupplierComponent implements OnInit {
+  showForm = false;
+
   duplicateError = false;
 
-    supplierColumns = [
-    { field: 'supplierName', header: 'Supplier Name' },
-    { field: 'isActive', header: 'Active' },
-  ];
   isEditMode = false;
-  isFormEnabled = false;
+
+  formTitle = 'New Supplier';
+
+  suppliers: any[] = [];
+
+  supplier: any = {};
+
+  /*================ TABS =================*/
+
+  supplierTabs = ['Details', 'Address', 'Settings'];
+
+  /*================ TABLE =================*/
+
+  supplierColumns = [
+    {
+      field: 'supplierName',
+      header: 'Supplier',
+    },
+
+    {
+      field: 'phone',
+      header: 'Phone',
+    },
+
+    {
+      field: 'email',
+      header: 'Email',
+    },
+
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
+
+  /*================ FIELDS =================*/
+
+  supplierFields: any[] = [
+    {
+      label: 'Supplier Name',
+      model: 'supplierName',
+      type: 'text',
+      required: true,
+      tab: 'Details',
+    },
+
+    {
+      label: 'Phone',
+      model: 'phone',
+      type: 'text',
+      tab: 'Details',
+    },
+
+    {
+      label: 'Alternate Phone',
+      model: 'alternatePhone',
+      type: 'text',
+      tab: 'Details',
+    },
+
+    {
+      label: 'Email',
+      model: 'email',
+      type: 'email',
+      tab: 'Details',
+    },
+
+    {
+      label: 'GST Number',
+      model: 'gstNumber',
+      type: 'text',
+      tab: 'Details',
+    },
+
+    {
+      label: 'Postal Code',
+      model: 'postalCode',
+      type: 'text',
+      tab: 'Details',
+    },
+
+    {
+      label: 'Address Line1',
+      model: 'addressLine1',
+      type: 'text',
+      tab: 'Address',
+    },
+
+    {
+      label: 'Address Line2',
+      model: 'addressLine2',
+      type: 'text',
+      tab: 'Address',
+    },
+
+    {
+      label: 'City',
+      model: 'city',
+      type: 'text',
+      tab: 'Address',
+    },
+
+    {
+      label: 'State',
+      model: 'state',
+      type: 'text',
+      tab: 'Address',
+    },
+
+    {
+      label: 'Country',
+      model: 'country',
+      type: 'text',
+      tab: 'Address',
+    },
+
+    {
+      label: 'Is Active',
+      model: 'isActive',
+      type: 'checkbox',
+      tab: 'Settings',
+    },
+  ];
 
   constructor(
-    private readonly masterService: MasterService,
-    private readonly validationService: ValidationService,
-    private readonly commonService: CommonserviceService,
-    private readonly swall: SweetAlertService
+    private masterService: MasterService,
+
+    private validationService: ValidationService,
+
+    private commonService: CommonserviceService,
+
+    private swall: SweetAlertService,
   ) {}
 
   ngOnInit() {
     this.resetSupplier();
+
     this.loadSuppliers();
-    this.isFormEnabled = false;
-  }
-    newSupplierCreate() {
-    this.resetSupplier();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
-  refreshSuppliers() {
-    this.resetSupplier();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
   }
 
-  private newSupplier(): Supplier {
-    const now = new Date().toISOString();
-    return {
-      supplierID: 0,
-      supplierCode: '',
-      supplierName: '',
-      phone: '',
-      alternatePhone: '',
-      email: '',
-      addressLine1: '',
-      addressLine2: '',
-      city: '',
-      state: '',
-      country: '',
-      postalCode: '',
-      gstNumber: '',
-      isActive: true,
-      createdByUserID: this.commonService.getCurrentUserId(),
-      createdSystemName: 'AngularApp',
-      createdAt: now,
-      updatedByUserID: this.commonService.getCurrentUserId(),
-      updatedSystemName: 'AngularApp',
-      updatedAt: now
-    };
-  }
-
-  private focusSupplier(targetId: string = 'supplierName') {
-    setTimeout(() => {
-      const el = document.getElementById(targetId) as HTMLInputElement | null;
-      el?.focus();
-      el?.select();
-    }, 0);
-  }
+  /*================ LOAD =================*/
 
   loadSuppliers() {
     this.masterService.getSuppliers().subscribe({
-      next: res => this.suppliers = res ?? [],
-      error: () => this.swall.error('Error', 'Failed to load suppliers!', () => this.focusSupplier())
+      next: (res: any) => {
+        this.suppliers = (res || []).map((x: any) => ({
+          ...x,
+
+          statusText: x.isActive ? 'Active' : 'Inactive',
+        }));
+      },
     });
   }
 
-checkDuplicate() {
-  const name = this.supplier.supplierName?.trim().toLowerCase() || '';
-  this.duplicateError = this.suppliers.some(s =>
-    s.supplierID !== this.supplier.supplierID && // ignore the current supplier when editing
-    s.supplierName?.trim().toLowerCase() === name
-  );
-}
+  /*================ ADD =================*/
 
-  private validateSupplier(): boolean {
-    this.supplier.supplierName = this.supplier.supplierName?.trim() || '';
+  newSupplier() {
+    this.resetSupplier();
+
+    this.showForm = true;
+
+    this.isEditMode = false;
+
+    this.formTitle = 'New Supplier';
+  }
+
+  /*================ EDIT =================*/
+
+  editSupplier(row: any) {
+    this.supplier = {
+      ...row,
+    };
+
+    this.showForm = true;
+
+    this.isEditMode = true;
+
+    this.formTitle = 'Edit Supplier';
+  }
+
+  /*================ FIELD =================*/
+
+  onFieldChange(event: any) {
+    this.supplier[event.field] = event.value;
+
+    if (event.field === 'supplierName') {
+      this.checkDuplicate();
+    }
+  }
+
+  /*================ DUPLICATE =================*/
+
+  checkDuplicate() {
+    this.duplicateError = this.validationService.isDuplicate(
+      this.supplier.supplierName,
+
+      this.suppliers,
+
+      'supplierName',
+
+      this.supplier.supplierID,
+    );
+  }
+
+  /*================ SAVE =================*/
+
+  saveOrUpdateSupplier() {
     this.checkDuplicate();
 
     if (!this.supplier.supplierName) {
-      this.swall.warning('Validation', 'Supplier Name is required!', () => this.focusSupplier('supplierName'));
-      return false;
+      return this.swall.warning('Validation', 'Supplier Required');
     }
 
     if (this.duplicateError) {
-      this.swall.warning('Validation', 'Supplier Name already exists!', () => this.focusSupplier('supplierName'));
-      return false;
-    }
-
-    return true;
-  }
-
-  saveOrUpdateSupplier() {
-    if (!this.validateSupplier()) return;
-
-    const now = new Date().toISOString();
-    if (this.supplier.supplierID && this.supplier.supplierID > 0) {
-      this.supplier.updatedByUserID = this.commonService.getCurrentUserId();
-      this.supplier.updatedSystemName = 'AngularApp';
-      this.supplier.updatedAt = now;
-    } else {
-      this.supplier.createdByUserID = this.commonService.getCurrentUserId();
-      this.supplier.createdSystemName = 'AngularApp';
-      this.supplier.createdAt = now;
-      this.supplier.updatedByUserID = this.commonService.getCurrentUserId();
-      this.supplier.updatedSystemName = 'AngularApp';
-      this.supplier.updatedAt = now;
+      return this.swall.warning('Validation', 'Supplier Exists');
     }
 
     this.masterService.saveSupplier(this.supplier).subscribe({
-      next: (res: ApiResponse) => {
-        if (res.success) {
-          this.loadSuppliers();
-          this.resetSupplier();
-          this.swall.success('Success', res.message || 'Supplier saved successfully!', () => this.focusSupplier());
-        } else {
-          this.swall.error('Error', res.message || 'Something went wrong!', () => this.focusSupplier());
-        }
+      next: () => {
+        this.swall.success('Success', this.isEditMode ? 'Updated' : 'Saved');
+
+        this.loadSuppliers();
+
+        this.cancelForm();
       },
-      error: () => this.swall.error('Error', 'Failed to save supplier!', () => this.focusSupplier())
     });
   }
 
-  editSupplier(s: Supplier) {
-    this.supplier = { ...s };
-    this.focusSupplier();
-  }
+  /*================ DELETE =================*/
 
-  deleteSupplier(s: Supplier) {
-    this.swall.confirm(`Delete ${s.supplierName}?`, 'This will mark the supplier as inactive.').then(result => {
-      if (!result.isConfirmed) return;
+  deleteSupplier(row: any) {
+    row.isActive = false;
 
-      const deleted: Supplier = {
-        ...s,
-        isActive: false,
-        updatedByUserID: this.commonService.getCurrentUserId(),
-        updatedSystemName: 'AngularApp',
-        updatedAt: new Date().toISOString()
-      };
+    this.masterService.saveSupplier(row).subscribe({
+      next: () => {
+        this.swall.success('Success', 'Deleted');
 
-      this.masterService.saveSupplier(deleted).subscribe({
-        next: (res: ApiResponse) => {
-          if (res.success) {
-            this.loadSuppliers();
-            this.swall.success('Deleted!', res.message || 'Supplier deleted!', () => this.focusSupplier());
-          } else {
-            this.swall.error('Error', res.message || 'Failed to delete supplier!', () => this.focusSupplier());
-          }
-        },
-        error: () => this.swall.error('Error', 'Failed to delete supplier!', () => this.focusSupplier())
-      });
+        this.loadSuppliers();
+      },
     });
   }
+
+  /*================ CANCEL =================*/
+
+  cancelForm() {
+    this.showForm = false;
+
+    this.resetSupplier();
+  }
+
+  /*================ REFRESH =================*/
+
+  refreshSuppliers() {
+    this.cancelForm();
+
+    this.loadSuppliers();
+  }
+
+  /*================ RESET =================*/
 
   resetSupplier() {
-    this.supplier = this.newSupplier();
-    this.duplicateError = false;
-    this.focusSupplier();
+    this.supplier = {
+      supplierID: 0,
+
+      supplierCode: '',
+
+      supplierName: '',
+
+      phone: '',
+
+      alternatePhone: '',
+
+      email: '',
+
+      addressLine1: '',
+
+      addressLine2: '',
+
+      city: '',
+
+      state: '',
+
+      country: '',
+
+      postalCode: '',
+
+      gstNumber: '',
+
+      isActive: true,
+    };
   }
 }

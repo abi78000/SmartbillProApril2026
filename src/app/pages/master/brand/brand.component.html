@@ -1,58 +1,56 @@
 <div class="master-layout">
 
-  <!-- ================= HEADER ================= -->
+  <!-- ================= TABLE VIEW ================= -->
 
-  <div class="master-top-header">
+  <ng-container *ngIf="!showForm">
 
-    <div class="master-top-left">
+    <div class="master-top-header">
 
-      <div class="master-title-wrapper">
+      <div class="master-top-left">
 
-        <h2>
-          Brand
-        </h2>
+        <div class="master-title-wrapper">
+          <h2>Brand Master</h2>
+        </div>
+
+      </div>
+
+      <div class="master-top-right">
+
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="refreshBrands()">
+
+          Refresh
+
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="newBrand()">
+
+          + Add Brand
+
+        </button>
 
       </div>
 
     </div>
 
-    <div class="master-top-right">
 
-      <button
-        type="button"
-        class="master-btn-outline"
-        (click)="refreshBrands()">
-
-        Refresh
-
-      </button>
-
-
-      <button
-        type="button"
-        class="master-btn-primary"
-        (click)="newBrand()">
-
-        + Add Brand
-
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- ================= TABLE VIEW ================= -->
-
-  <ng-container *ngIf="!showForm">
+    <!-- ================= TABLE ================= -->
 
     <div class="master-table-layout">
 
       <app-dynamic-table
 
         [data]="brands"
+
         [columns]="brandColumns"
+
         (edit)="editBrand($event)"
+
         (delete)="deleteBrand($event)">
 
       </app-dynamic-table>
@@ -71,21 +69,19 @@
 
       <app-reusable-form
 
-      [title]="formTitle"
+        [title]="formTitle"
 
-      [tabs]="brandTabs"
+        [tabs]="brandTabs"
 
-      [fields]="brandFields"
+        [fields]="brandFields"
 
-      [model]="brand"
+        [model]="brand"
 
-      (fieldChange)="onFieldChange($event)"
+        (fieldChange)="onFieldChange($event)"
 
-      (saveForm)="saveOrUpdateBrand()"
+        (saveForm)="saveOrUpdateBrand()"
 
-      (cancelForm)="cancelForm()"
-
-      >
+        (cancelForm)="cancelForm()">
 
       </app-reusable-form>
 

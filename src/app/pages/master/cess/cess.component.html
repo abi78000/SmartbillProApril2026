@@ -1,53 +1,56 @@
 <div class="master-layout">
 
-  <!-- ================= HEADER ================= -->
+  <!-- ================= TABLE VIEW ================= -->
 
-  <div class="master-top-header">
+  <ng-container *ngIf="!showForm">
 
-    <div class="master-top-left">
+    <div class="master-top-header">
 
-      <div class="master-title-wrapper">
-        <h2>Cess</h2>
+      <div class="master-top-left">
+
+        <div class="master-title-wrapper">
+          <h2>Cess</h2>
+        </div>
+
+      </div>
+
+      <div class="master-top-right">
+
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="refreshCesses()">
+
+          Refresh
+
+        </button>
+
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="newCess()">
+
+          + Add Cess
+
+        </button>
+
       </div>
 
     </div>
 
-    <div class="master-top-right">
 
-      <button
-        type="button"
-        class="master-btn-outline"
-        (click)="refreshCesses()">
-
-        Refresh
-
-      </button>
-
-      <button
-        type="button"
-        class="master-btn-primary"
-        (click)="newCess()">
-
-        + Add Cess
-
-      </button>
-
-    </div>
-
-  </div>
-
-
-  <!-- ================= TABLE VIEW ================= -->
-
-  <ng-container *ngIf="!showForm">
+    <!-- ================= TABLE ================= -->
 
     <div class="master-table-layout">
 
       <app-dynamic-table
 
         [data]="cesses"
+
         [columns]="cessColumns"
+
         (edit)="editCess($event)"
+
         (delete)="deleteCess($event)">
 
       </app-dynamic-table>
@@ -55,6 +58,7 @@
     </div>
 
   </ng-container>
+
 
 
   <!-- ================= FORM VIEW ================= -->
@@ -65,19 +69,19 @@
 
       <app-reusable-form
 
-      [title]="formTitle"
+        [title]="formTitle"
 
-      [tabs]="cessTabs"
+        [tabs]="cessTabs"
 
-      [fields]="cessFields"
+        [fields]="cessFields"
 
-      [model]="cess"
+        [model]="cess"
 
-      (fieldChange)="onFieldChange($event)"
+        (fieldChange)="onFieldChange($event)"
 
-      (saveForm)="saveOrUpdateCess()"
+        (saveForm)="saveOrUpdateCess()"
 
-      (cancelForm)="cancelForm()">
+        (cancelForm)="cancelForm()">
 
       </app-reusable-form>
 

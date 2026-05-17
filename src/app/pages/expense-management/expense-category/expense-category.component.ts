@@ -2,188 +2,407 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
+
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
+
+import { SharedModule } from '../../../shared/shared.module';
+
 import { ExpenseService } from '../../../services/expense.service';
 import { CommonserviceService } from '../../../services/commonservice.service';
 import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
 
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-import { SharedModule } from '../../../shared/shared.module';
-
 @Component({
   selector: 'app-expense-category',
   standalone: true,
-  imports: [CommonModule, FormsModule, MasterTableViewComponent, SharedModule],
+
+  imports: [
+    CommonModule,
+    FormsModule,
+    SharedModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
+
   templateUrl: './expense-category.component.html',
-  styleUrls: ['./expense-category.component.css']
+  styleUrls: ['./expense-category.component.css'],
 })
 export class ExpenseCategoryComponent implements OnInit {
-
-  companies: any[] = [];
-  branches: any[] = [];
-  categories: any[] = [];
+  showForm = false;
 
   isEditMode = false;
-  isFormEnabled = false;
 
-  category: any;
+  formTitle = 'New Expense Category';
+
+  companies: any[] = [];
+
+  branches: any[] = [];
+
+  categories: any[] = [];
+
+  category: any = {};
+
+  /*================ TABLE =================*/
+
+  categoryColumns = [
+    {
+      field: 'categoryName',
+      header: 'Category Name',
+    },
+
+    {
+      field: 'categoryCode',
+      header: 'Code',
+    },
+
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
+
+  /*================ TABS =================*/
+
+  categoryTabs = ['Details', 'Settings'];
+
+  /*================ FIELDS =================*/
+
+  categoryFields: any[] = [
+    {
+      label: 'Company',
+
+      model: 'companyID',
+
+      type: 'select',
+
+      required: true,
+
+      tab: 'Details',
+
+      options: [] as any[],
+    },
+
+    {
+      label: 'Branch',
+
+      model: 'branchID',
+
+      type: 'select',
+
+      tab: 'Details',
+
+      options: [] as any[],
+    },
+
+    {
+      label: 'Category Code',
+
+      model: 'categoryCode',
+
+      type: 'text',
+
+      readonly: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Category Name',
+
+      model: 'categoryName',
+
+      type: 'text',
+
+      required: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Description',
+
+      model: 'description',
+
+      type: 'textarea',
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Is Active',
+
+      model: 'isActive',
+
+      type: 'checkbox',
+
+      tab: 'Settings',
+    },
+  ];
 
   constructor(
     private expenseService: ExpenseService,
+
     private commonService: CommonserviceService,
-    private swal: SweetAlertService
+
+    private swal: SweetAlertService,
   ) {}
 
-  ngOnInit(): void {
-    this.initForm();
+  ngOnInit() {
+    this.resetCategory();
+
     this.loadCompanies();
 
     const companyId = this.getCompanyId();
+
     if (companyId) {
       this.category.companyID = companyId;
+
       this.loadBranches(companyId);
+
       this.loadCategories(companyId);
+
       this.generateCategoryCode();
     }
   }
 
-  // ================= TABLE =================
-  columns = [
-    { field: 'categoryName', header: 'Category Name' },
-    { field: 'categoryCode', header: 'Code' },
-    { field: 'isActive', header: 'Active' }
-  ];
-
-  // ================= INIT =================
-  initForm() {
-    this.category = this.getEmpty();
-  }
-
-  getEmpty() {
-    return {
-      expenseCategoryID: 0,
-      companyID: this.getCompanyId(),
-      branchID: null,
-      categoryCode: '',
-      categoryName: '',
-      description: '',
-      isActive: true
-    };
-  }
+  /*================ COMPANY ID =================*/
 
   getCompanyId() {
     return Number(localStorage.getItem('companyID')) || 0;
   }
 
-  // ================= LOAD =================
+  /*================ LOAD COMPANY =================*/
 
   loadCompanies() {
     this.commonService.getCompanies().subscribe({
       next: (res: any) => {
         this.companies = Array.isArray(res) ? res : res.data || [];
-      }
+
+        const field = this.categoryFields.find(
+          (x: any) => x.model === 'companyID',
+        );
+
+        if (field) {
+          field.options = this.companies.map((x: any) => ({
+            label: x.companyName,
+
+            value: x.companyID,
+          }));
+        }
+      },
     });
   }
+
+  /*================ LOAD BRANCH =================*/
 
   loadBranches(companyId: number) {
     this.commonService.getBranchesByCompany(companyId).subscribe({
       next: (res: any) => {
         this.branches = Array.isArray(res) ? res : res.data || [];
-      }
+
+        const field = this.categoryFields.find(
+          (x: any) => x.model === 'branchID',
+        );
+
+        if (field) {
+          field.options = this.branches.map((x: any) => ({
+            label: x.branchName,
+
+            value: x.branchID,
+          }));
+        }
+      },
     });
   }
+
+  /*================ LOAD CATEGORY =================*/
 
   loadCategories(companyId: number) {
     this.expenseService.getCategories(companyId).subscribe({
       next: (res: any) => {
-        this.categories = Array.isArray(res) ? res : res.data || [];
-      }
+        this.categories = (Array.isArray(res) ? res : res.data || []).map(
+          (x: any) => ({
+            ...x,
+
+            statusText: x.isActive ? 'Active' : 'Inactive',
+          }),
+        );
+      },
     });
   }
 
-  // ================= CODE GENERATION =================
+  /*================ CODE =================*/
 
   generateCategoryCode() {
     if (!this.category.companyID) return;
 
     const company = this.companies.find(
-      (c: any) => c.companyID == this.category.companyID
+      (c: any) => c.companyID == this.category.companyID,
     );
 
     if (!company) return;
 
-    const name = company.companyName.replace(/\s+/g, '').toUpperCase();
-    const nextNo = (this.categories.length + 1).toString().padStart(2, '0');
+    const name = company.companyName
+      .replace(/\s+/g, '')
+
+      .toUpperCase();
+
+    const nextNo = (this.categories.length + 1)
+
+      .toString()
+
+      .padStart(2, '0');
 
     this.category.categoryCode = `CAT-${name}-${nextNo}`;
   }
 
-  // ================= EVENTS =================
+  /*================ NEW =================*/
 
-  onCompanyChange(companyId: number) {
-    this.branches = [];
-    this.categories = [];
+  newCategory() {
+    this.resetCategory();
+
+    this.showForm = true;
+
+    this.isEditMode = false;
+
+    this.formTitle = 'New Expense Category';
+
+    const companyId = this.getCompanyId();
 
     if (companyId) {
+      this.category.companyID = companyId;
+
       this.loadBranches(companyId);
+
       this.loadCategories(companyId);
+
       this.generateCategoryCode();
     }
   }
 
-  // ================= FORM =================
+  /*================ EDIT =================*/
 
-  newCategory() {
-    this.initForm();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-    this.generateCategoryCode();
-  }
-
-  reset() {
-    this.initForm();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
-
-  // ================= SAVE =================
-
-  save() {
-    if (!this.category.companyID || !this.category.categoryName) {
-      this.swal.warning('Warning', 'Company & Category Name required');
-      return;
-    }
-
-    this.expenseService.saveCategory(this.category).subscribe({
-      next: () => {
-        this.swal.success('Success', 'Saved successfully');
-        this.loadCategories(this.category.companyID);
-        this.reset();
-      }
-    });
-  }
-
-  // ================= EDIT =================
-
-  edit(row: any) {
+  editCategory(row: any) {
     this.category = { ...row };
+
+    this.showForm = true;
+
     this.isEditMode = true;
-    this.isFormEnabled = true;
+
+    this.formTitle = 'Edit Expense Category';
 
     if (row.companyID) {
       this.loadBranches(row.companyID);
     }
   }
 
-  // ================= DELETE =================
+  /*================ FIELD =================*/
 
-  delete(row: any) {
-    if (!confirm(`Delete ${row.categoryName}?`)) return;
+  onFieldChange(event: any) {
+    this.category[event.field] = event.value;
 
-    const payload = { ...row, isActive: false };
+    if (event.field === 'companyID') {
+      this.loadBranches(event.value);
 
-    this.expenseService.saveCategory(payload).subscribe(() => {
-      this.swal.success('Deleted', 'Category deleted');
-      this.loadCategories(row.companyID);
+      this.loadCategories(event.value);
+
+      this.generateCategoryCode();
+    }
+  }
+
+  /*================ SAVE =================*/
+
+  saveCategory() {
+    if (!this.category.companyID || !this.category.categoryName) {
+      return this.swal.warning(
+        'Validation',
+
+        'Company & Category Required',
+      );
+    }
+
+    this.expenseService.saveCategory(this.category).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
+
+          this.isEditMode ? 'Updated' : 'Saved',
+        );
+
+        this.loadCategories(this.category.companyID);
+
+        this.cancelForm();
+      },
+
+      error: () => {
+        this.swal.error(
+          'Error',
+
+          'Save Failed',
+        );
+      },
     });
+  }
+
+  /*================ DELETE =================*/
+
+  deleteCategory(row: any) {
+    const payload = {
+      ...row,
+
+      isActive: false,
+    };
+
+    this.expenseService.saveCategory(payload).subscribe({
+      next: () => {
+        this.swal.success(
+          'Deleted',
+
+          'Category Deleted',
+        );
+
+        this.loadCategories(row.companyID);
+      },
+    });
+  }
+
+  /*================ REFRESH =================*/
+
+  refreshCategories() {
+    this.cancelForm();
+
+    const companyId = this.getCompanyId();
+
+    if (companyId) {
+      this.loadCategories(companyId);
+    }
+  }
+
+  /*================ CANCEL =================*/
+
+  cancelForm() {
+    this.showForm = false;
+
+    this.resetCategory();
+  }
+
+  /*================ RESET =================*/
+
+  resetCategory() {
+    this.category = {
+      expenseCategoryID: 0,
+
+      companyID: this.getCompanyId(),
+
+      branchID: 0,
+
+      categoryCode: '',
+
+      categoryName: '',
+
+      description: '',
+
+      isActive: true,
+    };
   }
 }

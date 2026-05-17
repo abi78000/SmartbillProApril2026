@@ -59,7 +59,7 @@ export class CategoryComponent implements OnInit {
     },
 
     {
-      field: 'statusText',
+      field: 'isActive',
       header: 'Status',
     },
   ];

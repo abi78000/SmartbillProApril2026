@@ -1,261 +1,92 @@
 <div class="master-layout">
 
-  <!-- ================= TOP HEADER ================= -->
-  <div class="master-top-header">
+  <!-- ================= TABLE VIEW ================= -->
 
-    <div class="master-top-left">
-      <lucide-icon name="truck"></lucide-icon>
-      <div>
-        <div class="master-title-text">SUPPLIER MASTER</div>
-        <div class="master-subtitle-text">Enterprise Resource Planning</div>
-      </div>
-    </div>
+  <ng-container *ngIf="!showForm">
 
-    <div class="master-top-right">
-      <button class="master-btn-primary" type="button" (click)="newSupplierCreate()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD SUPPLIER
-      </button>
+    <div class="master-top-header">
 
-      <button class="master-btn-primary" type="button" (click)="refreshSuppliers()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
-      </button>
-    </div>
+      <div class="master-top-left">
 
-    <div class="total-badge saas">
-      TOTAL SUPPLIERS : {{ suppliers.length }}
-    </div>
+        <div class="master-title-wrapper">
+          <h2>Supplier Master</h2>
+        </div>
 
-  </div>
-
-  <!-- ================= LEFT FORM PANEL ================= -->
-  <div class="master-panel">
-
-    <div class="master-header">
-      <div class="master-title">
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>CREATE SUPPLIER</h2>
       </div>
 
-      <div class="master-actions">
+      <div class="master-top-right">
+
         <button
           type="button"
           class="master-btn-outline"
-          (click)="saveOrUpdateSupplier()"
-          [disabled]="duplicateError"
-        >
-          {{ supplier.supplierID ? 'UPDATE' : 'SAVE' }}
+          (click)="refreshSuppliers()">
+
+          Refresh
+
         </button>
 
         <button
           type="button"
           class="master-btn-primary"
-          (click)="resetSupplier()"
-        >
-          CLEAR
+          (click)="newSupplier()">
+
+          + Add Supplier
+
         </button>
+
       </div>
+
     </div>
 
-     <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
-      <div class="form-grid">
 
-        <!-- Code -->
-        <div class="form-column">
-          <label>Code</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.supplierCode"
-            name="supplierCode"
-            readonly
-            appFocusOnKey
-          />
-        </div>
+    <!-- ================= TABLE ================= -->
 
-        <!-- Name -->
-        <div class="form-column">
-          <label>Supplier Name</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.supplierName"
-            name="supplierName"
-            required
-            appInputRestrict="letter"
-            (ngModelChange)="checkDuplicate()"
-            appFocusOnKey
-          />
-          <div class="text-warning small mt-1" *ngIf="duplicateError">
-            Supplier name already exists!
-          </div>
-        </div>
+    <div class="master-table-layout">
 
-        <!-- Phone -->
-        <div class="form-column">
-          <label>Phone</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.phone"
-            name="phone"
-            appInputRestrict="number"
-            appFocusOnKey
-          />
-        </div>
+      <app-dynamic-table
 
-        <!-- Alt Phone -->
-        <div class="form-column">
-          <label>Alt Phone</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.alternatePhone"
-            name="alternatePhone"
-            appInputRestrict="number"
-            appFocusOnKey
-          />
-        </div>
+        [data]="suppliers"
 
-        <!-- Email -->
-        <div class="form-column">
-          <label>Email</label>
-          <input
-            type="email"
-            class="input-common"
-            [(ngModel)]="supplier.email"
-            name="email"
-            appInputRestrict="email"
-            appFocusOnKey
-          />
-        </div>
+        [columns]="supplierColumns"
 
-        <!-- GST -->
-        <div class="form-column">
-          <label>GST Number</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.gstNumber"
-            name="gstNumber"
-            appInputRestrict="text"
-            appFocusOnKey
-          />
-        </div>
+        (edit)="editSupplier($event)"
 
-        <!-- Postal -->
-        <div class="form-column">
-          <label>Postal Code</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.postalCode"
-            name="postalCode"
-            appInputRestrict="number"
-            appFocusOnKey
-          />
-        </div>
+        (delete)="deleteSupplier($event)">
 
-        <!-- Address 1 -->
-        <div class="form-column full-width">
-          <label>Address Line 1</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.addressLine1"
-            name="addressLine1"
-            appInputRestrict="address"
-            appFocusOnKey
-          />
-        </div>
+      </app-dynamic-table>
 
-        <!-- Address 2 -->
-        <div class="form-column full-width">
-          <label>Address Line 2</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.addressLine2"
-            name="addressLine2"
-            appInputRestrict="address"
-            appFocusOnKey
-          />
-        </div>
+    </div>
 
-        <!-- City -->
-        <div class="form-column">
-          <label>City</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.city"
-            name="city"
-            appInputRestrict="letter"
-            appFocusOnKey
-          />
-        </div>
+  </ng-container>
 
-        <!-- State -->
-        <div class="form-column">
-          <label>State</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.state"
-            name="state"
-            appInputRestrict="letter"
-            appFocusOnKey
-          />
-        </div>
 
-        <!-- Country -->
-        <div class="form-column">
-          <label>Country</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="supplier.country"
-            name="country"
-            appInputRestrict="letter"
-            appFocusOnKey
-          />
-        </div>
 
-        <!-- Status -->
-        <div class="form-column">
-          <label>Status</label>
-          <label class="switch">
-            <input
-              type="checkbox"
-              [(ngModel)]="supplier.isActive"
-              name="isActive"
-              appFocusOnKey
-            />
-            <span class="slider"></span>
-            <span class="switch-text">
-              {{ supplier.isActive ? 'Active' : 'Inactive' }}
-            </span>
-          </label>
-        </div>
+  <!-- ================= FORM VIEW ================= -->
 
-      </div>
-    </fieldset>
+  <ng-container *ngIf="showForm">
 
-  </div>
+    <div class="master-form-layout compact-form">
 
-  <!-- ================= RIGHT TABLE PANEL ================= -->
-  <div class="master-panel">
+      <app-reusable-form
 
-    <app-master-table-view
-      [data]="suppliers"
-      [columns]="supplierColumns"
-      title="ALL SUPPLIERS"
-      companyName="SmartBillPro"
-      (edit)="editSupplier($event)"
-      (delete)="deleteSupplier($event)">
-    </app-master-table-view>
+        [title]="formTitle"
 
-  </div>
+        [tabs]="supplierTabs"
+
+        [fields]="supplierFields"
+
+        [model]="supplier"
+
+        (fieldChange)="onFieldChange($event)"
+
+        (saveForm)="saveOrUpdateSupplier()"
+
+        (cancelForm)="cancelForm()">
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>
