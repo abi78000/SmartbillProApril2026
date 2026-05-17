@@ -1,126 +1,525 @@
-import { Component } from '@angular/core';
 import {
-  Company,
-  Branch,
-  Department,
-  Role,
-} from '../../models/common-models/companyMaster';
-import { CommonserviceService } from '../../../services/commonservice.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-import { SharedModule } from '../../../shared/shared.module';
-MasterTableViewComponent;
+Component,
+OnInit
+} from '@angular/core';
+
+import {
+CommonModule
+} from '@angular/common';
+
+import {
+FormsModule
+} from '@angular/forms';
+
+import {
+DynamicTableComponent
+} from '../../../framework/dynamic-table/dynamic-table.component';
+
+import {
+ReusableFormComponent
+} from '../../../framework/reusable-form/reusable-form.component';
+
+import {
+CommonserviceService
+} from '../../../services/commonservice.service';
+
+import {
+SweetAlertService
+} from '../../../services/properties/sweet-alert.service';
 
 @Component({
-  selector: 'app-role-master',
-  imports: [CommonModule, FormsModule, SharedModule, MasterTableViewComponent],
-  templateUrl: './role-master.component.html',
-  styleUrls: ['./role-master.component.css'],
+
+selector:'app-role-master',
+
+standalone:true,
+
+imports:[
+CommonModule,
+FormsModule,
+DynamicTableComponent,
+ReusableFormComponent
+],
+
+templateUrl:'./role-master.component.html',
+
+styleUrls:[
+'./role-master.component.css'
+]
+
 })
-export class RoleMasterComponent {
-  roleColumns = [
-    { field: 'roleName', header: 'ROLE Name' },
-    { field: 'isActive', header: 'Active' },
-  ];
-  isEditMode = false;
-  isFormEnabled = false;
 
-  roles: Role[] = [];
-  role: Role = this.getEmptyRole();
+export class RoleMasterComponent
+implements OnInit{
 
-  constructor(
-    private commonservice: CommonserviceService,
-    private swallservice: SweetAlertService
-  ) {}
 
-  ngOnInit(): void {
-    this.loadRoles();
-    this.isFormEnabled = false;
-  }
+showForm=false;
 
-  newRole() {
-    this.resetForm();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
-  refreshRoles() {
-    this.resetForm();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
-  getEmptyRole(): Role {
-    return {
-      roleID: 0,
-      roleCode: '',
-      roleName: '',
-      isActive: true,
-      createdByUserID: 0,
-      createdSystemName: '',
-      createdAt: new Date().toISOString(),
-      updatedByUserID: 0,
-      updatedSystemName: '',
-      updatedAt: new Date().toISOString(),
-    };
-  }
+isEditMode=false;
 
-  loadRoles() {
-    this.commonservice.getRoles().subscribe({
-      next: (res) => (this.roles = res),
-      error: (err) => {
-        console.error(' Error loading roles:', err);
-        this.swallservice.error('Error', 'Could not load role list.');
-      },
-    });
-  }
+formTitle='New Role';
 
-  saveOrUpdateRole() {
-    if (!this.role.roleName) {
-      this.swallservice.error('Error', 'Role Name and Code are required!');
-      return;
-    }
+roles:any[]=[];
 
-    this.commonservice.saveRole(this.role).subscribe({
-      next: (id) => {
-        this.swallservice.success(
-          'Success',
-          `Role ${this.role.roleID > 0 ? 'updated' : 'created'} successfully!`
-        );
-        this.loadRoles();
-        this.resetForm();
-      },
-      error: (err) => {
-        console.error(' Error saving role:', err);
-        this.swallservice.error('Error', 'Could not save role.');
-      },
-    });
-  }
+roleModel:any={};
 
-  editRole(r: Role) {
-    this.role = { ...r }; // fill form for editing
-  }
 
-  deleteRole(r: Role) {
-    if (!confirm(`Are you sure you want to delete ${r.roleName}?`)) {
-      return;
-    }
 
-    r.isActive = false; // soft delete
-    this.commonservice.saveRole(r).subscribe({
-      next: (id) => {
-        console.log('Role deleted (soft delete), ID:', id);
-        this.swallservice.success('Success', 'Role deleted successfully!');
-        this.loadRoles();
-      },
-      error: (err) => {
-        console.error(' Error deleting role:', err);
-        this.swallservice.error('Error', 'Could not delete role.');
-      },
-    });
-  }
+/* ===================================
+   TABS
+=================================== */
 
-  resetForm() {
-    this.role = this.getEmptyRole();
-  }
+roleTabs=[
+
+'Details',
+'Settings'
+
+];
+
+
+/* ===================================
+   TABLE
+=================================== */
+
+roleColumns=[
+
+{
+field:'roleName',
+header:'Role'
+},
+
+{
+field:'statusText',
+header:'Status'
+}
+
+];
+
+
+/* ===================================
+   FIELDS
+=================================== */
+
+roleFields=[
+
+{
+label:'Role Name',
+model:'roleName',
+type:'text',
+required:true,
+tab:'Details',
+restrictType:'text',
+autoFocus:true
+},
+
+{
+label:'Role Code',
+model:'roleCode',
+type:'text',
+tab:'Details',
+readonly:true
+},
+
+{
+label:'Is Active',
+model:'isActive',
+type:'checkbox',
+tab:'Settings'
+}
+
+];
+
+
+constructor(
+
+private commonservice:CommonserviceService,
+
+private swal:SweetAlertService
+
+){}
+
+
+ngOnInit(){
+
+this.resetModel();
+
+this.loadRoles();
+
+}
+
+
+
+/* ===================================
+   LOAD
+=================================== */
+
+loadRoles(){
+
+this.commonservice
+.getRoles()
+.subscribe({
+
+next:(res:any)=>{
+
+this.roles=
+
+res.map(
+
+(role:any)=>({
+
+...role,
+
+statusText:
+role.isActive
+?
+'Active'
+:
+'Inactive'
+
+})
+
+);
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+this.swal.error(
+'Error',
+'Could not load roles'
+);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   ADD
+=================================== */
+
+addRole(){
+
+this.resetModel();
+
+this.formTitle='New Role';
+
+this.isEditMode=false;
+
+this.showForm=true;
+
+}
+
+
+
+/* ===================================
+   EDIT
+=================================== */
+
+editRole(row:any){
+
+this.roleModel={
+
+...row
+
+};
+
+this.formTitle='Edit Role';
+
+this.isEditMode=true;
+
+this.showForm=true;
+
+}
+
+
+
+/* ===================================
+   DUPLICATE
+=================================== */
+
+isDuplicate(
+
+list:any[],
+
+field:string,
+
+value:string,
+
+idField='roleID',
+
+currentId:any=null
+
+):boolean{
+
+
+const normalize=
+
+(text:any='')=>
+
+String(text)
+
+.trim()
+
+.replace(/\s+/g,'')
+
+.toLowerCase();
+
+
+return list.some(
+
+item=>
+
+normalize(
+item[field]
+)
+
+===
+
+normalize(value)
+
+&&
+
+item[idField]
+!==currentId
+
+);
+
+}
+
+
+
+/* ===================================
+   SAVE
+=================================== */
+
+saveRole(data:any){
+
+if(!data.roleName?.trim()){
+
+return this.swal.warning(
+
+'Validation',
+
+'Role Name Required'
+
+);
+
+}
+
+
+if(
+
+this.isDuplicate(
+
+this.roles,
+
+'roleName',
+
+data.roleName,
+
+'roleID',
+
+data.roleID
+
+)
+
+){
+
+return this.swal.warning(
+
+'Duplicate',
+
+'Role already exists'
+
+);
+
+}
+
+
+const now=
+
+new Date()
+.toISOString();
+
+
+const payload={
+
+roleID:
+data.roleID||0,
+
+roleCode:
+data.roleCode||'',
+
+roleName:
+data.roleName.trim(),
+
+isActive:
+Boolean(
+data.isActive
+),
+
+createdByUserID:
+data.createdByUserID||0,
+
+createdSystemName:
+'AngularApp',
+
+createdAt:
+data.createdAt||now,
+
+updatedByUserID:0,
+
+updatedSystemName:
+'AngularApp',
+
+updatedAt:
+now
+
+};
+
+
+this.commonservice
+.saveRole(payload)
+.subscribe({
+
+next:()=>{
+
+this.swal.success(
+
+'Success',
+
+this.isEditMode
+?
+'Role Updated'
+:
+'Role Created'
+
+);
+
+this.loadRoles();
+
+this.cancelForm();
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+this.swal.error(
+
+'Error',
+
+'Save Failed'
+
+);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   DELETE
+=================================== */
+
+deleteRole(row:any){
+
+row.isActive=false;
+
+this.commonservice
+.saveRole(row)
+.subscribe({
+
+next:()=>{
+
+this.swal.success(
+
+'Success',
+
+'Deleted Successfully'
+
+);
+
+this.loadRoles();
+
+},
+
+error:()=>{
+
+this.swal.error(
+
+'Error',
+
+'Delete Failed'
+
+);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   REFRESH
+=================================== */
+
+refresh(){
+
+this.cancelForm();
+
+this.loadRoles();
+
+}
+
+
+
+/* ===================================
+   CANCEL
+=================================== */
+
+cancelForm(){
+
+this.showForm=false;
+
+this.resetModel();
+
+}
+
+
+
+/* ===================================
+   RESET
+=================================== */
+
+resetModel(){
+
+this.roleModel={
+
+roleID:0,
+roleCode:'',
+roleName:'',
+isActive:true,
+createdByUserID:0,
+createdSystemName:'',
+createdAt:'',
+updatedByUserID:0,
+updatedSystemName:'',
+updatedAt:''
+
+};
+
+}
+
 }
