@@ -1,509 +1,325 @@
-import {
-Component,
-OnInit
-} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import {
-CommonModule
-} from '@angular/common';
+import { CommonModule } from '@angular/common';
 
-import {
-FormsModule
-} from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
-import {
-DynamicTableComponent
-} from '../../../framework/dynamic-table/dynamic-table.component';
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
 
-import {
-ReusableFormComponent
-} from '../../../framework/reusable-form/reusable-form.component';
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
 
-import {
-CommonserviceService
-} from '../../../services/commonservice.service';
+import { CommonserviceService } from '../../../services/commonservice.service';
 
-import {
-SweetAlertService
-} from '../../../services/properties/sweet-alert.service';
+import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
 
 @Component({
+  selector: 'app-branch-master',
 
-selector:'app-branch-master',
+  standalone: true,
 
-standalone:true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
 
-imports:[
-CommonModule,
-FormsModule,
-DynamicTableComponent,
-ReusableFormComponent
-],
+  templateUrl: './branch-master.component.html',
 
-templateUrl:'./branch-master.component.html',
-
-styleUrls:[
-'./branch-master.component.css'
-]
-
+  styleUrls: ['./branch-master.component.css'],
 })
+export class BranchMasterComponent implements OnInit {
+  showForm = false;
 
-export class BranchMasterComponent
-implements OnInit{
+  isEditMode = false;
 
-showForm=false;
+  formTitle = 'New Branch';
 
-isEditMode=false;
+  companies: any[] = [];
 
-formTitle='New Branch';
+  branches: any[] = [];
 
-companies:any[]=[];
+  branchModel: any = {};
 
-branches:any[]=[];
-
-branchModel:any={};
-
-
-/* ===================================
+  /* ===================================
    TABS
 =================================== */
 
-branchTabs=[
+  branchTabs = ['Details', 'Address', 'Settings'];
 
-'Details',
-'Address',
-'Settings'
-
-];
-
-
-/* ===================================
+  /* ===================================
    TABLE
 =================================== */
 
-branchColumns=[
+  branchColumns = [
+    {
+      field: 'branchName',
+      header: 'Branch',
+    },
 
-{
-field:'branchName',
-header:'Branch'
-},
+    {
+      field: 'companyName',
+      header: 'Company',
+    },
 
-{
-field:'companyName',
-header:'Company'
-},
+    {
+      field: 'isActive',
+      header: 'Status',
+    },
+  ];
 
-{
-field:'statusText',
-header:'Status'
-}
-
-];
-
-
-/* ===================================
+  /* ===================================
    FIELDS
 =================================== */
 
-branchFields=[
+  branchFields = [
+    {
+      label: 'Company',
+      model: 'companyID',
+      type: 'select',
+      required: true,
+      tab: 'Details',
+      options: [],
+    },
 
-{
-label:'Company',
-model:'companyID',
-type:'select',
-required:true,
-tab:'Details',
-options:[]
-},
+    {
+      label: 'Branch Name',
+      model: 'branchName',
+      type: 'text',
+      required: true,
+      tab: 'Details',
+      restrictType: 'text',
+      autoFocus: true,
+    },
 
-{
-label:'Branch Name',
-model:'branchName',
-type:'text',
-required:true,
-tab:'Details',
-restrictType:'text',
-autoFocus:true
-},
+    {
+      label: 'Branch Code',
+      model: 'branchCode',
+      type: 'text',
+      tab: 'Details',
+      readonly: true,
+    },
 
-{
-label:'Branch Code',
-model:'branchCode',
-type:'text',
-tab:'Details',
-readonly:true
-},
+    {
+      label: 'Address',
+      model: 'address',
+      type: 'textarea',
+      tab: 'Address',
+    },
 
-{
-label:'Address',
-model:'address',
-type:'textarea',
-tab:'Address'
-},
+    {
+      label: 'Is Active',
+      model: 'isActive',
+      type: 'checkbox',
+      tab: 'Settings',
+    },
+  ];
 
-{
-label:'Is Active',
-model:'isActive',
-type:'checkbox',
-tab:'Settings'
-}
+  constructor(
+    private commonservice: CommonserviceService,
+    private swal: SweetAlertService,
+  ) {}
 
-];
+  ngOnInit() {
+    this.resetModel();
 
+    this.loadCompanies();
 
-constructor(
+    this.loadBranches();
+  }
 
-private commonservice:CommonserviceService,
-private swal:SweetAlertService
-
-){}
-
-
-ngOnInit(){
-
-this.resetModel();
-
-this.loadCompanies();
-
-this.loadBranches();
-
-}
-
-
-/* ===================================
+  /* ===================================
    LOAD COMPANIES
 =================================== */
 
-loadCompanies(){
+  loadCompanies() {
+    this.commonservice.getCompanies().subscribe({
+      next: (res: any) => {
+        this.companies = res;
 
-this.commonservice
-.getCompanies()
-.subscribe({
+        const field = this.branchFields.find((x) => x.model === 'companyID');
 
-next:(res:any)=>{
+        if (field) {
+          field.options = res.map((company: any) => ({
+            label: company.companyName,
 
-this.companies=res;
+            value: company.companyID,
+          }));
+        }
+      },
+    });
+  }
 
-const field=
-
-this.branchFields.find(
-
-x=>x.model==='companyID'
-
-);
-
-if(field){
-
-field.options=
-
-res.map(
-
-(company:any)=>({
-
-label:
-company.companyName,
-
-value:
-company.companyID
-
-})
-
-);
-
-}
-
-}
-
-});
-
-}
-
-
-/* ===================================
+  /* ===================================
    LOAD BRANCHES
 =================================== */
 
-loadBranches(){
+  loadBranches() {
+    this.commonservice.getBranches().subscribe({
+      next: (res: any) => {
+        this.branches = res.map((branch: any) => ({
+          ...branch,
 
-this.commonservice
-.getBranches()
-.subscribe({
+          companyName: this.getCompanyName(branch.companyID),
 
-next:(res:any)=>{
+          statusText: branch.isActive ? 'Active' : 'Inactive',
+        }));
+      },
+    });
+  }
 
-this.branches=
-
-res.map(
-
-(branch:any)=>({
-
-...branch,
-
-companyName:
-this.getCompanyName(
-branch.companyID
-),
-
-statusText:
-branch.isActive
-?
-'Active'
-:
-'Inactive'
-
-})
-
-);
-
-}
-
-});
-
-}
-
-
-/* ===================================
+  /* ===================================
    ADD
 =================================== */
 
-addBranch(){
+  addBranch() {
+    this.resetModel();
 
-this.resetModel();
+    this.formTitle = 'New Branch';
 
-this.formTitle='New Branch';
+    this.isEditMode = false;
 
-this.isEditMode=false;
+    this.showForm = true;
+  }
 
-this.showForm=true;
-
-}
-
-
-/* ===================================
+  /* ===================================
    EDIT
 =================================== */
 
-editBranch(row:any){
+  editBranch(row: any) {
+    this.branchModel = { ...row };
 
-this.branchModel={...row};
+    this.formTitle = 'Edit Branch';
 
-this.formTitle='Edit Branch';
+    this.isEditMode = true;
 
-this.isEditMode=true;
+    this.showForm = true;
+  }
 
-this.showForm=true;
-
-}
-
-
-/* ===================================
+  /* ===================================
    SAVE
 =================================== */
 
-saveBranch(data:any){
+  saveBranch(data: any) {
+    if (!data.companyID) {
+      return this.swal.warning('Validation', 'Select Company');
+    }
 
-if(!data.companyID){
+    if (!data.branchName) {
+      return this.swal.warning('Validation', 'Branch Name Required');
+    }
 
-return this.swal.warning(
-'Validation',
-'Select Company'
-);
+    const payload = {
+      branchID: data.branchID || 0,
 
-}
+      companyID: Number(data.companyID),
 
-if(!data.branchName){
+      branchCode: data.branchCode || '',
 
-return this.swal.warning(
-'Validation',
-'Branch Name Required'
-);
+      branchName: data.branchName,
 
-}
+      address: data.address || '',
 
+      isActive: Boolean(data.isActive),
 
-const payload={
+      createdByUserID: data.createdByUserID || 0,
 
-branchID:
-data.branchID || 0,
+      createdSystemName: 'AngularApp',
 
-companyID:
-Number(data.companyID),
+      createdAt: data.createdAt || new Date().toISOString(),
 
-branchCode:
-data.branchCode || '',
+      updatedByUserID: 0,
 
-branchName:
-data.branchName,
+      updatedSystemName: 'AngularApp',
 
-address:
-data.address || '',
+      updatedAt: new Date().toISOString(),
+    };
 
-isActive:
-Boolean(data.isActive),
+    this.commonservice.saveBranch(payload).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
 
-createdByUserID:
-data.createdByUserID || 0,
+          this.isEditMode ? 'Branch Updated' : 'Branch Created',
+        );
 
-createdSystemName:
-'AngularApp',
+        this.loadBranches();
 
-createdAt:
-data.createdAt || new Date().toISOString(),
+        this.cancelForm();
+      },
 
-updatedByUserID:0,
+      error: (err) => {
+        console.log(err);
 
-updatedSystemName:
-'AngularApp',
+        this.swal.error('Error', 'Save Failed');
+      },
+    });
+  }
 
-updatedAt:
-new Date().toISOString()
-
-};
-
-
-this.commonservice
-.saveBranch(payload)
-.subscribe({
-
-next:()=>{
-
-this.swal.success(
-
-'Success',
-
-this.isEditMode
-?
-'Branch Updated'
-:
-'Branch Created'
-
-);
-
-this.loadBranches();
-
-this.cancelForm();
-
-},
-
-error:(err)=>{
-
-console.log(err);
-
-this.swal.error(
-'Error',
-'Save Failed'
-);
-
-}
-
-});
-
-}
-
-
-/* ===================================
+  /* ===================================
    DELETE
 =================================== */
 
-deleteBranch(row:any){
+  deleteBranch(row: any) {
+    row.isActive = false;
 
-row.isActive=false;
+    this.commonservice.saveBranch(row).subscribe({
+      next: () => {
+        this.swal.success('Success', 'Deleted Successfully');
 
-this.commonservice
-.saveBranch(row)
-.subscribe({
+        this.loadBranches();
+      },
+    });
+  }
 
-next:()=>{
-
-this.swal.success(
-'Success',
-'Deleted Successfully'
-);
-
-this.loadBranches();
-
-}
-
-});
-
-}
-
-
-/* ===================================
+  /* ===================================
    REFRESH
 =================================== */
 
-refresh(){
+  refresh() {
+    this.cancelForm();
 
-this.cancelForm();
+    this.loadBranches();
+  }
 
-this.loadBranches();
-
-}
-
-
-/* ===================================
+  /* ===================================
    CANCEL
 =================================== */
 
-cancelForm(){
+  cancelForm() {
+    this.showForm = false;
 
-this.showForm=false;
+    this.resetModel();
+  }
 
-this.resetModel();
-
-}
-
-
-/* ===================================
+  /* ===================================
    RESET
 =================================== */
 
-resetModel(){
+  resetModel() {
+    this.branchModel = {
+      branchID: 0,
+      companyID: null,
+      branchCode: '',
+      branchName: '',
+      address: '',
+      isActive: true,
+      createdByUserID: 0,
+      createdSystemName: '',
+      createdAt: '',
+      updatedByUserID: 0,
+      updatedSystemName: '',
+      updatedAt: '',
+    };
+  }
 
-this.branchModel={
-
-branchID:0,
-companyID:null,
-branchCode:'',
-branchName:'',
-address:'',
-isActive:true,
-createdByUserID:0,
-createdSystemName:'',
-createdAt:'',
-updatedByUserID:0,
-updatedSystemName:'',
-updatedAt:''
-
-};
-
-}
-
-
-/* ===================================
+  /* ===================================
    COMPANY NAME
 =================================== */
 
-getCompanyName(
-companyID:number
-){
+  getCompanyName(companyID: number) {
+    const company = this.companies.find((x) => x.companyID === companyID);
 
-const company=
-
-this.companies.find(
-
-x=>
-x.companyID===companyID
-
-);
-
-return company
-?
-company.companyName
-:
-'';
-
-}
-
+    return company ? company.companyName : '';
+  }
 }
