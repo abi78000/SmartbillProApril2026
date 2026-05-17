@@ -110,7 +110,7 @@ header:'Role'
 },
 
 {
-field:'statusText',
+field:'isActive',
 header:'Status'
 }
 

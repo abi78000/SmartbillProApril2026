@@ -2,165 +2,250 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
 
 import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
-
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-import { SharedModule } from '../../../shared/shared.module';
-import { PaymentMode } from '../../models/common-models/master-models/master';
 import { MasterService } from '../../../services/master.service';
 
 @Component({
   selector: 'app-payment-mode-master',
   standalone: true,
-  imports: [CommonModule, FormsModule, MasterTableViewComponent, SharedModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
   templateUrl: './payment-mode-master.component.html',
-  styleUrls: ['./payment-mode-master.component.css']
+  styleUrls: ['./payment-mode-master.component.css'],
 })
 export class PaymentModeMasterComponent implements OnInit {
+  showForm = false;
+  isEditMode = false;
+  formTitle = 'New Payment Mode';
 
-  paymentModes: PaymentMode[] = [];
-  paymentMode: PaymentMode = this.resetPaymentMode();
+  paymentModes: any[] = [];
+  paymentModel: any = {};
+
+  paymentTabs = ['Details', 'Settings'];
 
   paymentModeColumns = [
-    { field: 'paymentModeName', header: 'Payment Mode' },
-    { field: 'paymentType', header: 'Type' },
-    { field: 'isActive', header: 'Active' }
+    {
+      field: 'paymentModeName',
+      header: 'Payment Mode',
+    },
+
+    {
+      field: 'paymentType',
+      header: 'Type',
+    },
+
+
+    {field:'isActive',header:'Status'}
   ];
 
-  isEditMode = false;
-  isFormEnabled = false;
+  paymentFields: any[] = [
+    {
+      label: 'Payment Mode Name',
+      model: 'paymentModeName',
+      type: 'text',
+      required: true,
+      tab: 'Details',
+      autoFocus: true,
+    },
+
+    {
+      label: 'Payment Type',
+      model: 'paymentType',
+      type: 'select',
+      tab: 'Details',
+      options: [
+        {
+          label: 'Cash',
+          value: 'Cash',
+        },
+
+        {
+          label: 'Online',
+          value: 'Online',
+        },
+
+        {
+          label: 'Card',
+          value: 'Card',
+        },
+
+        {
+          label: 'Bank Transfer',
+          value: 'Bank',
+        },
+      ],
+    },
+
+    {
+      label: 'Description',
+      model: 'description',
+      type: 'text',
+      tab: 'Details',
+    },
+
+    {
+      label: 'Is Active',
+      model: 'isActive',
+      
+      type: 'checkbox',
+      tab: 'Settings',
+    },
+  ];
 
   constructor(
-    private commonservice: MasterService,
-    private swallservice: SweetAlertService
+    private service: MasterService,
+    private swal: SweetAlertService,
   ) {}
 
-  // ================= INIT =================
-  ngOnInit(): void {
+  ngOnInit() {
+    this.resetModel();
+
     this.loadPaymentModes();
   }
 
-  // ================= NEW =================
-  newPaymentMode() {
-    this.paymentMode = this.resetPaymentMode();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
+  loadPaymentModes() {
+    this.service.getPaymentModes().subscribe({
+      next: (res: any) => {
+        this.paymentModes = res.map((x: any) => ({
+          ...x,
 
-  // ================= REFRESH =================
-  refreshPaymentModes() {
-    this.paymentMode = this.resetPaymentMode();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-    this.loadPaymentModes();
-  }
-
-  // ================= LOAD =================
-  loadPaymentModes(): void {
-    this.commonservice.getPaymentModes().subscribe({
-      next: (data) => (this.paymentModes = data),
-      error: (err) => console.error('Error fetching payment modes:', err)
-    });
-  }
-
-  // ================= SAVE =================
-  savePaymentMode(): void {
-
-    if (!this.paymentMode.paymentModeName || !this.paymentMode.paymentModeName.trim()) {
-      this.swallservice.error('Validation', 'Payment Mode Name is required');
-      return;
-    }
-
-    const now = new Date(); // ✅ FIXED (Date instead of string)
-
-    // INSERT
-    if (this.paymentMode.paymentModeID === 0) {
-      this.paymentMode.createdAt = now;
-      this.paymentMode.createdSystemName = 'AngularApp';
-      this.paymentMode.createdByUserID = 0;
-    }
-
-    // UPDATE
-    this.paymentMode.updatedAt = now;
-    this.paymentMode.updatedSystemName = 'AngularApp';
-    this.paymentMode.updatedByUserID = 0;
-
-    const action = this.paymentMode.paymentModeID === 0 ? 'added' : 'updated';
-
-    this.commonservice.savePaymentMode(this.paymentMode).subscribe({
-      next: () => {
-        this.swallservice.success(
-          'Success',
-          `Payment Mode ${action} successfully!`
-        );
-
-        this.paymentMode = this.resetPaymentMode();
-        this.loadPaymentModes();
-        this.isFormEnabled = false;
+          statusText: x.isActive ? 'Active' : 'Inactive',
+        }));
       },
-      error: (err) => {
-        console.error(err);
-        this.swallservice.error('Error', 'Could not save payment mode.');
-      }
     });
   }
 
-  // ================= EDIT =================
-  editPaymentMode(mode: PaymentMode): void {
-    this.paymentMode = { ...mode };
-    this.isEditMode = true;
-    this.isFormEnabled = true;
+  addPaymentMode() {
+    this.resetModel();
+
+    this.showForm = true;
+
+    this.isEditMode = false;
+
+    this.formTitle = 'New Payment Mode';
   }
 
-  // ================= DELETE =================
-  deletePaymentMode(modeID: number): void {
-    if (!confirm('Are you sure to delete this payment mode?')) return;
-
-    const deleteObj: PaymentMode = {
-      ...this.resetPaymentMode(),
-      paymentModeID: modeID,
-      isActive: false,
-      updatedByUserID: 0,
-      updatedSystemName: 'AngularApp',
-      updatedAt: new Date() // ✅ FIXED
+  editPaymentMode(row: any) {
+    this.paymentModel = {
+      ...row,
     };
 
-    this.commonservice.savePaymentMode(deleteObj).subscribe({
+    this.showForm = true;
+
+    this.isEditMode = true;
+
+    this.formTitle = 'Edit Payment Mode';
+  }
+
+  savePaymentMode(data: any) {
+    if (!data.paymentModeName?.trim()) {
+      return this.swal.warning(
+        'Validation',
+
+        'Payment Mode Required',
+      );
+    }
+
+    const now = new Date();
+
+    const payload = {
+      paymentModeID: data.paymentModeID || 0,
+
+      paymentModeName: data.paymentModeName,
+
+      paymentType: data.paymentType,
+
+      description: data.description,
+
+      isActive: Boolean(data.isActive),
+
+      createdByUserID: data.createdByUserID || 0,
+
+      createdSystemName: 'AngularApp',
+
+      createdAt: data.createdAt || now,
+
+      updatedByUserID: 0,
+
+      updatedSystemName: 'AngularApp',
+
+      updatedAt: now,
+    };
+
+    this.service.savePaymentMode(payload).subscribe({
       next: () => {
-        this.swallservice.success('Deleted', 'Payment Mode deleted successfully!');
+        this.swal.success(
+          'Success',
+
+          this.isEditMode ? 'Payment Mode Updated' : 'Payment Mode Created',
+        );
+
         this.loadPaymentModes();
+
+        this.cancelForm();
       },
+
       error: (err) => {
-        console.error(err);
-        this.swallservice.error('Error', 'Could not delete payment mode.');
-      }
+        console.log(err);
+
+        this.swal.error(
+          'Error',
+
+          'Save Failed',
+        );
+      },
     });
   }
 
-  // ================= CANCEL =================
-  cancelEdit(): void {
-    this.paymentMode = this.resetPaymentMode();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
+  deletePaymentMode(row: any) {
+    row.isActive = false;
+
+    this.service.savePaymentMode(row).subscribe({
+      next: () => {
+        this.swal.success(
+          'Success',
+
+          'Deleted Successfully',
+        );
+
+        this.loadPaymentModes();
+      },
+    });
   }
 
-  // ================= RESET =================
-  resetPaymentMode(): PaymentMode {
-    return {
+  refresh() {
+    this.cancelForm();
+
+    this.loadPaymentModes();
+  }
+
+  cancelForm() {
+    this.showForm = false;
+
+    this.resetModel();
+  }
+
+  resetModel() {
+    this.paymentModel = {
       paymentModeID: 0,
       paymentModeName: '',
-      paymentType: null,
-      description: null,
+      paymentType: '',
+      description: '',
       isActive: true,
 
       createdByUserID: 0,
-      createdSystemName: null,
-      createdAt: new Date(), // ✅ FIXED
-
-      updatedByUserID: null,
-      updatedSystemName: null,
-      updatedAt: new Date() // ✅ FIXED
+      createdSystemName: '',
+      createdAt: '',
+      updatedByUserID: 0,
+      updatedSystemName: '',
+      updatedAt: '',
     };
   }
 }

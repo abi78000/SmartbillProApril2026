@@ -95,7 +95,7 @@ header:'Branch'
 },
 
 {
-field:'statusText',
+field:'isActive',
 header:'Status'
 }
 

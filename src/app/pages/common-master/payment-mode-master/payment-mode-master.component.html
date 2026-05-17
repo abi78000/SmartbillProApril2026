@@ -1,147 +1,102 @@
 <div class="master-layout">
 
-  <!-- ================= TOP HEADER ================= -->
-  <div class="master-top-header">
+  <!-- =========================================
+       TABLE VIEW
+  ========================================== -->
 
-    <!-- LEFT -->
-    <div class="master-top-left">
-      <lucide-icon name="credit-card"></lucide-icon>
+  <ng-container *ngIf="!showForm">
 
-      <div>
-        <div class="master-title-text">PAYMENT MODE MASTER</div>
-        <div class="master-subtitle-text">Enterprise Resource Planning</div>
-      </div>
-    </div>
+    <div class="master-top-header">
 
-    <!-- RIGHT -->
-    <div class="master-top-right">
-      <button class="master-btn-primary" type="button" (click)="newPaymentMode()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD PAYMENT MODE
-      </button>
+      <div class="master-top-left">
 
-      <button class="master-btn-primary" type="button" (click)="refreshPaymentModes()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
-      </button>
-    </div>
+        <div class="master-title-wrapper">
 
-    <!-- TOTAL -->
-    <div class="total-badge saas">
-      TOTAL PAYMENT MODES : {{ paymentModes.length }}
-    </div>
+          <h2>
 
-  </div>
+            Payment Mode
 
-  <!-- ================= LEFT FORM PANEL ================= -->
-  <div class="master-panel">
+          </h2>
 
-    <div class="master-header">
-      <div class="master-title">
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>{{ paymentMode.paymentModeID ? 'EDIT PAYMENT MODE' : 'CREATE PAYMENT MODE' }}</h2>
+        </div>
+
       </div>
 
-      <div class="master-actions">
+
+      <div class="master-top-right">
+
         <button
           type="button"
           class="master-btn-outline"
-          (click)="savePaymentMode()"
+          (click)="refresh()"
         >
-          {{ paymentMode.paymentModeID ? 'UPDATE' : 'SAVE' }}
+          Refresh
         </button>
+
 
         <button
           type="button"
           class="master-btn-primary"
-          (click)="cancelEdit()"
+          (click)="addPaymentMode()"
         >
-          CLEAR
+          + Add Payment Mode
         </button>
+
       </div>
+
     </div>
 
-    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
 
-      <div class="form-grid">
+    <div class="master-table-layout">
 
-        <!-- Payment Mode Name -->
-        <div class="form-column">
-          <label>Payment Mode Name</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="paymentMode.paymentModeName"
-            name="paymentModeName"
-            placeholder="Enter payment mode"
-            required
-          />
-        </div>
+      <app-dynamic-table
 
-        <!-- Payment Type -->
-        <div class="form-column">
-          <label>Payment Type</label>
-          <select
-            class="input-common"
-            [(ngModel)]="paymentMode.paymentType"
-            name="paymentType"
-          >
-            <option value="">Select Type</option>
-            <option value="Cash">Cash</option>
-            <option value="Online">Online</option>
-            <option value="Card">Card</option>
-            <option value="Bank">Bank Transfer</option>
-          </select>
-        </div>
+        [data]="paymentModes"
 
-        <!-- Description -->
-        <div class="form-column">
-          <label>Description</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="paymentMode.description"
-            name="description"
-            placeholder="Optional description"
-          />
-        </div>
+        [columns]="paymentModeColumns"
 
-        <!-- Status -->
-        <div class="form-column">
-          <label>Status</label>
+        (edit)="editPaymentMode($event)"
 
-          <label class="switch">
-            <input
-              type="checkbox"
-              [(ngModel)]="paymentMode.isActive"
-              name="isActive"
-            />
-            <span class="slider"></span>
-            <span class="switch-text">
-              {{ paymentMode.isActive ? 'Active' : 'Inactive' }}
-            </span>
-          </label>
-        </div>
+        (delete)="deletePaymentMode($event)"
 
-      </div>
+      >
 
-    </fieldset>
+      </app-dynamic-table>
 
-  </div>
+    </div>
 
-  <!-- ================= RIGHT TABLE PANEL ================= -->
-  <div class="master-panel">
+  </ng-container>
 
-    <app-master-table-view
-      [data]="paymentModes"
-      [columns]="paymentModeColumns"
-      title="ALL PAYMENT MODES"
-      companyName="SmartBillPro"
-      (edit)="editPaymentMode($event)"
-      (delete)="deletePaymentMode($event)"
-    >
-    </app-master-table-view>
 
-  </div>
+
+  <!-- =========================================
+       FORM VIEW
+  ========================================== -->
+
+  <ng-container *ngIf="showForm">
+
+    <div class="master-form-layout">
+
+      <app-reusable-form
+
+        [title]="formTitle"
+
+        [tabs]="paymentTabs"
+
+        [fields]="paymentFields"
+
+        [model]="paymentModel"
+
+        (saveForm)="savePaymentMode($event)"
+
+        (cancelForm)="cancelForm()"
+
+      >
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>

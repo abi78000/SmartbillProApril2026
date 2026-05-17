@@ -55,7 +55,7 @@ export class BranchCounterComponent implements OnInit {
     },
 
     {
-      field: 'statusText',
+      field: 'isActive',
       header: 'Status',
     },
   ];
