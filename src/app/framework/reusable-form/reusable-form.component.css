@@ -1,0 +1,574 @@
+/* ======================================================
+   FORM PAGE
+====================================================== */
+
+.erp-form-page {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+}
+
+
+/* ======================================================
+   HEADER
+====================================================== */
+
+.erp-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 28px;
+  border-bottom: 1px solid #f0f0f4;
+  background: #fafafa;
+}
+
+
+/* ======================================================
+   LEFT
+====================================================== */
+
+.erp-form-left {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+
+/* ======================================================
+   BREADCRUMB
+====================================================== */
+
+.erp-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.breadcrumb-item {
+  color: #9ca3af;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+
+.breadcrumb-item:hover:not(.breadcrumb-current) {
+  color: #140c44;
+  cursor: pointer;
+}
+
+.breadcrumb-current {
+  color: #374151;
+  font-weight: 600;
+}
+
+.breadcrumb-sep {
+  display: flex;
+  align-items: center;
+  color: #d1d5db;
+}
+
+
+/* ======================================================
+   TITLE SECTION
+====================================================== */
+
+.erp-title-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.erp-title-section h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #140c44;
+  letter-spacing: -0.3px;
+}
+
+
+/* ======================================================
+   BADGE
+====================================================== */
+
+.draft-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #fff4ed;
+  border: 1px solid #fed7b8;
+  color: #c2500a;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ea580c;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+
+/* ======================================================
+   RIGHT
+====================================================== */
+
+.erp-form-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+
+/* ======================================================
+   BUTTONS
+====================================================== */
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #374151;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.btn-secondary:active {
+  transform: scale(0.98);
+}
+
+.save-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 18px;
+  border: none;
+  border-radius: 9px;
+  background: #140c44;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 3px rgba(20,12,68,0.25), 0 2px 8px rgba(20,12,68,0.12);
+}
+
+.save-btn:hover {
+  background: #1d1160;
+  box-shadow: 0 2px 6px rgba(20,12,68,0.3), 0 4px 16px rgba(20,12,68,0.18);
+  transform: translateY(-1px);
+}
+
+.save-btn:active {
+  transform: scale(0.98) translateY(0);
+}
+
+
+/* ======================================================
+   TABS WRAPPER
+====================================================== */
+
+.erp-tabs-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  border-bottom: 1px solid #f0f0f4;
+  background: #ffffff;
+  scrollbar-width: none;
+}
+
+.erp-tabs-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ======================================================
+   TABS
+====================================================== */
+
+.erp-tabs {
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  min-width: max-content;
+  gap: 2px;
+}
+
+
+/* ======================================================
+   TAB BUTTON
+====================================================== */
+
+.erp-tab {
+  position: relative;
+  height: 46px;
+  padding: 0 18px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.15s ease;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  border-radius: 8px 8px 0 0;
+}
+
+.erp-tab::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #140c44;
+  border-radius: 2px 2px 0 0;
+  transform: scaleX(0);
+  transition: transform 0.2s ease;
+}
+
+.erp-tab:hover {
+  color: #111827;
+  background: #f9fafb;
+}
+
+.erp-tab.active {
+  color: #140c44;
+  font-weight: 700;
+  background: transparent;
+}
+
+.erp-tab.active::after {
+  transform: scaleX(1);
+}
+
+
+/* ======================================================
+   FORM BODY
+====================================================== */
+
+.erp-form-body {
+  padding: 28px;
+  background: #ffffff;
+}
+
+
+/* ======================================================
+   FORM GRID
+====================================================== */
+
+.erp-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px 28px;
+}
+
+
+/* ======================================================
+   FIELD
+====================================================== */
+
+.erp-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+
+/* ======================================================
+   LABEL
+====================================================== */
+
+.erp-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.1px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.required-star {
+  color: #ef4444;
+  font-size: 13px;
+  line-height: 1;
+}
+
+
+/* ======================================================
+   INPUT WRAPPER
+====================================================== */
+
+.erp-input-wrapper {
+  position: relative;
+}
+
+
+/* ======================================================
+   INPUT
+====================================================== */
+
+.erp-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  background: #fafafa;
+  font-size: 13.5px;
+  color: #111827;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  outline: none;
+  font-family: inherit;
+}
+
+.erp-input::placeholder {
+  color: #b0b7c3;
+}
+
+.erp-input:hover {
+  border-color: #d1d5db;
+  background: #f5f6f8;
+}
+
+.erp-input:focus {
+  border-color: #140c44;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(20,12,68,0.07);
+}
+
+
+/* ======================================================
+   SELECT WRAPPER
+====================================================== */
+
+.erp-select-wrapper {
+  position: relative;
+}
+
+.erp-select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 36px;
+  cursor: pointer;
+}
+
+.erp-select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+}
+
+
+/* ======================================================
+   TEXTAREA
+====================================================== */
+
+.erp-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 9px;
+  background: #fafafa;
+  resize: vertical;
+  font-size: 13.5px;
+  font-family: inherit;
+  color: #111827;
+  outline: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+  line-height: 1.6;
+}
+
+.erp-textarea::placeholder {
+  color: #b0b7c3;
+}
+
+.erp-textarea:hover {
+  border-color: #d1d5db;
+  background: #f5f6f8;
+}
+
+.erp-textarea:focus {
+  border-color: #140c44;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(20,12,68,0.07);
+}
+
+
+/* ======================================================
+   FILE UPLOAD
+====================================================== */
+
+.erp-file-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.erp-file-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 16px;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 10px;
+  background: #fafafa;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.erp-file-label:hover {
+  border-color: #140c44;
+  background: #f4f3ff;
+}
+
+.erp-file-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #ede9fe;
+  color: #140c44;
+}
+
+.erp-file-text {
+  font-size: 12.5px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+
+/* ======================================================
+   CHECKBOX
+====================================================== */
+
+.erp-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  margin-top: 6px;
+  user-select: none;
+}
+
+.erp-checkbox-input {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+.erp-checkbox-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  border: 1.5px solid #d1d5db;
+  background: #ffffff;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.erp-check-icon {
+  opacity: 0;
+  transition: opacity 0.1s;
+  stroke: #ffffff;
+}
+
+.erp-checkbox-input:checked + .erp-checkbox-box {
+  background: #140c44;
+  border-color: #140c44;
+}
+
+.erp-checkbox-input:checked + .erp-checkbox-box .erp-check-icon {
+  opacity: 1;
+}
+
+.erp-checkbox-label {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #374151;
+}
+
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+
+@media (max-width: 992px) {
+  .erp-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .erp-form-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+  }
+
+  .erp-form-right {
+    width: 100%;
+  }
+
+  .btn-secondary,
+  .save-btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .erp-tabs {
+    padding: 0 16px;
+  }
+
+  .erp-form-body {
+    padding: 20px;
+  }
+}

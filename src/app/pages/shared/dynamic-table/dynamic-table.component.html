@@ -1,0 +1,136 @@
+<!-- =====================================================
+     ERP TABLE TOOLBAR
+===================================================== -->
+
+<div class="table-toolbar">
+
+  <!-- LEFT -->
+
+  <div class="table-left">
+
+    <input
+      type="text"
+      class="table-search"
+      placeholder="Search..."
+      [(ngModel)]="searchText"
+      (input)="filterTable()"
+    />
+
+  </div>
+
+
+  <!-- RIGHT -->
+
+  <div class="table-right">
+
+    <select
+      class="page-size"
+      [(ngModel)]="pageSize"
+      (change)="changePageSize()"
+    >
+      <option [value]="20">20</option>
+      <option [value]="50">50</option>
+      <option [value]="100">100</option>
+      <option [value]="200">200</option>
+      <option [value]="500">500</option>
+    </select>
+
+  </div>
+
+</div>
+
+
+<!-- =====================================================
+     TABLE
+===================================================== -->
+
+<div class="table-wrapper">
+
+  <table class="erp-table">
+
+    <thead>
+
+      <tr>
+
+        <th
+          *ngFor="let col of columns"
+        >
+          {{ col.header }}
+        </th>
+
+        <th>
+          Actions
+        </th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr
+        *ngFor="let row of pagedData"
+      >
+
+        <td
+          *ngFor="let col of columns"
+        >
+          {{ row[col.field] }}
+        </td>
+
+        <td class="action-column">
+
+          <button
+            class="btn-edit"
+            (click)="onEdit(row)"
+          >
+            Edit
+          </button>
+
+          <button
+            class="btn-delete"
+            (click)="onDelete(row)"
+          >
+            Delete
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
+
+
+<!-- =====================================================
+     PAGINATION
+===================================================== -->
+
+<div class="pagination-bar">
+
+  <button
+    (click)="previousPage()"
+    [disabled]="currentPage === 1"
+  >
+    Prev
+  </button>
+
+  <span>
+
+    Page {{ currentPage }}
+    of
+    {{ totalPages }}
+
+  </span>
+
+  <button
+    (click)="nextPage()"
+    [disabled]="currentPage === totalPages"
+  >
+    Next
+  </button>
+
+</div>

@@ -1,191 +1,461 @@
-import { Component, ViewChild } from '@angular/core';
-import { Company } from '../../models/common-models/companyMaster';
-import { CommonserviceService } from '../../../services/commonservice.service';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { FocusOnKeyDirective } from '../../../directives/focus-on-key.directive';
-import { InputRestrictDirective } from '../../../directives/input-restrict.directive';
-import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
-import { InputDataGridComponent } from '../../components/input-data-grid/input-data-grid.component';
-import { MasterDashboardComponent } from '../../master/master-dashboard/master-dashboard.component';
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-import { SharedModule } from '../../../shared/shared.module';
+import {Component,OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {DynamicTableComponent} from '../../../framework/dynamic-table/dynamic-table.component';
+import {ReusableFormComponent} from '../../../framework/reusable-form/reusable-form.component';
+import {CommonserviceService} from '../../../services/commonservice.service';
+import {SweetAlertService} from '../../../services/properties/sweet-alert.service';
 
-InputDataGridComponent;
 @Component({
-  selector: 'app-company-master',
-  imports: [
-    CommonModule,
-    FormsModule,
-    FocusOnKeyDirective,
-    InputRestrictDirective,
-    MasterTableViewComponent,
-    SharedModule,
-  ],
-  templateUrl: './company-master.component.html',
-  styleUrls: ['./company-master.component.css'],
+selector:'app-company-master',
+standalone:true,
+imports:[
+CommonModule,
+DynamicTableComponent,
+ReusableFormComponent
+],
+templateUrl:'./company-master.component.html',
+styleUrls:['./company-master.component.css']
 })
-export class CompanyMasterComponent {
-  selectedLogoFile: File | null = null;
-  selectedImageFile: File | null = null;
-  companies: Company[] = [];
-  company: Company = {} as Company;
-  companyColumns = [
-    { field: 'companyName', header: 'Company Name' },
-    { field: 'isActive', header: 'Active' },
-  ];
-  isEditMode = false;
-  isFormEnabled = false;
-  constructor(
-    private commonservice: CommonserviceService,
-    private swallservice: SweetAlertService,
-  ) {}
-  ngOnInit(): void {
-    this.resetForm();
-    this.loadCompanies();
-    this.isFormEnabled = false;
-  }
-  newCompany() {
-    this.resetForm();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
 
-  Refresh() {
-    this.resetForm();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
+export class CompanyMasterComponent implements OnInit{
 
-  async saveOrDeleteCompany() {
-    if (!this.company.companyName) {
-      this.swallservice.warning(
-        'Validation Error',
-        'Company Name is required!',
-      );
-      return;
-    }
+showForm=false;
+isEditMode=false;
+formTitle='New Company';
 
-    if (this.selectedLogoFile) {
-      this.company.companyLogo = await this.fileToByteArray(
-        this.selectedLogoFile,
-      );
-    }
-    if (this.selectedImageFile) {
-      this.company.companyImage = await this.fileToByteArray(
-        this.selectedImageFile,
-      );
-    }
+selectedLogoFile:File|null=null;
+selectedImageFile:File|null=null;
 
-    this.commonservice.saveCompany(this.company).subscribe({
-      next: (response: any) => {
-        if (response) {
-          this.swallservice.success(
-            'Success',
-            this.company.companyID > 0
-              ? 'Company updated!'
-              : 'Company created!',
-          );
-          this.loadCompanies();
-          this.resetForm();
-          this.selectedLogoFile = null;
-          this.selectedImageFile = null;
-        } else {
-          this.swallservice.error('Error', 'No response from server!');
-        }
-      },
-      error: (err) => {
-        console.error('Error saving company:', err);
-        this.swallservice.error('Error', 'Unable to save company!');
-      },
-    });
-  }
+companies:any[]=[];
+companyModel:any={};
 
-  get totalCompanies(): number {
-    return this.companies.length;
-  }
+companyTabs=[
+'Details',
+'Address',
+'Tax',
+'Bank',
+'Attachments',
+'Settings'
+];
 
-  editCompany(c: Company) {
-    this.company = { ...c }; 
-    this.isEditMode = true;
-    this.isFormEnabled = false;
-  }
+companyColumns=[
+{field:'companyName',header:'Company'},
+{field:'phone',header:'Phone'},
+{field:'email',header:'Email'},
+{field:'city',header:'City'},
+{field:'country',header:'Country'},
+{field:'isActive',header:'Status'}
+];
 
-  deleteCompany(c: Company) {
-    if (!confirm(`Are you sure you want to delete ${c.companyName}?`)) {
-      return;
-    }
+companyFields=[
 
-    c.isActive = false; // soft delete
-    this.commonservice.saveCompany(c).subscribe({
-      next: (id) => {
-        console.log('Company deleted (soft delete), ID:', id);
-        this.swallservice.success('Success', 'Company deleted successfully!');
-        this.loadCompanies();
-      },
-      error: (err) => {
-        console.error(' Error deleting company:', err);
-        this.swallservice.error('Error', 'Error deleting company.');
-      },
-    });
-  }
+{label:'Company Name',model:'companyName',type:'text',required:true,tab:'Details',restrictType:'text',autoFocus:true},
+{label:'Phone',model:'phone',type:'text',tab:'Details',restrictType:'number'},
+{label:'Alternate Phone',model:'alternatePhone',type:'text',tab:'Details',restrictType:'number'},
+{label:'Email',model:'email',type:'email',tab:'Details',restrictType:'email'},
+{label:'Website',model:'website',type:'text',tab:'Details'},
 
-  loadCompanies() {
-    this.commonservice.getCompanies().subscribe({
-      next: (res) => (this.companies = res),
-      error: (err) => console.error(err),
-    });
-  }
-  resetForm() {
-    this.company = {
-      companyID: 0,
-      companyCode: '',
-      companyName: '',
-      phone: '',
-      alternatePhone: '',
-      email: '',
-      website: '',
-      addressLine1: '',
-      addressLine2: '',
-      addressLine3: '',
-      addressLine4: '',
-      city: '',
-      state: '',
-      country: '',
-      pincode: '',
-      gstNumber: '',
-      panNumber: '',
-      cinNumber: '',
-      bankName: '',
-      bankAccountNumber: '',
-      ifscCode: '',
-      companyLogo: null,
-      companyImage: null,
-      isActive: true,
-      createdByUserID: this.commonservice.getCurrentUserId(),
-      createdSystemName: 'AngularApp',
-    };
-    this.isEditMode = false;
-    this.selectedLogoFile = null;
-    this.selectedImageFile = null;
-  }
-  onFileSelected(event: any, type: 'logo' | 'image') {
-    const file: File = event.target.files[0];
-    if (file) {
-      if (type === 'logo') this.selectedLogoFile = file;
-      else this.selectedImageFile = file;
-    }
-  }
-  private fileToByteArray(file: File): Promise<number[]> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const base64 = e.target.result.split(',')[1]; 
-        const byteArray = Array.from(atob(base64), (c) => c.charCodeAt(0));
-        resolve(byteArray);
-      };
-      reader.onerror = (err) => reject(err);
-      reader.readAsDataURL(file);
-    });
-  }
+{label:'Address Line 1',model:'addressLine1',type:'text',tab:'Address',columnSpan:2},
+{label:'Address Line 2',model:'addressLine2',type:'text',tab:'Address',columnSpan:2},
+{label:'City',model:'city',type:'text',tab:'Address',restrictType:'letter'},
+{label:'State',model:'state',type:'text',tab:'Address',restrictType:'letter'},
+{label:'Country',model:'country',type:'text',tab:'Address',restrictType:'letter'},
+{label:'Pincode',model:'pincode',type:'text',tab:'Address',restrictType:'number'},
+
+{label:'GST Number',model:'gstNumber',type:'text',tab:'Tax'},
+{label:'PAN Number',model:'panNumber',type:'text',tab:'Tax'},
+{label:'CIN Number',model:'cinNumber',type:'text',tab:'Tax'},
+
+{label:'Bank Name',model:'bankName',type:'text',tab:'Bank'},
+{label:'Account Number',model:'bankAccountNumber',type:'text',tab:'Bank'},
+{label:'IFSC Code',model:'ifscCode',type:'text',tab:'Bank'},
+
+{label:'Company Logo',model:'companyLogo',type:'file',tab:'Attachments'},
+{label:'Company Image',model:'companyImage',type:'file',tab:'Attachments'},
+
+{label:'Is Active',model:'isActive',type:'checkbox',tab:'Settings'}
+
+];
+
+constructor(
+private commonservice:CommonserviceService,
+private swal:SweetAlertService
+){}
+
+ngOnInit(){
+this.resetModel();
+this.loadCompanies();
+}
+
+get totalCompanies(){
+return this.companies.length;
+}
+
+loadCompanies(){
+
+this.commonservice
+.getCompanies()
+.subscribe({
+
+next:(res:any)=>{
+this.companies=res;
+},
+
+error:(err)=>{
+console.error(err);
+}
+
+});
+
+}
+
+addCompany(){
+
+this.resetModel();
+
+this.formTitle='New Company';
+
+this.isEditMode=false;
+
+this.showForm=true;
+
+}
+
+editCompany(row:any){
+
+this.companyModel={...row};
+
+this.formTitle='Edit Company';
+
+this.isEditMode=true;
+
+this.showForm=true;
+
+}
+/* ==========================================
+   REUSABLE DUPLICATE CHECK
+========================================== */
+
+isDuplicate(
+list:any[],
+field:string,
+value:string,
+idField:string='id',
+currentId:any=null
+):boolean{
+
+const normalize=(text:string='')=>
+
+text
+
+.trim()
+
+.replace(/\s+/g,'')
+
+.replace(/[-_]/g,'')
+
+.toLowerCase();
+
+
+const inputValue=
+
+normalize(value);
+
+
+return list.some(
+
+item=>{
+
+const existing=
+
+normalize(
+item[field]
+);
+
+return(
+
+item[idField]
+!==currentId
+
+&&
+
+existing===inputValue
+
+);
+
+});
+
+}
+async saveCompany(data:any){
+
+/* CLEAN VALUE */
+
+data.companyName=
+data.companyName
+?.trim()
+.replace(/\s+/g,' ');
+
+
+/* REQUIRED */
+
+if(!data.companyName){
+
+return this.swal.warning(
+'Validation',
+'Company Name Required'
+);
+
+}
+
+
+/* DUPLICATE CHECK */
+
+if(
+
+this.isDuplicate(
+
+this.companies,
+
+'companyName',
+
+data.companyName,
+
+'companyID',
+
+data.companyID
+
+)
+
+){
+
+return this.swal.warning(
+
+'Duplicate',
+
+'Company Name Already Exists'
+
+);
+
+}
+
+
+/* EMAIL */
+
+if(
+
+data.email &&
+
+!/^[^\s@]+@[^\s@]+\.[^\s@]+$/
+.test(data.email)
+
+){
+
+return this.swal.warning(
+
+'Validation',
+
+'Invalid Email'
+
+);
+
+}
+
+
+/* FILES */
+
+if(this.selectedLogoFile){
+
+data.companyLogo=
+
+await this.fileToByteArray(
+this.selectedLogoFile
+);
+
+}
+
+
+if(this.selectedImageFile){
+
+data.companyImage=
+
+await this.fileToByteArray(
+this.selectedImageFile
+);
+
+}
+
+
+/* SAVE API */
+
+this.commonservice
+.saveCompany(data)
+.subscribe({
+
+next:()=>{
+
+this.swal.success(
+
+'Success',
+
+this.isEditMode
+? 'Company Updated'
+: 'Company Created'
+
+);
+
+this.loadCompanies();
+
+this.cancelForm();
+
+},
+
+error:(err)=>{
+
+console.error(err);
+
+this.swal.error(
+'Error',
+'Save Failed'
+);
+
+}
+
+});
+
+}
+
+deleteCompany(row:any){
+
+row.isActive=false;
+
+this.commonservice
+.saveCompany(row)
+.subscribe({
+
+next:()=>{
+
+this.swal.success(
+'Success',
+'Deleted Successfully'
+);
+
+this.loadCompanies();
+
+},
+
+error:()=>{
+
+this.swal.error(
+'Error',
+'Delete Failed'
+);
+
+}
+
+});
+
+}
+
+refresh(){
+
+this.loadCompanies();
+
+}
+
+cancelForm(){
+
+this.showForm=false;
+
+this.resetModel();
+
+}
+
+resetModel(){
+
+this.companyModel={
+
+companyID:0,
+companyCode:'',
+companyName:'',
+phone:'',
+alternatePhone:'',
+email:'',
+website:'',
+addressLine1:'',
+addressLine2:'',
+addressLine3:'',
+addressLine4:'',
+city:'',
+state:'',
+country:'',
+pincode:'',
+gstNumber:'',
+panNumber:'',
+cinNumber:'',
+bankName:'',
+bankAccountNumber:'',
+ifscCode:'',
+companyLogo:null,
+companyImage:null,
+isActive:true
+
+};
+
+}
+
+onFileSelected(
+event:any,
+type:'logo'|'image'
+){
+
+const file=
+event.target.files[0];
+
+if(!file)return;
+
+if(type==='logo')
+this.selectedLogoFile=file;
+
+else
+this.selectedImageFile=file;
+
+}
+
+private fileToByteArray(
+file:File
+):Promise<number[]>{
+
+return new Promise(
+(resolve,reject)=>{
+
+const reader=
+new FileReader();
+
+reader.onload=
+(e:any)=>{
+
+const base64=
+e.target.result
+.split(',')[1];
+
+resolve(
+
+Array.from(
+atob(base64),
+c=>c.charCodeAt(0)
+)
+
+);
+
+};
+
+reader.onerror=
+reject;
+
+reader.readAsDataURL(file);
+
+});
+
+}
+
 }

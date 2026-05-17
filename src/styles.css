@@ -64,47 +64,6 @@ body {
   color: var(--color-text-light);
 }
 
-/* =====================================================
-   FOOTER (ENTERPRISE STYLE)
-===================================================== */
-app-default-footer {
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #ffffff;
-  border-top: 1px solid #e5e7eb;
-  color: #6b7280;
-  font-size: 13px;
-  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.04);
-}
-
-/* =====================================================
-   FOOTER LINKS
-===================================================== */
-app-default-footer a {
-  color: #1d1160;
-  text-decoration: none;
-  margin-left: 4px;
-}
-
-app-default-footer a:hover {
-  text-decoration: underline;
-}
-
-/* =================================================
-   FOOTER CONTENT
-================================================= */
-app-default-footer span,
-app-default-footer a {
-  color: #6b7280;
-  text-decoration: none;
-}
-
-app-default-footer a:hover {
-  text-decoration: underline;
-  color: #1d1160;
-}
 /* ==============================
    HEADINGS
 ============================== */
@@ -204,9 +163,6 @@ button.btn-primary:focus {
   outline: none;
 }
 
-/* ==============================
-   ⚙️ SECONDARY BUTTON
-============================== */
 button.btn-secondary {
   background-color: #6c757d;
   color: #fff;
@@ -217,9 +173,7 @@ button.btn-secondary:hover {
   border-color: #545b62;
 }
 
-/* ==============================
-   ⚪ LIGHT BUTTON
-============================== */
+
 button.btn-light {
   background-color: #f8f9fa;
   color: #000;
@@ -229,9 +183,6 @@ button.btn-light:hover {
   background-color: #e2e6ea;
 }
 
-/* ==============================
-   🔹 OUTLINE BUTTON
-============================== */
 button.btn-outline {
   background: transparent;
   border: 2px solid var(--color-primary, #1d1160);
@@ -418,13 +369,6 @@ app-default-header {
 .layout-content.fullscreen {
   margin-top: 0;
   padding: 0;
-}
-/* FOOTER */
-app-default-footer {
-  background: #fff;
-  border-top: 1px solid #e0e0e0;
-  text-align: center;
-  padding: 10px;
 }
 
 /* ======================================== */
@@ -1539,23 +1483,35 @@ button .lucide {
 /* ==============================
    TOP HEADER (COMPANY MASTER)
 ============================== */
+/* ======================================================
+   TOP HEADER
+====================================================== */
 
 .master-top-header {
   grid-column: 1 / -1;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 14px 20px;
+  padding: 16px 24px;
   background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+  border: 1px solid #eaebef;
+  border-radius: 14px;
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.05),
+    0 4px 16px rgba(0, 0, 0, 0.03);
+  gap: 16px;
 }
+
+
+/* ======================================================
+   TOP LEFT
+====================================================== */
 
 .master-top-left {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
 }
 
 
@@ -1939,12 +1895,7 @@ button .lucide {
 .switch input:focus + .slider {
   box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.3);
 }
-/* =====================================================
-   GLOBAL MOBILE FIXES FOR MASTER SCREENS (FINAL)
-===================================================== */
-/* =====================================================
-   GLOBAL RESPONSIVE FIX – MASTER SCREENS
-===================================================== */
+
 
 html, body {
   max-width: 100%;
@@ -2287,3 +2238,459 @@ input[type="file"] {
                 0 1px 3px rgba(0, 0, 0, 0.25);
   }
 }
+
+
+/* =====================================================
+   MASTER LAYOUT
+===================================================== */
+
+.master-layout{
+
+  width:100%;
+
+  max-width:100%;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:20px;
+
+  padding:16px;
+
+  box-sizing:border-box;
+}
+
+
+/* =====================================================
+   FORM + TABLE CONTAINER
+===================================================== */
+
+.master-form-layout,
+.master-table-layout{
+
+  width:100%;
+
+  max-width:100%;
+
+  display:block;
+}
+
+
+/* =====================================================
+   ERP FORM PAGE
+===================================================== */
+
+.erp-form-page{
+
+  width:100%;
+
+  max-width:100%;
+
+  background:#ffffff;
+
+  border:1px solid #e5e7eb;
+
+  border-radius:12px;
+
+  overflow:hidden;
+
+  box-shadow:
+  0 2px 10px
+  rgba(0,0,0,.04);
+
+}
+
+
+/* =====================================================
+   FORM BODY
+===================================================== */
+
+.erp-form-body{
+
+  width:100%;
+
+  padding:20px;
+
+}
+
+
+/* =====================================================
+   FORM GRID
+===================================================== */
+
+.erp-form-grid{
+
+  width:100%;
+
+  display:grid;
+
+  grid-template-columns:
+  repeat(
+    auto-fit,
+    minmax(320px,1fr)
+  );
+
+  gap:20px;
+
+  align-items:start;
+}
+
+
+/* =====================================================
+   FORM FIELD
+===================================================== */
+
+.erp-form-field{
+
+  width:100%;
+
+  display:flex;
+
+  flex-direction:column;
+
+  gap:8px;
+
+  min-width:0;
+}
+
+
+/* =====================================================
+   LABEL
+===================================================== */
+
+.erp-form-field label{
+
+  font-size:13px;
+
+  font-weight:600;
+
+  color:#374151;
+}
+
+.erp-form-field label span{
+
+  color:red;
+}
+
+
+/* =====================================================
+   INPUT
+===================================================== */
+
+.erp-input,
+.erp-textarea,
+.erp-file{
+
+  width:100%;
+
+  border:1px solid #d1d5db;
+
+  border-radius:8px;
+
+  background:#ffffff;
+
+  font-size:14px;
+
+  transition:.2s;
+
+}
+
+
+.erp-input{
+
+  height:42px;
+
+  padding:0 14px;
+}
+
+
+.erp-textarea{
+
+  min-height:100px;
+
+  padding:12px;
+
+  resize:vertical;
+}
+
+
+.erp-file{
+
+  padding:10px;
+
+  border-style:dashed;
+}
+
+
+/* =====================================================
+   FOCUS
+===================================================== */
+
+.erp-input:focus,
+.erp-textarea:focus{
+
+  outline:none;
+
+  border-color:#1d1160;
+
+  box-shadow:
+  0 0 0 3px
+  rgba(29,17,96,.08);
+
+}
+
+
+/* =====================================================
+   CHECKBOX
+===================================================== */
+
+.erp-checkbox{
+
+  display:flex;
+
+  align-items:center;
+
+  gap:10px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:992px){
+
+.erp-form-grid{
+
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(280px,1fr)
+);
+
+}
+
+}
+
+
+@media(max-width:768px){
+
+.master-layout{
+
+padding:10px;
+
+}
+
+.erp-form-grid{
+
+grid-template-columns:1fr;
+
+gap:15px;
+
+}
+
+.erp-form-body{
+
+padding:15px;
+
+}
+
+}
+
+/* =====================================================
+   APP LAYOUT
+===================================================== */
+
+html,
+body{
+
+  height:100%;
+
+  margin:0;
+}
+
+app-root{
+
+  min-height:100vh;
+
+  display:flex;
+
+  flex-direction:column;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+app-default-header{
+
+  position:fixed;
+
+  top:0;
+
+  left:0;
+
+  right:0;
+
+  z-index:1000;
+
+  background:#ffffff;
+
+  box-shadow:
+  0 2px 6px rgba(0,0,0,.05);
+
+  height:80px;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.layout-content{
+
+  flex:1;
+
+  margin-top:80px;
+
+  width:100%;
+
+  padding:20px;
+
+  background:#ffffff;
+
+  display:flex;
+
+  flex-direction:column;
+
+  min-height:
+  calc(100vh - 140px);
+
+  overflow-x:hidden;
+}
+
+
+/* FULL SCREEN */
+
+.layout-content.fullscreen{
+
+  margin-top:0;
+
+  padding:0;
+
+  min-height:100vh;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+app-default-footer{
+
+  margin-top:auto;
+
+  width:100%;
+
+  background:#ffffff;
+
+  border-top:
+  1px solid #e5e7eb;
+
+  padding:12px;
+
+  text-align:center;
+
+  flex-shrink:0;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:768px){
+
+.layout-content{
+
+margin-top:70px;
+
+padding:10px;
+
+}
+
+app-default-header{
+
+height:70px;
+
+}
+
+}
+
+/* =====================================================
+   FIXED FOOTER UI
+===================================================== */
+
+app-default-footer{
+
+  position:fixed;
+
+  left:0;
+
+  bottom:0;
+
+  width:100%;
+
+  height:50px;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  background:#ffffff;
+
+  border-top:1px solid #e0e0e0;
+
+  box-shadow:
+  0 -2px 6px rgba(0,0,0,.05);
+
+  z-index:999;
+
+}
+
+
+/* FOOTER CONTENT */
+
+.default-footer{
+
+  width:100%;
+
+  text-align:center;
+
+  font-size:13px;
+
+  color:#6b7280;
+}
+
+.default-footer a{
+
+  color:#1d1160;
+
+  text-decoration:none;
+
+  font-weight:600;
+}
+
+
+/* CONTENT SPACING FOR FOOTER */
+
+.layout-content{
+
+  padding-bottom:70px;
+}
+
+

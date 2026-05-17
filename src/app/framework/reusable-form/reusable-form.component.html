@@ -1,0 +1,460 @@
+<div class="erp-form-page">
+
+  <!-- =====================================================
+       HEADER
+  ====================================================== -->
+
+  <div class="erp-form-header">
+
+    <div class="erp-form-left">
+
+      <!-- BREADCRUMB -->
+
+      <div class="erp-breadcrumb">
+
+        <span>
+          Home
+        </span>
+
+        <span>/</span>
+
+        <span>
+          Masters
+        </span>
+
+        <span>/</span>
+
+        <span>
+
+          {{ title }}
+
+        </span>
+
+      </div>
+
+
+      <!-- TITLE -->
+
+      <div class="erp-title-section">
+
+        <h2>
+
+          {{ title }}
+
+        </h2>
+
+        <span class="draft-badge">
+
+          Not Saved
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- RIGHT BUTTONS -->
+
+    <div class="erp-form-right">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="cancel()"
+      >
+
+        Cancel
+
+      </button>
+
+
+      <button
+        type="button"
+        class="save-btn"
+        (click)="save()"
+      >
+
+        Save
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       TABS
+  ====================================================== -->
+
+  <div
+    class="erp-tabs-wrapper"
+
+    *ngIf="
+    tabs &&
+    tabs.length>0
+  "
+  >
+
+    <div class="erp-tabs">
+
+      <button
+
+        *ngFor="
+        let tab of tabs
+      "
+
+        type="button"
+
+        class="erp-tab"
+
+        [class.active]="
+        activeTab===tab
+      "
+
+        (click)="changeTab(tab)"
+      >
+
+        {{tab}}
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =====================================================
+       FORM BODY
+  ====================================================== -->
+
+  <div class="erp-form-body">
+
+    <div class="erp-form-grid">
+
+      <ng-container
+
+        *ngFor="
+        let field of getTabFields();
+        trackBy:trackByField
+      "
+
+      >
+
+        <div
+
+          class="erp-form-field"
+
+          [ngStyle]="{
+
+          'grid-column':
+
+          field.columnSpan
+
+          ? 'span '+field.columnSpan
+
+          : 'span 1'
+
+        }"
+
+        >
+
+          <!-- LABEL -->
+
+          <label class="erp-label">
+
+            {{field.label}}
+
+            <span
+
+              *ngIf="
+              field.required
+            "
+
+              class="required-star"
+            >
+
+              *
+
+            </span>
+
+          </label>
+
+
+          <!-- =====================================
+               TEXT
+          ====================================== -->
+
+          <input
+
+            *ngIf="
+            field.type==='text'
+          "
+
+            type="text"
+
+            class="erp-input"
+
+            [(ngModel)]="
+            model[field.model]
+          "
+
+            [placeholder]="
+            field.placeholder
+            || ('Enter '+field.label)
+          "
+
+            appFocusOnKey
+
+            [autoFocus]="
+            field.autoFocus
+            || false
+          "
+
+            [autoSelectNext]="
+            field.autoSelectNext
+            ?? true
+          "
+
+            [appInputRestrict]="
+            field.restrictType
+          "
+
+          />
+
+
+          <!-- =====================================
+               EMAIL
+          ====================================== -->
+
+          <input
+
+            *ngIf="
+            field.type==='email'
+          "
+
+            type="email"
+
+            class="erp-input"
+
+            [(ngModel)]="
+            model[field.model]
+          "
+
+            [placeholder]="
+            field.placeholder
+            || ('Enter '+field.label)
+          "
+
+            appFocusOnKey
+
+            [autoSelectNext]="
+            true
+          "
+
+            [appInputRestrict]="
+            field.restrictType
+          "
+
+          />
+
+
+          <!-- =====================================
+               NUMBER
+          ====================================== -->
+
+          <input
+
+            *ngIf="
+            field.type==='number'
+          "
+
+            type="text"
+
+            class="erp-input"
+
+            [(ngModel)]="
+            model[field.model]
+          "
+
+            [placeholder]="
+            field.placeholder
+            || ('Enter '+field.label)
+          "
+
+            appFocusOnKey
+
+            [autoSelectNext]="
+            true
+          "
+
+            [appInputRestrict]="  
+            field.restrictType
+          "
+
+          />
+
+
+          <!-- =====================================
+               DATE
+          ====================================== -->
+
+          <input
+
+            *ngIf="
+            field.type==='date'
+          "
+
+            type="date"
+
+            class="erp-input"
+
+            [(ngModel)]="
+            model[field.model]
+          "
+
+            appFocusOnKey
+
+          />
+
+
+          <!-- =====================================
+               TEXTAREA
+          ====================================== -->
+
+          <textarea
+
+            *ngIf="
+            field.type==='textarea'
+          "
+
+            class="erp-textarea"
+
+            [(ngModel)]="
+            model[field.model]
+          "
+
+            [placeholder]="
+            field.placeholder
+            || ('Enter '+field.label)
+          "
+
+            appFocusOnKey
+
+            [appInputRestrict]="
+            field.restrictType
+          "
+
+          ></textarea>
+
+
+          <!-- =====================================
+               SELECT
+          ====================================== -->
+
+          <select
+
+            *ngIf="
+            field.type==='select'
+          "
+
+            class="erp-input"
+
+            [(ngModel)]="
+            model[field.model]
+          "
+
+            appFocusOnKey
+          >
+
+            <option value="">
+
+              Select
+              {{field.label}}
+
+            </option>
+
+
+            <option
+
+              *ngFor="
+              let option
+              of field.options
+            "
+
+              [value]="option"
+            >
+
+              {{option}}
+
+            </option>
+
+          </select>
+
+
+          <!-- =====================================
+               FILE
+          ====================================== -->
+
+          <input
+
+            *ngIf="
+            field.type==='file'
+          "
+
+            type="file"
+
+            class="erp-file"
+
+          />
+
+
+          <!-- =====================================
+               CHECKBOX
+          ====================================== -->
+
+          <div
+
+            class="erp-checkbox"
+
+            *ngIf="
+            field.type==='checkbox'
+          "
+
+          >
+
+            <input
+
+              type="checkbox"
+
+              [(ngModel)]="
+              model[field.model]
+            "
+
+            />
+
+            <span>
+
+              {{
+
+              field.checkboxLabel
+              ||
+
+              field.label
+
+              }}
+
+            </span>
+
+          </div>
+
+        </div>
+
+      </ng-container>
+
+    </div>
+
+  </div>
+
+</div>
