@@ -1,188 +1,283 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import { DynamicTableComponent } from '../../../framework/dynamic-table/dynamic-table.component';
+
+import { ReusableFormComponent } from '../../../framework/reusable-form/reusable-form.component';
+
 import { MasterService } from '../../../services/master.service';
+
 import { ValidationService } from '../../../services/properties/validation.service';
+
 import { SweetAlertService } from '../../../services/properties/sweet-alert.service';
-import { InputRestrictDirective } from '../../../directives/input-restrict.directive';
-import { FocusOnKeyDirective } from '../../../directives/focus-on-key.directive';
-import { Cess } from '../../models/common-models/master-models/master';
-import { MasterTableViewComponent } from '../../components/master-table-view/master-table-view.component';
-import { SharedModule } from '../../../shared/shared.module';
+
 @Component({
   selector: 'app-cess',
-  imports: [FormsModule, CommonModule, InputRestrictDirective,
-     FocusOnKeyDirective,
-     SharedModule,
-     MasterTableViewComponent
-    ],
+
+  standalone: true,
+
+  imports: [
+    CommonModule,
+    FormsModule,
+    DynamicTableComponent,
+    ReusableFormComponent,
+  ],
+
   templateUrl: './cess.component.html',
-  styleUrl: './cess.component.css'
+
+  styleUrls: ['./cess.component.css'],
 })
-export class CessComponent {
-  cesses: Cess[] = [];
-  cess!: Cess;
+export class CessComponent implements OnInit {
+  showForm = false;
+
   duplicateError = false;
+
   isEditMode = false;
-  isFormEnabled = false;
- cessColumns = [
-    { field: 'cessName', header: 'CESS Name' },
-    { field: 'isActive', header: 'Active' },
+
+  formTitle = 'New Cess';
+
+  cesses: any[] = [];
+
+  cess: any = {};
+
+  /*================ TABS =================*/
+
+  cessTabs = ['Details', 'Settings'];
+
+  /*================ TABLE =================*/
+
+  cessColumns = [
+    {
+      field: 'cessName',
+      header: 'Name',
+    },
+
+    {
+      field: 'cessRate',
+      header: 'Rate (%)',
+    },
+
+    {
+      field: 'description',
+      header: 'Description',
+    },
+
+    {
+      field: 'statusText',
+      header: 'Status',
+    },
   ];
+
+  /*================ FIELDS =================*/
+
+  cessFields = [
+    {
+      label: 'Cess Name',
+
+      model: 'cessName',
+
+      type: 'text',
+
+      required: true,
+
+      tab: 'Details',
+
+      autoFocus: true,
+    },
+
+    {
+      label: 'Rate',
+
+      model: 'cessRate',
+
+      type: 'number',
+
+      required: true,
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Description',
+
+      model: 'description',
+
+      type: 'text',
+
+      tab: 'Details',
+    },
+
+    {
+      label: 'Is Active',
+
+      model: 'isActive',
+
+      type: 'checkbox',
+
+      tab: 'Settings',
+    },
+  ];
+
   constructor(
-    private readonly masterService: MasterService,
-    private readonly validationService: ValidationService,
-    private readonly swall: SweetAlertService
+    private masterService: MasterService,
+
+    private validationService: ValidationService,
+
+    private swal: SweetAlertService,
   ) {}
 
   ngOnInit() {
     this.resetCess();
+
     this.loadCesses();
   }
 
-   newCesscreate() {
-    this.resetCess();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
-  refreshCesses() {
-    this.resetCess();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
-  /** Create new Cess object */
-  private newCess(): Cess {
-    const now = new Date().toISOString();
-    const userId = this.masterService.getCurrentUserId();
-    return {
-      cessID: 0,
-      cessName: '',
-      cessRate: 0,
-      description: '',
-      isActive: true,
-      createdByUserID: userId,
-      createdSystemName: 'AngularApp',
-      createdAt: now,
-      updatedByUserID: userId,
-      updatedSystemName: 'AngularApp',
-      updatedAt: now
-    };
-  }
+  /*================ LOAD =================*/
 
-  /** Focus helper */
-  private focusCess(targetId: string = 'cessName') {
-    setTimeout(() => {
-      const el = document.getElementById(targetId) as HTMLInputElement | null;
-      el?.focus();
-      el?.select();
-    }, 0);
-  }
-
-  /** Load all Cesses */
   loadCesses() {
     this.masterService.getCesses().subscribe({
-      next: res => this.cesses = res ?? [],
-      error: () => this.swall.error('Error', 'Failed to load Cesses!', () => this.focusCess())
+      next: (res: any) => {
+        this.cesses = res.map((x: any) => ({
+          ...x,
+
+          statusText: x.isActive ? 'Active' : 'Inactive',
+        }));
+      },
+
+      error: () => {
+        this.swal.error('Error', 'Load Failed');
+      },
     });
   }
 
-/** Check for duplicate Cess name, ignoring the current record when editing */
-checkDuplicate() {
-  const name = this.cess.cessName?.trim().toLowerCase() || '';
-  this.duplicateError = this.cesses.some(c =>
-    c.cessName?.trim().toLowerCase() === name && c.cessID !== this.cess.cessID
-  );
-}
+  /*================ ADD =================*/
 
+  newCess() {
+    this.resetCess();
 
-  /** Validation */
-  private validateCess(): boolean {
-    this.cess.cessName = this.cess.cessName?.trim() || '';
+    this.showForm = true;
+
+    this.formTitle = 'New Cess';
+
+    this.isEditMode = false;
+  }
+
+  /*================ EDIT =================*/
+
+  editCess(row: any) {
+    this.cess = {
+      ...row,
+    };
+
+    this.showForm = true;
+
+    this.formTitle = 'Edit Cess';
+
+    this.isEditMode = true;
+  }
+
+  /*================ FIELD CHANGE =================*/
+
+  onFieldChange(event: any) {
+    if (event.field === 'cessName') {
+      this.checkDuplicate();
+    }
+  }
+
+  /*================ DUPLICATE =================*/
+
+  checkDuplicate() {
+    this.duplicateError = this.validationService.isDuplicate(
+      this.cess.cessName,
+
+      this.cesses,
+
+      'cessName',
+
+      this.cess.cessID,
+    );
+  }
+
+  /*================ SAVE =================*/
+
+  saveOrUpdateCess() {
     this.checkDuplicate();
 
     if (!this.cess.cessName) {
-      this.swall.warning('Validation', 'Cess Name is required!', () => this.focusCess());
-      return false;
+      return this.swal.warning('Validation', 'Cess Name Required');
     }
 
     if (this.duplicateError) {
-      this.swall.warning('Validation', 'Cess Name already exists!', () => this.focusCess());
-      return false;
-    }
-
-    return true;
-  }
-
-  /** Save or Update Cess */
-  saveOrUpdateCess() {
-    if (!this.validateCess()) return;
-
-    const now = new Date().toISOString();
-    const userId = this.masterService.getCurrentUserId();
-
-    if (this.cess.cessID && this.cess.cessID > 0) {
-      this.cess.updatedByUserID = userId;
-      this.cess.updatedSystemName = 'AngularApp';
-      this.cess.updatedAt = now;
-    } else {
-      this.cess.createdByUserID = userId;
-      this.cess.createdSystemName = 'AngularApp';
-      this.cess.createdAt = now;
-      this.cess.updatedByUserID = userId;
-      this.cess.updatedSystemName = 'AngularApp';
-      this.cess.updatedAt = now;
+      return this.swal.warning('Validation', 'Cess Already Exists');
     }
 
     this.masterService.saveCess(this.cess).subscribe({
-      next: res => {
-        if (res.success) {
-          this.loadCesses();
-          this.resetCess();
-          this.swall.success('Success', res.message || 'Cess saved successfully!', () => this.focusCess());
-        } else {
-          this.swall.error('Error', res.message || 'Something went wrong!', () => this.focusCess());
-        }
+      next: () => {
+        this.swal.success(
+          'Success',
+
+          this.isEditMode ? 'Updated' : 'Saved',
+        );
+
+        this.loadCesses();
+
+        this.cancelForm();
       },
-      error: () => this.swall.error('Error', 'Failed to save Cess!', () => this.focusCess())
+
+      error: () => {
+        this.swal.error(
+          'Error',
+
+          'Save Failed',
+        );
+      },
     });
   }
 
-  /** Edit */
-  editCess(c: Cess) {
-    this.cess = { ...c };
-    this.focusCess();
-  }
+  /*================ DELETE =================*/
 
-  /** Delete (mark inactive) */
-  deleteCess(c: Cess) {
-    this.swall.confirm(`Delete ${c.cessName}?`, 'This will mark the Cess as inactive.').then(result => {
-      if (!result.isConfirmed) return;
+  deleteCess(row: any) {
+    row.isActive = false;
 
-      const deleted: Cess = {
-        ...c,
-        isActive: false,
-        updatedByUserID: this.masterService.getCurrentUserId(),
-        updatedAt: new Date().toISOString()
-      };
+    this.masterService.saveCess(row).subscribe({
+      next: () => {
+        this.swal.success('Success', 'Deleted');
 
-      this.masterService.saveCess(deleted).subscribe({
-        next: res => {
-          if (res.success) {
-            this.loadCesses();
-            this.swall.success('Deleted!', res.message || 'Cess deleted!', () => this.focusCess());
-          } else {
-            this.swall.error('Error', res.message || 'Failed to delete Cess!', () => this.focusCess());
-          }
-        },
-        error: () => this.swall.error('Error', 'Failed to delete Cess!', () => this.focusCess())
-      });
+        this.loadCesses();
+      },
     });
   }
 
-  /** Reset form */
+  /*================ REFRESH =================*/
+
+  refreshCesses() {
+    this.cancelForm();
+
+    this.loadCesses();
+  }
+
+  /*================ CANCEL =================*/
+
+  cancelForm() {
+    this.showForm = false;
+
+    this.resetCess();
+  }
+
+  /*================ RESET =================*/
+
   resetCess() {
-    this.cess = this.newCess();
-    this.duplicateError = false;
-    this.focusCess();
+    this.cess = {
+      cessID: 0,
+
+      cessName: '',
+
+      cessRate: 0,
+
+      description: '',
+
+      isActive: true,
+    };
   }
 }

@@ -1,142 +1,94 @@
 <div class="master-layout">
 
-  <!-- ================= TOP HEADER ================= -->
+  <!-- ================= HEADER ================= -->
+
   <div class="master-top-header">
 
-    <!-- LEFT -->
     <div class="master-top-left">
-      <lucide-icon name="folder"></lucide-icon>
 
-      <div>
-        <div class="master-title-text">CATEGORY MASTER</div>
-        <div class="master-subtitle-text">Enterprise Resource Planning</div>
+      <div class="master-title-wrapper">
+
+        <h2>
+          Category
+        </h2>
+
       </div>
+
     </div>
 
-    <!-- RIGHT -->
+
     <div class="master-top-right">
-      <button class="master-btn-primary" type="button" (click)="newCategories()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD CATEGORY
+
+      <button
+        type="button"
+        class="master-btn-outline"
+        (click)="refreshCategories()">
+
+        Refresh
+
       </button>
 
-      <button class="master-btn-primary" type="button" (click)="refreshCategories()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
+
+      <button
+        type="button"
+        class="master-btn-primary"
+        (click)="newCategory()">
+
+        + Add Category
+
       </button>
-    </div>
 
-    <!-- TOTAL -->
-    <div class="total-badge saas">
-      TOTAL CATEGORIES : {{ categories.length }}
     </div>
 
   </div>
 
-  <!-- ================= LEFT FORM PANEL ================= -->
-  <div class="master-panel">
 
-    <div class="master-header">
-      <div class="master-title">
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>CREATE CATEGORY</h2>
-      </div>
+  <!-- ================= TABLE VIEW ================= -->
 
-      <div class="master-actions">
-        <button
-          type="button"
-          class="master-btn-outline"
-          (click)="saveOrUpdateCategory()"
-          [disabled]="duplicateError"
-        >
-          {{ category.categoryID ? "UPDATE" : "SAVE" }}
-        </button>
+  <ng-container *ngIf="!showForm">
 
-        <button
-          type="button"
-          class="master-btn-primary"
-          (click)="resetCategory()"
-        >
-          CLEAR
-        </button>
-      </div>
+    <div class="master-table-layout">
+
+      <app-dynamic-table
+
+        [data]="categories"
+        [columns]="categoryColumns"
+        (edit)="editCategory($event)"
+        (delete)="deleteCategory($event)">
+
+      </app-dynamic-table>
+
     </div>
 
-    <fieldset class="form-disabled-wrapper">
+  </ng-container>
 
-      <div class="form-grid">
 
-        <!-- Category Name -->
-        <div class="form-column full-width">
-          <label>Category Name</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="category.categoryName"
-            name="categoryName"
-            required
-            [autoFocus]="true"
-            (ngModelChange)="checkDuplicate()"
-            appFocusOnKey="description"
-            [autoSelectNext]="true"
-            appInputRestrict="text"
-            [ngClass]="{ 'is-warning': duplicateError }"
-          />
+  <!-- ================= FORM VIEW ================= -->
 
-          <div class="text-warning small mt-1" *ngIf="duplicateError">
-            This category already exists!
-          </div>
-        </div>
+  <ng-container *ngIf="showForm">
 
-        <!-- Description -->
-        <div class="form-column full-width">
-          <label>Description</label>
-          <textarea
-            class="input-common"
-            rows="3"
-            [(ngModel)]="category.description"
-            name="description"
-            appFocusOnKey="isActive"
-          ></textarea>
-        </div>
+    <div class="master-form-layout compact-form">
 
-        <!-- Status -->
-        <div class="form-column">
-          <label>Status</label>
+      <app-reusable-form
 
-          <label class="switch">
-            <input
-              type="checkbox"
-              [(ngModel)]="category.isActive"
-              name="isActive"
-              appFocusOnKey="saveBtn"
-            />
-            <span class="slider"></span>
-            <span class="switch-text">
-              {{ category.isActive ? "Active" : "Inactive" }}
-            </span>
-          </label>
-        </div>
+        [title]="formTitle"
 
-      </div>
+        [tabs]="categoryTabs"
 
-    </fieldset>
+        [fields]="categoryFields"
 
-  </div>
+        [model]="category"
 
-  <!-- ================= RIGHT TABLE PANEL ================= -->
-  <div class="master-panel">
+        (fieldChange)="onFieldChange($event)"
 
-    <app-master-table-view
-      [data]="categories"
-      [columns]="categoryColumns"
-      title="ALL CATEGORIES"
-      companyName="SmartBillPro"
-      (edit)="editCategory($event)"
-      (delete)="deleteCategory($event)"
-    >
-    </app-master-table-view>
+        (saveForm)="saveOrUpdateCategory()"
 
-  </div>
+        (cancelForm)="cancelForm()">
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>
