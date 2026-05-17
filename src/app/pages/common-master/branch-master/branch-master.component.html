@@ -1,153 +1,112 @@
 <div class="master-layout">
-  <!-- ================= TOP HEADER ================= -->
-  <div class="master-top-header">
-    <div class="master-top-left">
-      <!-- FIXED ICON -->
-      <lucide-icon name="building-2"></lucide-icon>
-      <div>
-        <div class="master-title-text">BRANCH MASTER</div>
-        <div class="master-subtitle-text">Enterprise Resource Planning</div>
-      </div>
-    </div>
 
-    <div class="master-top-right">
-      <button class="master-btn-primary" type="button" (click)="newBranch()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD BRANCH
-      </button>
+  <!-- =========================================
+       TABLE VIEW
+  ========================================== -->
 
-      <button class="master-btn-primary" type="button" (click)="Refresh()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
-      </button>
-    </div>
+  <ng-container *ngIf="!showForm">
 
-    <div class="total-badge saas">TOTAL BRANCHES : {{ totalBranches }}</div>
-  </div>
+    <div class="master-top-header">
 
+      <!-- LEFT -->
 
+      <div class="master-top-left">
 
-  <!-- ================= LEFT FORM PANEL ================= -->
-  <div class="master-panel">
-    <div class="master-header">
-      <div class="master-title">
-        <!-- FIXED ICON -->
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>CREATE BRANCH</h2>
+        <div class="master-title-wrapper">
+
+          <h2>
+
+            Branch
+
+          </h2>
+
+        </div>
+
       </div>
 
-      <div class="master-actions">
+
+      <!-- RIGHT -->
+
+      <div class="master-top-right">
+
         <button
           type="button"
           class="master-btn-outline"
-          (click)="saveOrDeleteBranch()"
+          (click)="refresh()"
         >
-          {{ isEditMode ? "UPDATE" : "SAVE" }}
+
+          Refresh
+
         </button>
+
 
         <button
           type="button"
           class="master-btn-primary"
-          (click)="resetBranch()"
+          (click)="addBranch()"
         >
-          CLEAR
+
+          + Add Branch
+
         </button>
+
       </div>
+
     </div>
 
-        <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
-        <div class="form-grid">
-      <!-- Company -->
-      <div class="form-column">
-        <label>Company</label>
-        <select
-          class="input-common"
-          [(ngModel)]="branch.companyID"
-          name="companyID"
-          appFocusOnKey
-          [autoFocus]="true"
-          [autoSelectNext]="true"
-          required
-        >
-          <option value="">Select Company</option>
-          <option *ngFor="let c of companies" [value]="c.companyID">
-            {{ c.companyName }}
-          </option>
-        </select>
-      </div>
 
-      <!-- Branch Name -->
-      <div class="form-column">
-        <label>Branch Name</label>
-        <input
-          type="text"
-          class="input-common"
-          [(ngModel)]="branch.branchName"
-          name="branchName"
-          appFocusOnKey
-          [autoSelectNext]="true"
-          required
-        />
-      </div>
+    <!-- TABLE -->
 
-      <!-- Branch Code 
-      <div class="form-column">
-        <label>Branch Code</label>
-        <input
-          type="text"
-          class="input-common"
-          [(ngModel)]="branch.branchCode"
-          name="branchCode"
-          appFocusOnKey
-          [autoSelectNext]="true"
-        />
-      </div>-->
+    <div class="master-table-layout">
 
-      <!-- Address (full row) -->
-      <div class="form-column full-width">
-        <label>Address</label>
-        <textarea
-          rows="3"
-          class="input-common"
-          [(ngModel)]="branch.address"
-          name="address"
-          appFocusOnKey
-          [autoSelectNext]="true"
-        ></textarea>
-      </div>
+      <app-dynamic-table
 
-      <div class="form-column">
-        <label>Status</label>
+        [data]="branches"
 
-        <label class="switch">
-          <input
-            type="checkbox"
-            [(ngModel)]="branch.isActive"
-            name="isActive"
-            appFocusOnKey
-          />
-          <span class="slider"></span>
-          <span class="switch-text">
-            {{ branch.isActive ? "Active" : "Inactive" }}
-          </span>
-        </label>
-      </div>
+        [columns]="branchColumns"
+
+        (edit)="editBranch($event)"
+
+        (delete)="deleteBranch($event)"
+
+      >
+
+      </app-dynamic-table>
+
     </div>
-    </fieldset>
 
-  
-  </div>
+  </ng-container>
 
-  <!-- ================= RIGHT TABLE PANEL ================= -->
-  <div class="master-panel">
-    <app-master-table-view
-      [data]="branches"
-      [columns]="branchColumns"
-      title="ALL BRANCHES"
-      companyName="SmartBillPro"
-      (edit)="editBranch($event)"
-      (delete)="deleteBranch($event)"
-    >
-    </app-master-table-view>
-  </div>
+
+
+  <!-- =========================================
+       FORM VIEW
+  ========================================== -->
+
+  <ng-container *ngIf="showForm">
+
+    <div class="master-form-layout">
+
+      <app-reusable-form
+
+        [title]="formTitle"
+
+        [tabs]="branchTabs"
+
+        [fields]="branchFields"
+
+        [model]="branchModel"
+
+        (saveForm)="saveBranch($event)"
+
+        (cancelForm)="cancelForm()"
+
+      >
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
+
 </div>
