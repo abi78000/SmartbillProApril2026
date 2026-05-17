@@ -1,188 +1,783 @@
-import { Component } from '@angular/core';
-import { CommonserviceService } from '../../services/commonservice.service';
-import { User } from '../../pages/models/common-models/user';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { SweetAlertService } from '../../services/../services/properties/sweet-alert.service';
 import {
-  Company,
-  Branch,
-  Department,
-  Role,
-} from '../../pages/models/common-models/companyMaster';
-import { SharedModule } from '../../shared/shared.module';
-import { MasterTableViewComponent } from '../../pages/components/master-table-view/master-table-view.component';
+Component,
+OnInit
+} from '@angular/core';
+
+import {
+CommonModule
+} from '@angular/common';
+
+import {
+FormsModule
+} from '@angular/forms';
+
+import {
+DynamicTableComponent
+} from '../../framework/dynamic-table/dynamic-table.component';
+
+import {
+ReusableFormComponent
+} from '../../framework/reusable-form/reusable-form.component';
+
+import {
+CommonserviceService
+} from '../../services/commonservice.service';
+
+import {
+SweetAlertService
+} from '../../services/properties/sweet-alert.service';
+
 @Component({
-  selector: 'app-usermaster',
-  imports: [CommonModule, FormsModule, SharedModule, MasterTableViewComponent],
-  templateUrl: './usermaster.component.html',
-  styleUrl: './usermaster.component.css',
+
+selector:'app-usermaster',
+
+standalone:true,
+
+imports:[
+CommonModule,
+FormsModule,
+DynamicTableComponent,
+ReusableFormComponent
+],
+
+templateUrl:'./usermaster.component.html',
+
+styleUrls:[
+'./usermaster.component.css'
+]
+
 })
-export class UsermasterComponent {
-  users: User[] = [];
-  user: User = this.getEmptyUser();
-  companies: Company[] = [];
-  branches: Branch[] = [];
-  departments: Department[] = [];
-  roles: Role[] = [];
-  isEditMode = false;
-  isFormEnabled = false;
 
-  constructor(
-    private commonservice: CommonserviceService,
-    private swallservice: SweetAlertService
-  ) {}
+export class UsermasterComponent
+implements OnInit{
 
-  ngOnInit(): void {
-    this.loadCompanies();
-    this.loadBranches();
-    this.loadDepartments();
-    this.loadRoles();
-    this.loadUsers();
-    this.isFormEnabled = false;
-  }
-  userColumns = [
-    { field: 'userName', header: 'User Name' },
-    { field: 'isActive', header: 'Active' },
-  ];
-  newUser() {
-    this.refreshUsers();
-    this.isEditMode = false;
-    this.isFormEnabled = true;
-  }
-  refreshUsers() {
-    this.resetForm();
-    this.isEditMode = false;
-    this.isFormEnabled = false;
-  }
-  loadCompanies() {
-    this.commonservice.getCompanies().subscribe({
-      next: (res) => (this.companies = res),
-      error: (err) => console.error(err),
-    });
-  }
-  loadBranches() {
-    this.commonservice.getBranches().subscribe({
-      next: (data) => (this.branches = data),
-      error: (err) => console.error('Error fetching branches:', err),
-    });
-  }
 
-  /** Load all departments */
-  loadDepartments(): void {
-    this.commonservice.getDepartments().subscribe({
-      next: (data) => (this.departments = data),
-      error: (err) => console.error('Error fetching departments:', err),
-    });
-  }
-  loadRoles() {
-    this.commonservice.getRoles().subscribe({
-      next: (res) => (this.roles = res),
-      error: (err) => {
-        console.error(' Error loading roles:', err);
+showForm=false;
 
-        alert('Error loading role list.');
-      },
-    });
-  }
+isEditMode=false;
 
-  getEmptyUser(): User {
-    return {
-      userID: 0,
-      companyID: 0,
-      branchID: 0,
-      departmentID: 0,
-      roleID: 0,
-      userName: '',
-      email: '',
-      passwordHash: '',
-      isActive: true,
-      createdByUserID: 0,
-      createdSystemName: '',
-      createdAt: new Date(),
-      updatedByUserID: 0,
-      updatedSystemName: '',
-      updatedAt: new Date(),
-    };
-  }
+formTitle='New User';
 
-  loadUsers() {
-    this.commonservice.getUsers().subscribe({
-      next: (res) => (this.users = res),
-      error: (err) => {
-        console.error('Error loading users:', err);
-      },
-    });
-  }
 
-  saveOrUpdateUser() {
-    if (!this.user.userName) {
-      this.swallservice.error(
-        'Validation Error',
-        'User Name and Email are required!'
-      );
-      return;
-    }
+users:any[]=[];
 
-    this.commonservice.saveUser(this.user).subscribe({
-      next: (id) => {
-        this.swallservice.success(
-          'Success',
-          this.user.userID > 0 ? 'User updated!' : 'User created!'
-        );
-        this.loadUsers();
-        this.resetForm();
-      },
-      error: (err) => {
-        console.error(' Error saving user:', err);
-        this.swallservice.error('Error', 'Error saving user!');
-      },
-    });
-  }
+companies:any[]=[];
 
-  editUser(u: User) {
-    this.user = { ...u };
-  }
+branches:any[]=[];
 
-  deleteUser(u: User) {
-    if (!confirm(`Are you sure you want to delete ${u.userName}?`)) {
-      return;
-    }
+departments:any[]=[];
 
-    u.isActive = false; // soft delete
-    this.commonservice.saveUser(u).subscribe({
-      next: (id) => {
-        console.log(' User deleted (soft delete), ID:', id);
-        this.swallservice.success('Deleted', 'User deleted successfully!');
-        this.loadUsers();
-      },
-      error: (err) => {
-        console.error('Error deleting user:', err);
-      },
-    });
-  }
+roles:any[]=[];
 
-  resetForm() {
-    this.user = this.getEmptyUser();
-  }
-  getCompanyName(companyID: number): string {
-    return (
-      this.companies.find((c) => c.companyID === companyID)?.companyName || ''
-    );
-  }
 
-  getBranchName(branchID: number): string {
-    return this.branches.find((b) => b.branchID === branchID)?.branchName || '';
-  }
+userModel:any={};
 
-  getDepartmentName(departmentID: number): string {
-    return (
-      this.departments.find((d) => d.departmentID === departmentID)
-        ?.departmentName || ''
-    );
-  }
 
-  getRoleName(roleID: number): string {
-    return this.roles.find((r) => r.roleID === roleID)?.roleName || '';
-  }
+
+/* ===================================
+   TABS
+=================================== */
+
+userTabs=[
+
+'Details',
+'Organization',
+'Settings'
+
+];
+
+
+
+/* ===================================
+   TABLE
+=================================== */
+
+userColumns=[
+
+{
+field:'userName',
+header:'User'
+},
+
+{
+field:'email',
+header:'Email'
+},
+
+{
+field:'roleName',
+header:'Role'
+},
+
+{
+field:'statusText',
+header:'Status'
+}
+
+];
+
+
+
+/* ===================================
+   FIELDS
+=================================== */
+
+userFields:any[]=[
+
+{
+label:'User Name',
+model:'userName',
+type:'text',
+required:true,
+tab:'Details',
+autoFocus:true
+},
+
+{
+label:'Password',
+model:'passwordHash',
+type:'text',
+required:true,
+tab:'Details'
+},
+
+{
+label:'Email',
+model:'email',
+type:'email',
+required:true,
+tab:'Details'
+},
+
+{
+label:'Company',
+model:'companyID',
+type:'select',
+tab:'Organization',
+required:true,
+options:[]
+},
+
+{
+label:'Branch',
+model:'branchID',
+type:'select',
+tab:'Organization',
+required:true,
+options:[]
+},
+
+{
+label:'Department',
+model:'departmentID',
+type:'select',
+tab:'Organization',
+required:true,
+options:[]
+},
+
+{
+label:'Role',
+model:'roleID',
+type:'select',
+tab:'Organization',
+required:true,
+options:[]
+},
+
+{
+label:'Is Active',
+model:'isActive',
+type:'checkbox',
+tab:'Settings'
+}
+
+];
+
+
+constructor(
+
+private commonservice:CommonserviceService,
+
+private swal:SweetAlertService
+
+){}
+
+
+ngOnInit(){
+
+this.resetModel();
+
+this.loadCompanies();
+
+this.loadBranches();
+
+this.loadDepartments();
+
+this.loadRoles();
+
+this.loadUsers();
+
+}
+
+
+
+/* ===================================
+   LOAD COMPANIES
+=================================== */
+
+loadCompanies(){
+
+this.commonservice
+.getCompanies()
+.subscribe({
+
+next:(res:any)=>{
+
+this.companies=res;
+
+const field=
+
+this.userFields.find(
+
+x=>x.model==='companyID'
+
+);
+
+if(field){
+
+field.options=
+
+res.map(
+
+(company:any)=>({
+
+label:
+company.companyName,
+
+value:
+company.companyID
+
+})
+
+);
+
+}
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   LOAD BRANCHES
+=================================== */
+
+loadBranches(){
+
+this.commonservice
+.getBranches()
+.subscribe({
+
+next:(res:any)=>{
+
+this.branches=res;
+
+const field=
+
+this.userFields.find(
+
+x=>x.model==='branchID'
+
+);
+
+if(field){
+
+field.options=
+
+res.map(
+
+(branch:any)=>({
+
+label:
+branch.branchName,
+
+value:
+branch.branchID
+
+})
+
+);
+
+}
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   LOAD DEPARTMENTS
+=================================== */
+
+loadDepartments(){
+
+this.commonservice
+.getDepartments()
+.subscribe({
+
+next:(res:any)=>{
+
+this.departments=res;
+
+const field=
+
+this.userFields.find(
+
+x=>x.model==='departmentID'
+
+);
+
+if(field){
+
+field.options=
+
+res.map(
+
+(department:any)=>({
+
+label:
+department.departmentName,
+
+value:
+department.departmentID
+
+})
+
+);
+
+}
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   LOAD ROLES
+=================================== */
+
+loadRoles(){
+
+this.commonservice
+.getRoles()
+.subscribe({
+
+next:(res:any)=>{
+
+this.roles=res;
+
+const field=
+
+this.userFields.find(
+
+x=>x.model==='roleID'
+
+);
+
+if(field){
+
+field.options=
+
+res.map(
+
+(role:any)=>({
+
+label:
+role.roleName,
+
+value:
+role.roleID
+
+})
+
+);
+
+}
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   LOAD USERS
+=================================== */
+
+loadUsers(){
+
+this.commonservice
+.getUsers()
+.subscribe({
+
+next:(res:any)=>{
+
+this.users=
+
+res.map(
+
+(user:any)=>({
+
+...user,
+
+roleName:
+
+this.roles.find(
+
+r=>
+
+r.roleID===user.roleID
+
+)?.roleName || '',
+
+
+statusText:
+
+user.isActive
+
+?
+
+'Active'
+
+:
+
+'Inactive'
+
+})
+
+);
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   ADD
+=================================== */
+
+addUser(){
+
+this.resetModel();
+
+this.formTitle='New User';
+
+this.isEditMode=false;
+
+this.showForm=true;
+
+}
+
+
+
+/* ===================================
+   EDIT
+=================================== */
+
+editUser(row:any){
+
+this.userModel={
+
+...row
+
+};
+
+this.formTitle='Edit User';
+
+this.isEditMode=true;
+
+this.showForm=true;
+
+}
+
+
+
+/* ===================================
+   SAVE
+=================================== */
+
+saveUser(data:any){
+
+if(!data.userName){
+
+return this.swal.warning(
+
+'Validation',
+
+'User Name Required'
+
+);
+
+}
+
+
+if(!data.email){
+
+return this.swal.warning(
+
+'Validation',
+
+'Email Required'
+
+);
+
+}
+
+
+const payload={
+
+userID:
+data.userID||0,
+
+companyID:
+Number(data.companyID),
+
+branchID:
+Number(data.branchID),
+
+departmentID:
+Number(data.departmentID),
+
+roleID:
+Number(data.roleID),
+
+userName:
+data.userName,
+
+email:
+data.email,
+
+passwordHash:
+data.passwordHash,
+
+isActive:
+Boolean(
+data.isActive
+),
+
+createdByUserID:
+data.createdByUserID||0,
+
+createdSystemName:
+'AngularApp',
+
+createdAt:
+data.createdAt||new Date(),
+
+updatedByUserID:0,
+
+updatedSystemName:
+'AngularApp',
+
+updatedAt:
+new Date()
+
+};
+
+
+this.commonservice
+.saveUser(payload)
+.subscribe({
+
+next:()=>{
+
+this.swal.success(
+
+'Success',
+
+this.isEditMode
+
+?
+
+'User Updated'
+
+:
+
+'User Created'
+
+);
+
+this.loadUsers();
+
+this.cancelForm();
+
+},
+
+error:(err)=>{
+
+console.log(err);
+
+this.swal.error(
+
+'Error',
+
+'Save Failed'
+
+);
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   DELETE
+=================================== */
+
+deleteUser(row:any){
+
+row.isActive=false;
+
+this.commonservice
+.saveUser(row)
+.subscribe({
+
+next:()=>{
+
+this.swal.success(
+
+'Success',
+
+'Deleted Successfully'
+
+);
+
+this.loadUsers();
+
+}
+
+});
+
+}
+
+
+
+/* ===================================
+   REFRESH
+=================================== */
+
+refresh(){
+
+this.cancelForm();
+
+this.loadUsers();
+
+}
+
+
+
+/* ===================================
+   CANCEL
+=================================== */
+
+cancelForm(){
+
+this.showForm=false;
+
+this.resetModel();
+
+}
+
+
+
+/* ===================================
+   RESET
+=================================== */
+
+resetModel(){
+
+this.userModel={
+
+userID:0,
+
+companyID:null,
+
+branchID:null,
+
+departmentID:null,
+
+roleID:null,
+
+userName:'',
+
+email:'',
+
+passwordHash:'',
+
+isActive:true,
+
+createdByUserID:0,
+
+createdSystemName:'',
+
+createdAt:'',
+
+updatedByUserID:0,
+
+updatedSystemName:'',
+
+updatedAt:''
+
+};
+
+}
+
 }

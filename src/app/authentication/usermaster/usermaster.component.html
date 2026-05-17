@@ -1,202 +1,100 @@
 <div class="master-layout">
 
-  <!-- ================= TOP HEADER ================= -->
-  <div class="master-top-header">
+  <!-- ================= TABLE ================= -->
 
-    <!-- LEFT -->
-    <div class="master-top-left">
-      <lucide-icon name="users"></lucide-icon>
+  <ng-container *ngIf="!showForm">
 
-      <div>
-        <div class="master-title-text">USER MASTER</div>
-        <div class="master-subtitle-text">Enterprise Resource Planning</div>
-      </div>
-    </div>
+    <div class="master-top-header">
 
-    <!-- RIGHT -->
-    <div class="master-top-right">
-      <button class="master-btn-primary" type="button" (click)="newUser()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD USER
-      </button>
+      <div class="master-top-left">
 
-      <button class="master-btn-primary" type="button" (click)="refreshUsers()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
-      </button>
-    </div>
+        <div class="master-title-wrapper">
 
-    <!-- TOTAL -->
-    <div class="total-badge saas">
-      TOTAL USERS : {{ users.length }}
-    </div>
+          <h2>
 
-  </div>
+            User
 
-  <!-- ================= LEFT FORM PANEL ================= -->
-  <div class="master-panel">
+          </h2>
 
-    <div class="master-header">
-      <div class="master-title">
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>CREATE USER</h2>
+        </div>
+
       </div>
 
-      <div class="master-actions">
+
+      <div class="master-top-right">
+
         <button
-          type="button"
           class="master-btn-outline"
-          (click)="saveOrUpdateUser()"
+          (click)="refresh()"
         >
-          {{ user.userID > 0 ? "UPDATE" : "SAVE" }}
+
+          Refresh
+
         </button>
+
 
         <button
-          type="button"
           class="master-btn-primary"
-          (click)="resetForm()"
+          (click)="addUser()"
         >
-          CLEAR
+
+          + Add User
+
         </button>
+
       </div>
+
     </div>
 
-   <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
 
-      <div class="form-grid">
+    <div class="master-table-layout">
 
-        <!-- User Name -->
-        <div class="form-column">
-          <label>User Name</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="user.userName"
-            name="userName"
-            required
-          />
-        </div>
+      <app-dynamic-table
 
-        <!-- Password -->
-        <div class="form-column">
-          <label>Password</label>
-          <input
-            type="password"
-            class="input-common"
-            [(ngModel)]="user.passwordHash"
-            name="passwordHash"
-            [required]="user.userID === 0"
-          />
-        </div>
+        [data]="users"
 
-        <!-- Email -->
-        <div class="form-column">
-          <label>Email</label>
-          <input
-            type="email"
-            class="input-common"
-            [(ngModel)]="user.email"
-            name="email"
-            required
-          />
-        </div>
+        [columns]="userColumns"
 
-        <!-- Company -->
-        <div class="form-column">
-          <label>Company</label>
-          <select
-            class="input-common"
-            [(ngModel)]="user.companyID"
-            name="companyID"
-          >
-            <option [ngValue]="0">Select Company</option>
-            <option *ngFor="let c of companies" [ngValue]="c.companyID">
-              {{ c.companyName }}
-            </option>
-          </select>
-        </div>
+        (edit)="editUser($event)"
 
-        <!-- Branch -->
-        <div class="form-column">
-          <label>Branch</label>
-          <select
-            class="input-common"
-            [(ngModel)]="user.branchID"
-            name="branchID"
-          >
-            <option [ngValue]="0">Select Branch</option>
-            <option *ngFor="let b of branches" [ngValue]="b.branchID">
-              {{ b.branchName }}
-            </option>
-          </select>
-        </div>
+        (delete)="deleteUser($event)"
 
-        <!-- Department -->
-        <div class="form-column">
-          <label>Department</label>
-          <select
-            class="input-common"
-            [(ngModel)]="user.departmentID"
-            name="departmentID"
-          >
-            <option [ngValue]="0">Select Department</option>
-            <option *ngFor="let d of departments" [ngValue]="d.departmentID">
-              {{ d.departmentName }}
-            </option>
-          </select>
-        </div>
+      >
 
-        <!-- Role -->
-        <div class="form-column">
-          <label>Role</label>
-          <select
-            class="input-common"
-            [(ngModel)]="user.roleID"
-            name="roleID"
-          >
-            <option [ngValue]="0">Select Role</option>
-            <option *ngFor="let r of roles" [ngValue]="r.roleID">
-              {{ r.roleName }}
-            </option>
-          </select>
-        </div>
+      </app-dynamic-table>
 
-        <!-- Status -->
-        <div class="form-column">
-          <label>Status</label>
+    </div>
 
-          <label class="switch">
-            <input
-              type="checkbox"
-              [(ngModel)]="user.isActive"
-              name="isActive"
-            />
-            <span class="slider"></span>
-            <span class="switch-text">
-              {{ user.isActive ? "Active" : "Inactive" }}
-            </span>
-          </label>
-        </div>
+  </ng-container>
 
-      </div>
 
-    </fieldset>
 
-  </div>
+  <!-- ================= FORM ================= -->
 
-  <!-- ================= RIGHT TABLE PANEL ================= -->
-  <div class="master-panel">
+  <ng-container *ngIf="showForm">
 
-    <app-master-table-view
-      [data]="users"
-      [columns]="userColumns"
-      title="ALL USERS"
-      companyName="SmartBillPro"
-      (edit)="editUser($event)"
-      (delete)="deleteUser($event)"
-    >
-    </app-master-table-view>
+    <div class="master-form-layout">
 
-  </div>
+      <app-reusable-form
+
+        [title]="formTitle"
+
+        [tabs]="userTabs"
+
+        [fields]="userFields"
+
+        [model]="userModel"
+
+        (saveForm)="saveUser($event)"
+
+        (cancelForm)="cancelForm()"
+
+      >
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>
