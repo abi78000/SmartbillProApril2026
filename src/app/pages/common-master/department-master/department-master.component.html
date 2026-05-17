@@ -1,137 +1,116 @@
 <div class="master-layout">
 
-  <!-- ================= TOP HEADER ================= -->
-  <div class="master-top-header">
+  <!-- =========================================
+       TABLE VIEW
+  ========================================== -->
 
-    <!-- LEFT -->
-    <div class="master-top-left">
-      <lucide-icon name="layers"></lucide-icon>
+  <ng-container *ngIf="!showForm">
 
-      <div>
-        <div class="master-title-text">DEPARTMENT MASTER</div>
-        <div class="master-subtitle-text">Enterprise Resource Planning</div>
-      </div>
-    </div>
+    <div class="master-top-header">
 
-    <!-- RIGHT -->
-    <div class="master-top-right">
-      <button class="master-btn-primary" type="button" (click)="newDepartment()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD DEPARTMENT
-      </button>
+      <!-- LEFT -->
 
-      <button class="master-btn-primary" type="button" (click)="refreshDepartments()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
-      </button>
-    </div>
+      <div class="master-top-left">
 
-    <!-- TOTAL -->
-    <div class="total-badge saas">
-      TOTAL DEPARTMENTS : {{ departments.length }}
-    </div>
+        <div class="master-title-wrapper">
 
-  </div>
+          <h2>
 
-  <!-- ================= LEFT FORM PANEL ================= -->
-  <div class="master-panel">
+            Department
 
-    <div class="master-header">
-      <div class="master-title">
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>CREATE DEPARTMENT</h2>
+          </h2>
+
+        </div>
+
       </div>
 
-      <div class="master-actions">
+
+      <!-- RIGHT -->
+
+      <div class="master-top-right">
+
+        <!-- REFRESH -->
+
         <button
           type="button"
           class="master-btn-outline"
-          (click)="saveDepartment()"
+          (click)="refresh()"
         >
-          {{ department.departmentID ? 'UPDATE' : 'SAVE' }}
+
+          Refresh
+
         </button>
+
+
+        <!-- ADD -->
 
         <button
           type="button"
           class="master-btn-primary"
-          (click)="cancelEdit()"
+          (click)="addDepartment()"
         >
-          CLEAR
+
+          + Add Department
+
         </button>
+
       </div>
+
     </div>
 
-    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
 
-      <div class="form-grid">
+    <!-- TABLE -->
 
-        <!-- Branch -->
-        <div class="form-column">
-          <label>Branch</label>
-          <select
-            class="input-common"
-            [(ngModel)]="department.branchID"
-            name="branchID"
-            required
-          >
-            <option value="">Select Branch</option>
-            <option
-              *ngFor="let branch of branches"
-              [value]="branch.branchID"
-            >
-              {{ branch.branchName }}
-            </option>
-          </select>
-        </div>
+    <div class="master-table-layout">
 
-        <!-- Department Name -->
-        <div class="form-column">
-          <label>Department Name</label>
-          <input
-            type="text"
-            class="input-common"
-            [(ngModel)]="department.departmentName"
-            name="departmentName"
-            required
-          />
-        </div>
+      <app-dynamic-table
 
-        <!-- Status -->
-        <div class="form-column">
-          <label>Status</label>
+        [data]="departments"
 
-          <label class="switch">
-            <input
-              type="checkbox"
-              [(ngModel)]="department.isActive"
-              name="isActive"
-            />
-            <span class="slider"></span>
-            <span class="switch-text">
-              {{ department.isActive ? 'Active' : 'Inactive' }}
-            </span>
-          </label>
-        </div>
+        [columns]="departmentColumns"
 
-      </div>
+        (edit)="editDepartment($event)"
 
-    </fieldset>
+        (delete)="deleteDepartment($event)"
 
-  </div>
+      >
 
-  <!-- ================= RIGHT TABLE PANEL ================= -->
-  <div class="master-panel">
+      </app-dynamic-table>
 
-    <app-master-table-view
-      [data]="departments"
-      [columns]="departmentColumns"
-      title="ALL DEPARTMENTS"
-      companyName="SmartBillPro"
-      (edit)="editDepartment($event)"
-      (delete)="deleteDepartment($event)"
-    >
-    </app-master-table-view>
+    </div>
 
-  </div>
+  </ng-container>
+
+
+
+  <!-- =========================================
+       FORM VIEW
+  ========================================== -->
+
+  <ng-container *ngIf="showForm">
+
+    <div class="master-form-layout">
+
+      <app-reusable-form
+
+        [title]="formTitle"
+
+        [tabs]="departmentTabs"
+
+        [fields]="departmentFields"
+
+        [model]="departmentModel"
+
+        (saveForm)="saveDepartment($event)"
+
+        (cancelForm)="cancelForm()"
+
+      >
+
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>
