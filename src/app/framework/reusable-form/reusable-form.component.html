@@ -163,6 +163,7 @@
             *ngIf="field.type === 'select'"
             class="erp-input"
             [(ngModel)]="model[field.model]"
+            (ngModelChange)="onFieldValueChange(field.model, $event)"
             appFocusOnKey
           >
             <option [ngValue]="null">Select {{ field.label }}</option>

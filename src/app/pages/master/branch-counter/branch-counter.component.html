@@ -1,126 +1,86 @@
 <div class="master-layout">
 
-  <!-- HEADER -->
-  <div class="master-top-header">
-    <div class="master-top-left">
-      <lucide-icon name="grid"></lucide-icon>
-      <div>
-        <div class="master-title-text">BRANCH COUNTER MASTER</div>
-        <div class="master-subtitle-text">ERP Management</div>
-      </div>
-    </div>
+  <!-- ================= TABLE VIEW ================= -->
 
-    <div class="master-top-right">
-      <button class="master-btn-primary" (click)="newCounter()">
-        <lucide-icon name="plus"></lucide-icon>
-        ADD
-      </button>
+  <ng-container *ngIf="!showForm">
 
-      <button class="master-btn-primary" (click)="reset()">
-        <lucide-icon name="refresh-cw"></lucide-icon>
-        REFRESH
-      </button>
-    </div>
+    <div class="master-top-header">
 
-    <div class="total-badge saas">
-      TOTAL : {{ counters.length }}
-    </div>
-  </div>
+      <div class="master-top-left">
 
-  <!-- FORM -->
-  <div class="master-panel">
+        <div class="master-title-wrapper">
+          <h2>Branch Counter</h2>
+        </div>
 
-    <div class="master-header">
-      <div class="master-title">
-        <lucide-icon name="pencil"></lucide-icon>
-        <h2>CREATE COUNTER</h2>
       </div>
 
-      <div class="master-actions">
-        <button class="master-btn-outline" (click)="save()">
-          {{ isEditMode ? 'UPDATE' : 'SAVE' }}
+      <div class="master-top-right">
+
+        <button
+          type="button"
+          class="master-btn-outline"
+          (click)="refresh()"
+        >
+          Refresh
         </button>
 
-        <button class="master-btn-primary" (click)="reset()">CLEAR</button>
+        <button
+          type="button"
+          class="master-btn-primary"
+          (click)="addCounter()"
+        >
+          + Add Counter
+        </button>
+
       </div>
+
     </div>
 
-    <fieldset [disabled]="!isFormEnabled" class="form-disabled-wrapper">
 
-      <div class="form-grid">
+    <!-- TABLE -->
 
-        <!-- COMPANY -->
-        <div class="form-column">
-          <label>Company</label>
-          <select class="input-common"
-                  [(ngModel)]="counter.companyID"
-                  (change)="onCompanyChange(counter.companyID)">
-            <option value="">Select Company</option>
-            <option *ngFor="let c of companies" [value]="c.companyID">
-              {{ c.companyName }}
-            </option>
-          </select>
-        </div>
+    <div class="master-table-layout">
 
-        <!-- BRANCH -->
-        <div class="form-column">
-          <label>Branch</label>
-          <select class="input-common"
-                  [(ngModel)]="counter.branchID"
-                  (change)="onBranchChange(counter.branchID)">
-            <option value="">Select Branch</option>
-            <option *ngFor="let b of branches" [value]="b.branchID">
-              {{ b.branchName }}
-            </option>
-          </select>
-        </div>
+      <app-dynamic-table
+        [data]="counters"
+        [columns]="counterColumns"
+        (edit)="editCounter($event)"
+        (delete)="deleteCounter($event)">
+      </app-dynamic-table>
 
-        <!-- COUNTER NAME -->
-        <div class="form-column">
-          <label>Counter Name</label>
-          <input type="text"
-                 class="input-common"
-                 [(ngModel)]="counter.counterName"
-                 required />
-        </div>
+    </div>
 
-        <!-- INVOICE PREFIX -->
-        <div class="form-column">
-          <label>Invoice Prefix</label>
-          <input type="text"
-                 class="input-common"
-                 [(ngModel)]="counter.invoicePrefix" />
-        </div>
+  </ng-container>
 
-        <!-- STATUS -->
-        <div class="form-column">
-          <label>Status</label>
-          <label class="switch">
-            <input type="checkbox" [(ngModel)]="counter.isActive" />
-            <span class="slider"></span>
-            <span class="switch-text">
-              {{ counter.isActive ? 'Active' : 'Inactive' }}
-            </span>
-          </label>
-        </div>
 
-      </div>
 
-    </fieldset>
+  <!-- ================= FORM VIEW ================= -->
 
-  </div>
+  <ng-container *ngIf="showForm">
 
-  <!-- TABLE -->
-  <div class="master-panel">
+    <div class="master-form-layout compact-form">
 
-    <app-master-table-view
-      [data]="counters"
-      [columns]="columns"
-      title="ALL COUNTERS"
-      (edit)="edit($event)"
-      (delete)="delete($event)">
-    </app-master-table-view>
+      <app-reusable-form
 
-  </div>
+        [title]="formTitle"
+
+        [tabs]="counterTabs"
+
+        [fields]="counterFields"
+
+        [model]="counterModel"
+
+        (fieldChange)="onFieldChange($event)"
+
+        (saveForm)="saveCounter($event)"
+
+        (cancelForm)="cancelForm()"
+
+      >
+      </app-reusable-form>
+
+    </div>
+
+  </ng-container>
 
 </div>
